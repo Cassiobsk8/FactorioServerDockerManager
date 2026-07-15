@@ -18,6 +18,7 @@ SAVE_DIR = BASE_DIR / "data" / "saves"
 INSTALL_DIR = BASE_DIR / "factorio"
 LOG_DIR = BASE_DIR / "logs"
 PID_PATH = BASE_DIR / "backend" / "server.pid"
+INSTALL_PROGRESS_PATH = LOG_DIR / "install_progress.json"
 
 DEFAULT_CONFIG: Dict[str, str] = {
     "server_name": "factorio",
@@ -173,6 +174,16 @@ def _download_archive(url: str) -> Path:
     )
 
     with urllib.request.urlopen(request) as response:
+        content_length = response.getheader("Content-Length")
+        total = int(content_length) if content_length and content_length.isdigit() else 0
+        _set_install_progress(
+            status="progress",
+            stage="download",
+            message="Downloading server archive...",
+            downloaded=0,
+            total=total,
+        )
+
         content_disposition = response.headers.get("Content-Disposition", "")
         if "filename=" in content_disposition:
             filename_match = re.search(r'filename="?([^";]+)"?', content_disposition)
@@ -186,7 +197,21 @@ def _download_archive(url: str) -> Path:
 
         target.parent.mkdir(parents=True, exist_ok=True)
         with target.open("wb") as out_file:
-            shutil.copyfileobj(response, out_file)
+            downloaded = 0
+            chunk_size = 8192
+            while True:
+                chunk = response.read(chunk_size)
+                if not chunk:
+                    break
+                out_file.write(chunk)
+                downloaded += len(chunk)
+                _set_install_progress(
+                    status="progress",
+                    stage="download",
+                    message="Downloading server archive...",
+                    downloaded=downloaded,
+                    total=total,
+                )
 
     return target
 
@@ -214,7 +239,21 @@ def _extract_archive(archive_path: Path) -> None:
     else:
         raise RuntimeError("Unsupported archive format. Use .zip, .tar.xz, .tar.gz or .tar.bz2")
 
+    _set_install_progress(
+        status="progress",
+        stage="install",
+        message="Extracting and installing server...",
+        downloaded=0,
+        total=0,
+    )
     _normalize_install_directory()
+    _set_install_progress(
+        status="complete",
+        stage="done",
+        message="Installation completed successfully.",
+        downloaded=0,
+        total=0,
+    )
 
 
 def _normalize_install_directory() -> None:
@@ -265,13 +304,74 @@ def _get_log_file() -> Path:
     return LOG_DIR / "factorio-server.log"
 
 
-def get_logs(tail: int = 200) -> str:
+def _get_install_progress_file() -> Path:
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
+    return INSTALL_PROGRESS_PATH
+
+
+def _write_install_progress(progress: Dict[str, Union[str, int]]):
+    progress_file = _get_install_progress_file()
+    progress_file.write_text(json.dumps(progress, indent=2), encoding="utf-8")
+
+
+def _read_install_progress() -> Dict[str, Union[str, int]]:
+    progress_file = _get_install_progress_file()
+    if not progress_file.exists():
+        return {"status": "idle", "stage": "none", "downloaded": 0, "total": 0, "message": "Idle."}
+
+    try:
+        return json.loads(progress_file.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {"status": "idle", "stage": "none", "downloaded": 0, "total": 0, "message": "Idle."}
+
+
+def _clear_install_progress() -> None:
+    progress_file = _get_install_progress_file()
+    if progress_file.exists():
+        progress_file.unlink()
+
+
+def clear_install_progress() -> None:
+    _clear_install_progress()
+
+
+def _set_install_progress(
+    status: str,
+    stage: str,
+    message: str,
+    downloaded: int = 0,
+    total: int = 0,
+):
+    _write_install_progress(
+        {
+            "status": status,
+            "stage": stage,
+            "message": message,
+            "downloaded": downloaded,
+            "total": total,
+        }
+    )
+
+
+def get_install_progress() -> Dict[str, Union[str, int]]:
+    return _read_install_progress()
+
+
+def set_install_error(message: str) -> None:
+    _set_install_progress(
+        status="error",
+        stage="failed",
+        message=message,
+        downloaded=0,
+        total=0,
+    )
+
+
+def get_logs() -> str:
     log_file = _get_log_file()
     if not log_file.exists():
-        return "No logs available yet."
-
-    lines = log_file.read_text(encoding="utf-8", errors="replace").splitlines()
-    return "\n".join(lines[-tail:])
+        return ""
+    return log_file.read_text(encoding="utf-8")
 
 
 def clear_logs() -> None:

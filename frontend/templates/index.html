@@ -77,13 +77,13 @@
                         <div class="config-detail">
                             <p><strong>Instalado:</strong> {{ status != 'not_installed' }}</p>
                         </div>
-                        <form action="/install" method="post">
+                        <form id="install-form">
                             <label>
                                 Archive URL (opcional)
-                                <input type="text" name="archive_path"
+                                <input type="text" name="archive_path" id="archive-path"
                                     placeholder="Use o download oficial do Factorio Linux" />
                             </label>
-                            <button type="submit">Instalar servidor</button>
+                            <button type="button" id="install-button">Instalar servidor</button>
                         </form>
                         <form action="/install/clear" method="post"
                             onsubmit="return confirm('Tem certeza que deseja deletar a instalação do servidor? Isso removerá apenas os arquivos de instalação e logs, sem excluir saves nem configuração.');">
@@ -152,9 +152,31 @@
         </section>
     </main>
 
+    <div class="modal-overlay" id="install-modal" style="display:none;">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Instalação do servidor</h3>
+                <button class="text-button" id="close-modal" type="button">Fechar</button>
+            </div>
+            <p id="install-modal-message">Preparando instalação...</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="install-progress-fill"></div>
+            </div>
+            <p class="progress-meta" id="install-progress-meta">Aguardando início...</p>
+        </div>
+    </div>
+
     <script>
         const tabButtons = document.querySelectorAll('.tab-button');
         const panels = document.querySelectorAll('.tab-panel');
+        const installButton = document.getElementById('install-button');
+        const installModal = document.getElementById('install-modal');
+        const closeModal = document.getElementById('close-modal');
+        const archivePathInput = document.getElementById('archive-path');
+        const installProgressFill = document.getElementById('install-progress-fill');
+        const installModalMessage = document.getElementById('install-modal-message');
+        const installProgressMeta = document.getElementById('install-progress-meta');
+        let installInterval;
 
         tabButtons.forEach((button) => {
             button.addEventListener('click', () => {
@@ -165,6 +187,87 @@
                 document.getElementById(`${button.dataset.tab}-panel`).classList.add('active');
             });
         });
+
+        function openInstallModal() {
+            installModal.style.display = 'flex';
+        }
+
+        function closeInstallModal() {
+            installModal.style.display = 'none';
+            clearInterval(installInterval);
+        }
+
+        async function fetchInstallProgress() {
+            try {
+                const response = await fetch('/install/progress');
+                if (!response.ok) {
+                    installModalMessage.textContent = 'Não foi possível obter o progresso.';
+                    return;
+                }
+                const progress = await response.json();
+                const { status, stage, message, downloaded, total } = progress;
+
+                installModalMessage.textContent = message || 'Progresso recebido.';
+
+                if (stage === 'download' && total > 0) {
+                    const percent = Math.min(100, Math.round((downloaded / total) * 100));
+                    installProgressFill.style.width = `${percent}%`;
+                    installProgressMeta.textContent = `${percent}% (${downloaded}/${total} bytes)`;
+                } else if (stage === 'install') {
+                    installProgressFill.style.width = '100%';
+                    installProgressMeta.textContent = 'Instalando os arquivos do servidor...';
+                } else if (status === 'complete') {
+                    installProgressFill.style.width = '100%';
+                    installProgressMeta.textContent = 'Instalação concluída.';
+                    clearInterval(installInterval);
+                } else if (status === 'error') {
+                    installProgressFill.style.width = '100%';
+                    installProgressMeta.textContent = `Erro: ${message}`;
+                    clearInterval(installInterval);
+                } else {
+                    installProgressFill.style.width = '0%';
+                    installProgressMeta.textContent = message || 'Aguardando ação...';
+                }
+            } catch (err) {
+                installModalMessage.textContent = 'Erro ao acessar o progresso.';
+                installProgressMeta.textContent = err.message;
+                clearInterval(installInterval);
+            }
+        }
+
+        async function startInstallation() {
+            openInstallModal();
+            installModalMessage.textContent = 'Iniciando download...';
+            installProgressFill.style.width = '0%';
+            installProgressMeta.textContent = 'Aguardando início...';
+
+            const response = await fetch('/install/start', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ archive_path: archivePathInput.value.trim() }),
+            });
+
+            if (!response.ok) {
+                const error = await response.json().catch(() => ({}));
+                installModalMessage.textContent = 'Falha ao iniciar a instalação';
+                installProgressMeta.textContent = error.error || 'Erro desconhecido';
+                return;
+            }
+
+            fetchInstallProgress();
+            installInterval = setInterval(fetchInstallProgress, 1500);
+        }
+
+        if (installButton) {
+            installButton.addEventListener('click', (event) => {
+                event.preventDefault();
+                startInstallation();
+            });
+        }
+
+        if (closeModal) {
+            closeModal.addEventListener('click', closeInstallModal);
+        }
     </script>
 </body>
 

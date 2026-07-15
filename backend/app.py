@@ -1,11 +1,13 @@
+import threading
 from pathlib import Path
 
-from flask import Flask, redirect, render_template, request, send_from_directory
+from flask import Flask, jsonify, redirect, render_template, request, send_from_directory
 
 try:
     from docker_manager import (
         ServerManager,
         get_logs,
+        get_install_progress,
         get_save_directory,
         list_save_files,
         load_server_config,
@@ -13,12 +15,15 @@ try:
         save_server_config,
         clear_logs,
         clear_installation,
+        clear_install_progress,
+        set_install_error,
         log_error,
     )
 except ImportError:  # pragma: no cover - allows importing as a package in tests
     from backend.docker_manager import (
         ServerManager,
         get_logs,
+        get_install_progress,
         get_save_directory,
         list_save_files,
         load_server_config,
@@ -26,6 +31,8 @@ except ImportError:  # pragma: no cover - allows importing as a package in tests
         save_server_config,
         clear_logs,
         clear_installation,
+        clear_install_progress,
+        set_install_error,
         log_error,
     )
 
@@ -51,7 +58,9 @@ def home():
         logs=get_logs(),
         config=config,
         save_files=list_save_files(),
-        install_status=server_manager.get_install_status(),
+        install_status=(
+            "installing" if get_install_progress().get("status") == "progress" else server_manager.get_install_status()
+        ),
         app_version=APP_VERSION,
     )
 
@@ -78,6 +87,32 @@ def install():
     except Exception as exc:
         log_error(f"Install failed: {exc}")
     return redirect("/")
+
+
+@app.route("/install/start", methods=["POST"])
+def install_start():
+    archive_path = request.form.get("archive_path", "").strip() or None
+    progress = get_install_progress()
+    if progress.get("status") == "progress":
+        return jsonify({"error": "Installation already running."}), 409
+
+    clear_install_progress()
+
+    def run_install():
+        try:
+            server_manager.install_server(archive_path=archive_path)
+        except Exception as exc:
+            set_install_error(str(exc))
+            log_error(f"Install failed: {exc}")
+
+    thread = threading.Thread(target=run_install, daemon=True)
+    thread.start()
+    return jsonify({"status": "started"})
+
+
+@app.route("/install/progress")
+def install_progress():
+    return jsonify(get_install_progress())
 
 
 @app.route("/config", methods=["POST"])

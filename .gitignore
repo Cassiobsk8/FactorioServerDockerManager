@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.env
+*.venv
+venv/
+ENV/
+env/
+
+# Flask / backend generated files
+backend/server.pid
+backend/__pycache__/
+logs/
+backend/*.log
+install_progress.json
+
+# Factorio server install files and runtime data
+factorio/
+
+# Saves and uploaded content
+data/saves/
+
+# Archives and temporary downloads
+*.zip
+*.tar.xz
+*.tar.gz
+*.tgz
+*.7z
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor folders
+.vscode/
