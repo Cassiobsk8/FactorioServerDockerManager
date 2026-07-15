@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  factorio-server-manager:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: factorio-server-manager
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./backend/server_config.json:/app/backend/server_config.json
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
