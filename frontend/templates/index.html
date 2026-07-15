@@ -1,0 +1,171 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Factorio Server Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+</head>
+
+<body>
+    <main class="app-shell">
+        <aside class="sidebar">
+            <div class="brand">
+                <span class="brand-icon">⚙️</span>
+                <div>
+                    <h1>Factorio</h1>
+                    <p>Server Manager</p>
+                </div>
+            </div>
+
+            <nav class="tabs" aria-label="Main navigation">
+                <button class="tab-button active" data-tab="status">Status</button>
+                <button class="tab-button" data-tab="config">Configuração</button>
+                <button class="tab-button" data-tab="about">Sobre</button>
+            </nav>
+        </aside>
+
+        <section class="content">
+            <div class="tab-panel active" id="status-panel">
+                <div class="panel-grid">
+                    <section class="panel card log-card">
+                        <div class="panel-header">
+                            <h2>Logs</h2>
+                            <form action="/logs/clear" method="post" class="header-action">
+                                <button type="submit" class="text-button">Limpar</button>
+                            </form>
+                        </div>
+                        <pre>{{ logs }}</pre>
+                    </section>
+
+                    <aside class="panel card status-card">
+                        <div class="panel-header">
+                            <h2>Status</h2>
+                        </div>
+                        <div class="status-info">
+                            <div>
+                                <span class="status-label">Server status</span>
+                                <p class="status-value">{{ status }}</p>
+                            </div>
+                            <div>
+                                <span class="status-label">Install status</span>
+                                <p class="status-value">{{ install_status }}</p>
+                            </div>
+                        </div>
+                        <div class="action-group">
+                            <form action="/control/start" method="post">
+                                <button type="submit">Start</button>
+                            </form>
+                            <form action="/control/stop" method="post">
+                                <button type="submit">Stop</button>
+                            </form>
+                            <form action="/control/restart" method="post">
+                                <button type="submit">Restart</button>
+                            </form>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+
+            <div class="tab-panel" id="config-panel">
+                <div class="panel-grid config-grid">
+                    <section class="panel card config-card">
+                        <div class="panel-header">
+                            <h2>Servidor</h2>
+                        </div>
+                        <div class="config-detail">
+                            <p><strong>Instalado:</strong> {{ status != 'not_installed' }}</p>
+                        </div>
+                        <form action="/install" method="post">
+                            <label>
+                                Archive URL (opcional)
+                                <input type="text" name="archive_path"
+                                    placeholder="Use o download oficial do Factorio Linux" />
+                            </label>
+                            <button type="submit">Instalar servidor</button>
+                        </form>
+                        <form action="/install/clear" method="post"
+                            onsubmit="return confirm('Tem certeza que deseja deletar a instalação do servidor? Isso removerá apenas os arquivos de instalação e logs, sem excluir saves nem configuração.');">
+                            <button type="submit" class="danger-button">Deletar servidor instalado</button>
+                        </form>
+                    </section>
+
+                    <section class="panel card config-card">
+                        <div class="panel-header">
+                            <h2>Configuração</h2>
+                        </div>
+                        <form action="/config" method="post" class="stacked-form">
+                            <label>
+                                Nome do servidor
+                                <input type="text" name="server_name" value="{{ config.server_name }}" />
+                            </label>
+                            <label>
+                                Senha do servidor
+                                <input type="password" name="server_password" value="{{ config.server_password }}" />
+                            </label>
+                            <button type="submit">Salvar alterações</button>
+                        </form>
+                    </section>
+
+                    <section class="panel card config-card">
+                        <div class="panel-header">
+                            <h2>Save files</h2>
+                        </div>
+                        <form action="/upload-save" method="post" enctype="multipart/form-data">
+                            <input type="file" name="save_file" />
+                            <button type="submit">Enviar save</button>
+                        </form>
+                        {% if save_files %}
+                        <ul class="file-list">
+                            {% for filename in save_files %}
+                            <li><a href="/download-save/{{ filename }}">{{ filename }}</a></li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        <p>Nenhum save enviado ainda.</p>
+                        {% endif %}
+                    </section>
+                </div>
+            </div>
+
+            <div class="tab-panel" id="about-panel">
+                <section class="panel card about-card">
+                    <div class="panel-header">
+                        <h2>Sobre</h2>
+                    </div>
+                    <div class="about-content">
+                        <p><strong>Desenvolvedor:</strong> Cássio Klafke Ferreira</p>
+                        <p><strong>LinkedIn / GitHub:</strong> <a href="https://github.com/Cassiobsk8" target="_blank"
+                                rel="noopener noreferrer">https://github.com/Cassiobsk8</a></p>
+                        <p><strong>Versão da aplicação:</strong> {{ app_version }}</p>
+                        <h3>Licenças usadas</h3>
+                        <ul>
+                            <li>Python 3.14 — Python Software Foundation License</li>
+                            <li>Flask 3.0.3 — BSD 3-Clause License</li>
+                            <li>HTML / CSS / JavaScript — Tecnologias Web padrão</li>
+                            <li>Factorio headless server — regido pela licença / EULA da Factorio</li>
+                        </ul>
+                    </div>
+                </section>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const panels = document.querySelectorAll('.tab-panel');
+
+        tabButtons.forEach((button) => {
+            button.addEventListener('click', () => {
+                tabButtons.forEach((btn) => btn.classList.remove('active'));
+                panels.forEach((panel) => panel.classList.remove('active'));
+
+                button.classList.add('active');
+                document.getElementById(`${button.dataset.tab}-panel`).classList.add('active');
+            });
+        });
+    </script>
+</body>
+
+</html>
