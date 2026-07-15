@@ -135,6 +135,11 @@ def upload_save():
     return redirect("/")
 
 
+@app.route("/logs/data")
+def logs_data():
+    return jsonify({"logs": get_logs()})
+
+
 @app.route("/logs/clear", methods=["POST"])
 def clear_log_route():
     try:

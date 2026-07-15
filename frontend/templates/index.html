@@ -36,7 +36,7 @@
                                 <button type="submit" class="text-button">Limpar</button>
                             </form>
                         </div>
-                        <pre>{{ logs }}</pre>
+                        <pre id="logs-output">{{ logs }}</pre>
                     </section>
 
                     <aside class="panel card status-card">
@@ -176,7 +176,9 @@
         const installProgressFill = document.getElementById('install-progress-fill');
         const installModalMessage = document.getElementById('install-modal-message');
         const installProgressMeta = document.getElementById('install-progress-meta');
+        const logsOutput = document.getElementById('logs-output');
         let installInterval;
+        let logsInterval;
 
         tabButtons.forEach((button) => {
             button.addEventListener('click', () => {
@@ -256,6 +258,28 @@
 
             fetchInstallProgress();
             installInterval = setInterval(fetchInstallProgress, 1500);
+        }
+
+        async function fetchLogs() {
+            if (!logsOutput) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/logs/data');
+                if (!response.ok) {
+                    return;
+                }
+                const data = await response.json();
+                logsOutput.textContent = data.logs || '';
+            } catch (err) {
+                // ignore; keep current logs
+            }
+        }
+
+        if (logsOutput) {
+            fetchLogs();
+            logsInterval = setInterval(fetchLogs, 2000);
         }
 
         if (installButton) {
