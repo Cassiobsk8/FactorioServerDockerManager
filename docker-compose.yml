@@ -8,9 +8,12 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - ./data:/app/data
-      - ./logs:/app/logs
-      - ./backend/server_config.json:/app/backend/server_config.json
+      - factorio_data:/app/data
+      - factorio_logs:/app/logs
     environment:
       - PYTHONUNBUFFERED=1
     restart: unless-stopped
+
+volumes:
+  factorio_data:
+  factorio_logs:
