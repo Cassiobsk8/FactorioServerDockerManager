@@ -272,14 +272,40 @@
                 }
                 const data = await response.json();
                 logsOutput.textContent = data.logs || '';
+                logsOutput.scrollTop = logsOutput.scrollHeight;
             } catch (err) {
                 // ignore; keep current logs
+            }
+        }
+
+        async function fetchStatus() {
+            const serverStatus = document.getElementById('server-status');
+            const installStatus = document.getElementById('install-status');
+            if (!serverStatus || !installStatus) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/status');
+                if (!response.ok) {
+                    return;
+                }
+                const data = await response.json();
+                serverStatus.textContent = data.status || serverStatus.textContent;
+                installStatus.textContent = data.install_status || installStatus.textContent;
+            } catch (err) {
+                // ignore errors during polling
             }
         }
 
         if (logsOutput) {
             fetchLogs();
             logsInterval = setInterval(fetchLogs, 2000);
+        }
+
+        if (logsOutput) {
+            fetchStatus();
+            setInterval(fetchStatus, 2000);
         }
 
         if (installButton) {

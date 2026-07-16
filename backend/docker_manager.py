@@ -61,7 +61,7 @@ class ServerManager:
         process = subprocess.Popen(
             cmd,
             cwd=str(INSTALL_DIR),
-            stdin=subprocess.DEVNULL,
+            stdin=subprocess.PIPE,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.STDOUT,
             close_fds=True,

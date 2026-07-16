@@ -65,6 +65,18 @@ def home():
     )
 
 
+@app.route("/status")
+def status():
+    return jsonify(
+        {
+            "status": server_manager.get_status(),
+            "install_status": "installing"
+            if get_install_progress().get("status") == "progress"
+            else server_manager.get_install_status(),
+        }
+    )
+
+
 @app.route("/control/<action>", methods=["POST"])
 def control(action: str):
     try:
