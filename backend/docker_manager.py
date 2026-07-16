@@ -301,7 +301,19 @@ def is_server_installed() -> bool:
 
 def _get_log_file() -> Path:
     LOG_DIR.mkdir(parents=True, exist_ok=True)
-    return LOG_DIR / "factorio-server.log"
+    return LOG_DIR / "factorio-console.log"
+
+
+def _get_factorio_generated_log_file() -> Path:
+    console_log = _get_log_file()
+    if console_log.exists():
+        return console_log
+
+    for candidate in [INSTALL_DIR / "factorio-current.log", INSTALL_DIR / "factorio-previous.log"]:
+        if candidate.exists():
+            return candidate
+
+    return console_log
 
 
 def _get_install_progress_file() -> Path:
@@ -368,7 +380,7 @@ def set_install_error(message: str) -> None:
 
 
 def get_logs() -> str:
-    log_file = _get_log_file()
+    log_file = _get_factorio_generated_log_file()
     if not log_file.exists():
         return ""
     return log_file.read_text(encoding="utf-8")
@@ -459,7 +471,8 @@ def _factorio_command() -> List[str]:
 
     save_dir = get_save_directory()
     auto_save = save_dir / "autosave.zip"
-    cmd = [str(factorio_bin), "--console"]
+    console_log = _get_log_file()
+    cmd = [str(factorio_bin), "--console-log", str(console_log)]
 
     if auto_save.exists():
         cmd.append(f"--start-server={auto_save}")
