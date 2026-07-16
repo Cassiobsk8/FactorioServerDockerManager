@@ -58,14 +58,14 @@ class ServerManager:
             return "already running"
 
         cmd = _factorio_command()
-        log_file = _get_log_file()
-        with log_file.open("a", encoding="utf-8") as handler:
-            process = subprocess.Popen(
-                cmd,
-                cwd=str(INSTALL_DIR),
-                stdout=handler,
-                stderr=subprocess.STDOUT,
-            )
+        process = subprocess.Popen(
+            cmd,
+            cwd=str(INSTALL_DIR),
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.STDOUT,
+            close_fds=True,
+        )
         _write_pid(process.pid)
         return "started"
 
