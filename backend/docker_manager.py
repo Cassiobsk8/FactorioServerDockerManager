@@ -58,14 +58,19 @@ class ServerManager:
             return "already running"
 
         cmd = _factorio_command()
+        log_file = _get_log_file()
+        log_file.parent.mkdir(parents=True, exist_ok=True)
+        log_handle = log_file.open("ab")
+
         process = subprocess.Popen(
             cmd,
             cwd=str(INSTALL_DIR),
-            stdin=subprocess.PIPE,
-            stdout=subprocess.DEVNULL,
+            stdin=subprocess.DEVNULL,
+            stdout=log_handle,
             stderr=subprocess.STDOUT,
             close_fds=True,
         )
+        log_handle.close()
         _write_pid(process.pid)
         return "started"
 
@@ -307,19 +312,19 @@ def is_server_installed() -> bool:
 
 def _get_log_file() -> Path:
     LOG_DIR.mkdir(parents=True, exist_ok=True)
-    return LOG_DIR / "factorio-console.log"
+    return LOG_DIR / "factorio-server.log"
 
 
 def _get_factorio_generated_log_file() -> Path:
-    console_log = _get_log_file()
-    if console_log.exists():
-        return console_log
+    log_file = _get_log_file()
+    if log_file.exists():
+        return log_file
 
-    for candidate in [INSTALL_DIR / "factorio-current.log", INSTALL_DIR / "factorio-previous.log"]:
+    for candidate in [INSTALL_DIR / "factorio-current.log", INSTALL_DIR / "factorio-previous.log", INSTALL_DIR / "logs" / "factorio-current.log"]:
         if candidate.exists():
             return candidate
 
-    return console_log
+    return log_file
 
 
 def _get_install_progress_file() -> Path:
@@ -386,16 +391,25 @@ def set_install_error(message: str) -> None:
 
 
 def get_logs() -> str:
+    log_file = _get_log_file()
+    if log_file.exists():
+        return log_file.read_text(encoding="utf-8", errors="replace")
+
     log_file = _get_factorio_generated_log_file()
-    if not log_file.exists():
-        return ""
-    return log_file.read_text(encoding="utf-8")
+    if log_file.exists():
+        return log_file.read_text(encoding="utf-8", errors="replace")
+
+    return ""
 
 
 def clear_logs() -> None:
-    log_file = _get_factorio_generated_log_file()
+    log_file = _get_log_file()
     if log_file.exists():
         log_file.write_text("", encoding="utf-8")
+
+    generated_log_file = _get_factorio_generated_log_file()
+    if generated_log_file.exists() and generated_log_file != log_file:
+        generated_log_file.write_text("", encoding="utf-8")
 
 
 def clear_installation() -> None:
@@ -490,8 +504,7 @@ def _factorio_command() -> List[str]:
 
     save_dir = get_save_directory()
     auto_save = save_dir / "autosave.zip"
-    console_log = _get_log_file()
-    cmd = [str(factorio_bin), "--console-log", str(console_log)]
+    cmd = [str(factorio_bin)]
 
     if auto_save.exists():
         cmd.append(f"--start-server={auto_save}")
