@@ -108,6 +108,57 @@
                         </form>
                     </section>
 
+                    <section class="panel card config-card settings-card">
+                        <div class="panel-header">
+                            <h2>server-settings.json</h2>
+                        </div>
+                        <p class="settings-description">Campos carregados de <code>config/server-settings.json</code>.
+                            Comentários do arquivo aparecem antes de cada opção.</p>
+                        <form action="/config" method="post" class="stacked-form">
+                            {% macro render_settings(fields) %}
+                            {% for field in fields %}
+                            {% if field.type == 'object' %}
+                            <details class="settings-section" open>
+                                <summary>
+                                    <strong>{{ field.key }}</strong>
+                                    {% if field.comment %}
+                                    <span class="field-comment">{{ field.comment }}</span>
+                                    {% endif %}
+                                </summary>
+                                {{ render_settings(field.children) }}
+                            </details>
+                            {% elif field.type == 'boolean' %}
+                            <label>
+                                {{ field.comment or field.key }}
+                                <select name="settings.{{ field.path }}">
+                                    <option value="true" {% if field.value %}selected{% endif %}>true</option>
+                                    <option value="false" {% if not field.value %}selected{% endif %}>false</option>
+                                </select>
+                            </label>
+                            {% elif field.type == 'json' %}
+                            <label>
+                                {{ field.comment or field.key }}
+                                <textarea name="settings.{{ field.path }}" rows="6">{{ field.value }}</textarea>
+                            </label>
+                            {% else %}
+                            <label>
+                                {{ field.comment or field.key }}
+                                <input type="text" name="settings.{{ field.path }}" value="{{ field.value }}" />
+                            </label>
+                            {% endif %}
+                            {% endfor %}
+                            {% endmacro %}
+
+                            {% if server_settings_fields %}
+                            {{ render_settings(server_settings_fields) }}
+                            {% else %}
+                            <p>Nenhuma configuração de servidor encontrada.</p>
+                            {% endif %}
+
+                            <button type="submit">Salvar configurações do servidor</button>
+                        </form>
+                    </section>
+
                     <section class="panel card config-card">
                         <div class="panel-header">
                             <h2>Save files</h2>

@@ -1,42 +1,32 @@
+import sys
 import threading
 from pathlib import Path
 
 from flask import Flask, jsonify, redirect, render_template, request, send_from_directory
 
-try:
-    from docker_manager import (
-        ServerManager,
-        get_logs,
-        get_install_progress,
-        get_save_directory,
-        list_save_files,
-        load_server_config,
-        save_uploaded_file,
-        save_server_config,
-        clear_logs,
-        clear_installation,
-        clear_install_progress,
-        set_install_error,
-        log_error,
-    )
-except ImportError:  # pragma: no cover - allows importing as a package in tests
-    from backend.docker_manager import (
-        ServerManager,
-        get_logs,
-        get_install_progress,
-        get_save_directory,
-        list_save_files,
-        load_server_config,
-        save_uploaded_file,
-        save_server_config,
-        clear_logs,
-        clear_installation,
-        clear_install_progress,
-        set_install_error,
-        log_error,
-    )
-
 BASE_DIR = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(BASE_DIR))
+
+from docker_manager import (
+    ServerManager,
+    get_logs,
+    get_install_progress,
+    get_save_directory,
+    list_save_files,
+    load_server_config,
+    save_uploaded_file,
+    save_server_config,
+    load_server_settings,
+    save_server_settings,
+    build_server_settings_fields,
+    update_server_settings_from_form,
+    clear_logs,
+    clear_installation,
+    clear_install_progress,
+    set_install_error,
+    log_error,
+)
+
 APP_VERSION = "1.0.0"
 
 app = Flask(
@@ -52,11 +42,13 @@ server_manager = ServerManager()
 @app.route("/")
 def home():
     config = load_server_config()
+    server_settings = load_server_settings()
     return render_template(
         "index.html",
         status=server_manager.get_status(),
         logs=get_logs(),
         config=config,
+        server_settings_fields=build_server_settings_fields(server_settings),
         save_files=list_save_files(),
         install_status=(
             "installing" if get_install_progress().get("status") == "progress" else server_manager.get_install_status()
@@ -133,6 +125,11 @@ def update_config():
     server_name = request.form.get("server_name", "").strip() or config["server_name"]
     server_password = request.form.get("server_password", "").strip() or config["server_password"]
     save_server_config(values={"server_name": server_name, "server_password": server_password})
+
+    current_settings = load_server_settings()
+    updated_settings = update_server_settings_from_form(request.form, current_settings)
+    save_server_settings(updated_settings)
+
     return redirect("/")
 
 

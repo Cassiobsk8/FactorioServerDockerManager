@@ -11,12 +11,15 @@ import urllib.parse
 import urllib.request
 import zipfile
 from pathlib import Path
-from typing import Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 CONFIG_PATH = BASE_DIR / "backend" / "server_config.json"
-SAVE_DIR = BASE_DIR / "data" / "saves"
 INSTALL_DIR = BASE_DIR / "factorio"
+SERVER_SETTINGS_DIR = BASE_DIR / "factorio" / "config"
+SERVER_SETTINGS_PATH = SERVER_SETTINGS_DIR / "server-settings.json"
+SERVER_SETTINGS_EXAMPLE_PATH = BASE_DIR / "factorio" / "data" / "server-settings.example.json"
+SAVE_DIR = BASE_DIR / "data" / "saves"
 LOG_DIR = BASE_DIR / "logs"
 PID_PATH = BASE_DIR / "backend" / "server.pid"
 INSTALL_PROGRESS_PATH = LOG_DIR / "install_progress.json"
@@ -470,6 +473,141 @@ def save_server_config(
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(current, indent=2), encoding="utf-8")
     return current
+
+
+def load_server_settings(config_path: Optional[Union[str, Path]] = None) -> Dict[str, Any]:
+    path = Path(config_path or SERVER_SETTINGS_PATH)
+    if not path.exists():
+        path.parent.mkdir(parents=True, exist_ok=True)
+        if SERVER_SETTINGS_EXAMPLE_PATH.exists():
+            shutil.copy(SERVER_SETTINGS_EXAMPLE_PATH, path)
+        else:
+            path.write_text(json.dumps({}, indent=2), encoding="utf-8")
+
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {}
+
+
+def save_server_settings(settings: Dict[str, Any], config_path: Optional[Union[str, Path]] = None) -> Dict[str, Any]:
+    path = Path(config_path or SERVER_SETTINGS_PATH)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(settings, indent=2), encoding="utf-8")
+    return settings
+
+
+def build_server_settings_fields(settings: Dict[str, Any]) -> List[Dict[str, Any]]:
+    def _recursive_build(data: Dict[str, Any], prefix: str = "") -> List[Dict[str, Any]]:
+        comments = {
+            key[len("_comment_"):]: value
+            for key, value in data.items()
+            if isinstance(key, str) and key.startswith("_comment_")
+        }
+
+        fields: List[Dict[str, Any]] = []
+        for key, value in data.items():
+            if isinstance(key, str) and key.startswith("_comment_"):
+                continue
+
+            path = f"{prefix}.{key}" if prefix else key
+            comment = comments.get(key)
+
+            if isinstance(value, dict):
+                fields.append(
+                    {
+                        "key": key,
+                        "path": path,
+                        "comment": comment,
+                        "type": "object",
+                        "children": _recursive_build(value, path),
+                    }
+                )
+            elif isinstance(value, bool):
+                fields.append({"key": key, "path": path, "comment": comment, "type": "boolean", "value": value})
+            elif isinstance(value, int):
+                fields.append({"key": key, "path": path, "comment": comment, "type": "integer", "value": value})
+            elif isinstance(value, float):
+                fields.append({"key": key, "path": path, "comment": comment, "type": "number", "value": value})
+            elif isinstance(value, list):
+                fields.append(
+                    {
+                        "key": key,
+                        "path": path,
+                        "comment": comment,
+                        "type": "json",
+                        "value": json.dumps(value, indent=2, ensure_ascii=False),
+                    }
+                )
+            else:
+                fields.append({"key": key, "path": path, "comment": comment, "type": "string", "value": value})
+
+        return fields
+
+    return _recursive_build(settings)
+
+
+def _get_nested_value(data: Any, path_parts: List[str]) -> Any:
+    current = data
+    for part in path_parts:
+        if not isinstance(current, dict) or part not in current:
+            return None
+        current = current[part]
+    return current
+
+
+def _set_nested_value(data: Dict[str, Any], path_parts: List[str], value: Any) -> None:
+    current: Dict[str, Any] = data
+    for part in path_parts[:-1]:
+        if part not in current or not isinstance(current[part], dict):
+            current[part] = {}
+        current = current[part]
+    current[path_parts[-1]] = value
+
+
+def _parse_setting_value(raw_value: str, existing_value: Any) -> Any:
+    if isinstance(existing_value, bool):
+        return raw_value.lower() == "true"
+
+    if isinstance(existing_value, int) and not isinstance(existing_value, bool):
+        try:
+            return int(raw_value)
+        except ValueError:
+            return existing_value
+
+    if isinstance(existing_value, float):
+        try:
+            return float(raw_value)
+        except ValueError:
+            return existing_value
+
+    if isinstance(existing_value, list) or isinstance(existing_value, dict):
+        try:
+            parsed = json.loads(raw_value)
+            return parsed
+        except json.JSONDecodeError:
+            return existing_value
+
+    return raw_value
+
+
+def update_server_settings_from_form(form: Dict[str, str], current_settings: Dict[str, Any]) -> Dict[str, Any]:
+    updated = json.loads(json.dumps(current_settings))
+
+    for raw_key, raw_value in form.items():
+        if not raw_key.startswith("settings."):
+            continue
+
+        path = raw_key[len("settings.") :]
+        if not path:
+            continue
+
+        path_parts = path.split(".")
+        existing_value = _get_nested_value(current_settings, path_parts)
+        parsed_value = _parse_setting_value(raw_value, existing_value)
+        _set_nested_value(updated, path_parts, parsed_value)
+
+    return updated
 
 
 def get_save_directory() -> Path:

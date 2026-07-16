@@ -224,13 +224,47 @@ label {
 
 input[type="text"],
 input[type="password"],
-input[type="file"] {
+input[type="file"],
+select,
+textarea {
     width: 100%;
     padding: 0.85rem 1rem;
     border-radius: 14px;
     border: 1px solid rgba(148, 163, 184, 0.18);
     background: rgba(255, 255, 255, 0.04);
     color: var(--text);
+}
+
+textarea {
+    resize: vertical;
+}
+
+.settings-description {
+    color: var(--subtext);
+    margin-bottom: 1rem;
+}
+
+.settings-section {
+    border: 1px solid rgba(148, 163, 184, 0.12);
+    border-radius: 18px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background: rgba(15, 23, 42, 0.9);
+}
+
+.settings-section summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: var(--text);
+    list-style: none;
+    margin-bottom: 0.75rem;
+}
+
+.field-comment {
+    display: block;
+    font-size: 0.95rem;
+    color: var(--subtext);
+    margin-top: 0.25rem;
 }
 
 input::placeholder {
