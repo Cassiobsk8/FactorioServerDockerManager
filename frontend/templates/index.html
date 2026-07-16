@@ -114,46 +114,48 @@
                         </div>
                         <p class="settings-description">Campos carregados de <code>config/server-settings.json</code>.
                             Comentários do arquivo aparecem antes de cada opção.</p>
-                        <form action="/config" method="post" class="stacked-form">
-                            {% macro render_settings(fields) %}
-                            {% for field in fields %}
-                            {% if field.type == 'object' %}
-                            <details class="settings-section" open>
-                                <summary>
-                                    <strong>{{ field.key }}</strong>
-                                    {% if field.comment %}
-                                    <span class="field-comment">{{ field.comment }}</span>
-                                    {% endif %}
-                                </summary>
-                                {{ render_settings(field.children) }}
-                            </details>
-                            {% elif field.type == 'boolean' %}
-                            <label>
-                                {{ field.comment or field.key }}
-                                <select name="settings.{{ field.path }}">
-                                    <option value="true" {% if field.value %}selected{% endif %}>true</option>
-                                    <option value="false" {% if not field.value %}selected{% endif %}>false</option>
-                                </select>
-                            </label>
-                            {% elif field.type == 'json' %}
-                            <label>
-                                {{ field.comment or field.key }}
-                                <textarea name="settings.{{ field.path }}" rows="6">{{ field.value }}</textarea>
-                            </label>
-                            {% else %}
-                            <label>
-                                {{ field.comment or field.key }}
-                                <input type="text" name="settings.{{ field.path }}" value="{{ field.value }}" />
-                            </label>
-                            {% endif %}
-                            {% endfor %}
-                            {% endmacro %}
+                        <form id="server-settings-form" action="/config" method="post" class="stacked-form">
+                            <div id="server-settings-container">
+                                {% macro render_settings(fields) %}
+                                {% for field in fields %}
+                                {% if field.type == 'object' %}
+                                <details class="settings-section" open>
+                                    <summary>
+                                        <strong>{{ field.key }}</strong>
+                                        {% if field.comment %}
+                                        <span class="field-comment">{{ field.comment }}</span>
+                                        {% endif %}
+                                    </summary>
+                                    {{ render_settings(field.children) }}
+                                </details>
+                                {% elif field.type == 'boolean' %}
+                                <label>
+                                    {{ field.comment or field.key }}
+                                    <select name="settings.{{ field.path }}">
+                                        <option value="true" {% if field.value %}selected{% endif %}>true</option>
+                                        <option value="false" {% if not field.value %}selected{% endif %}>false</option>
+                                    </select>
+                                </label>
+                                {% elif field.type == 'json' %}
+                                <label>
+                                    {{ field.comment or field.key }}
+                                    <textarea name="settings.{{ field.path }}" rows="6">{{ field.value }}</textarea>
+                                </label>
+                                {% else %}
+                                <label>
+                                    {{ field.comment or field.key }}
+                                    <input type="text" name="settings.{{ field.path }}" value="{{ field.value }}" />
+                                </label>
+                                {% endif %}
+                                {% endfor %}
+                                {% endmacro %}
 
-                            {% if server_settings_fields %}
-                            {{ render_settings(server_settings_fields) }}
-                            {% else %}
-                            <p>Nenhuma configuração de servidor encontrada.</p>
-                            {% endif %}
+                                {% if server_settings_fields %}
+                                {{ render_settings(server_settings_fields) }}
+                                {% else %}
+                                <p>Nenhuma configuração de servidor encontrada.</p>
+                                {% endif %}
+                            </div>
 
                             <button type="submit">Salvar configurações do servidor</button>
                         </form>
@@ -238,8 +240,64 @@
 
                 button.classList.add('active');
                 document.getElementById(`${button.dataset.tab}-panel`).classList.add('active');
+                if (button.dataset.tab === 'config') {
+                    fetchAndRenderSettings();
+                }
             });
         });
+
+        async function fetchAndRenderSettings() {
+            const container = document.getElementById('server-settings-container');
+            if (!container) return;
+
+            try {
+                const res = await fetch('/server-settings');
+                if (!res.ok) return;
+                const data = await res.json();
+                console.debug('fetch /server-settings ->', data);
+                const fields = data.fields || [];
+                if (!fields.length) {
+                    const info = data.file_info || {};
+                    container.innerHTML = `<p>Nenhuma configuração de servidor encontrada. arquivo_exists=${info.exists} size=${info.size}</p>`;
+                    return;
+                }
+                container.innerHTML = renderSettingsFields(fields);
+            } catch (err) {
+                // ignore
+            }
+        }
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function renderSettingsFields(fields) {
+            let html = '';
+            for (const field of fields) {
+                if (field.type === 'object') {
+                    html += `<details class="settings-section" open><summary><strong>${escapeHtml(field.key)}</strong>`;
+                    if (field.comment) html += `<span class="field-comment">${escapeHtml(field.comment)}</span>`;
+                    html += `</summary>`;
+                    html += renderSettingsFields(field.children || []);
+                    html += `</details>`;
+                } else if (field.type === 'boolean') {
+                    html += `<label>${escapeHtml(field.comment || field.key)}<select name="settings.${escapeHtml(field.path)}">`;
+                    html += `<option value="true" ${field.value ? 'selected' : ''}>true</option>`;
+                    html += `<option value="false" ${!field.value ? 'selected' : ''}>false</option>`;
+                    html += `</select></label>`;
+                } else if (field.type === 'json') {
+                    html += `<label>${escapeHtml(field.comment || field.key)}<textarea name="settings.${escapeHtml(field.path)}" rows="6">${escapeHtml(field.value || '')}</textarea></label>`;
+                } else {
+                    html += `<label>${escapeHtml(field.comment || field.key)}<input type="text" name="settings.${escapeHtml(field.path)}" value="${escapeHtml(field.value || '')}" /></label>`;
+                }
+            }
+            return html;
+        }
 
         function openInstallModal() {
             installModal.style.display = 'flex';
@@ -272,6 +330,7 @@
                 } else if (status === 'complete') {
                     installProgressFill.style.width = '100%';
                     installProgressMeta.textContent = 'Instalação concluída.';
+                    try { fetchAndRenderSettings(); } catch (e) { /* ignore */ }
                     clearInterval(installInterval);
                 } else if (status === 'error') {
                     installProgressFill.style.width = '100%';
@@ -358,6 +417,28 @@
             fetchStatus();
             setInterval(fetchStatus, 2000);
         }
+
+        // Poll install progress in background to auto-reload server-settings when done
+        let lastInstallStatus = null;
+        async function pollInstallProgressForUI() {
+            try {
+                const res = await fetch('/install/progress');
+                if (!res.ok) return;
+                const data = await res.json();
+                const status = data.status;
+                if (status && status !== lastInstallStatus) {
+                    if (status === 'complete') {
+                        fetchAndRenderSettings();
+                    }
+                    lastInstallStatus = status;
+                }
+            } catch (err) {
+                // ignore
+            }
+        }
+
+        pollInstallProgressForUI();
+        setInterval(pollInstallProgressForUI, 2000);
 
         if (installButton) {
             installButton.addEventListener('click', (event) => {

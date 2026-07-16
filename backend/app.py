@@ -1,11 +1,23 @@
 import sys
 import threading
+import logging
 from pathlib import Path
 
 from flask import Flask, jsonify, redirect, render_template, request, send_from_directory
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(BASE_DIR))
+
+# logging to stdout for terminal visibility
+root_logger = logging.getLogger()
+if not root_logger.handlers:
+    root_logger.setLevel(logging.INFO)
+    ch = logging.StreamHandler(sys.stdout)
+    ch.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(name)s: %(message)s"))
+    root_logger.addHandler(ch)
+
+# silence Werkzeug access logs (verbose GET/POST lines)
+logging.getLogger('werkzeug').setLevel(logging.WARNING)
 
 from docker_manager import (
     ServerManager,
@@ -37,6 +49,7 @@ app = Flask(
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024
 
 server_manager = ServerManager()
+logger = logging.getLogger("fsm.app")
 
 
 @app.route("/")
@@ -72,6 +85,7 @@ def status():
 @app.route("/control/<action>", methods=["POST"])
 def control(action: str):
     try:
+        logger.info("control action requested: %s", action)
         if action == "start":
             server_manager.start_server()
         elif action == "stop":
@@ -79,6 +93,7 @@ def control(action: str):
         elif action == "restart":
             server_manager.restart_server()
     except Exception as exc:
+        logger.exception("Action %s failed", action)
         log_error(f"Action {action} failed: {exc}")
     return redirect("/")
 
@@ -104,8 +119,11 @@ def install_start():
 
     def run_install():
         try:
+            logger.info("Starting server installation (archive: %s)", archive_path)
             server_manager.install_server(archive_path=archive_path)
+            logger.info("Server installation finished")
         except Exception as exc:
+            logger.exception("Install failed")
             set_install_error(str(exc))
             log_error(f"Install failed: {exc}")
 
@@ -117,6 +135,29 @@ def install_start():
 @app.route("/install/progress")
 def install_progress():
     return jsonify(get_install_progress())
+
+
+@app.route("/server-settings")
+def server_settings_api():
+    try:
+        settings = load_server_settings()
+        fields = build_server_settings_fields(settings)
+        # Add small file metadata to help debug empty/missing settings issues
+        try:
+            settings_path = (Path(__file__).resolve().parent.parent / "factorio" / "config" / "server-settings.json")
+            file_exists = settings_path.exists()
+            file_size = settings_path.stat().st_size if file_exists else 0
+            raw_preview = settings_path.read_text(encoding="utf-8", errors="replace")[:512] if file_exists else ""
+        except Exception:
+            file_exists = False
+            file_size = 0
+            raw_preview = ""
+
+        logger.info("/server-settings requested: fields=%d keys=%d file_exists=%s size=%d", len(fields), len(settings.keys() if isinstance(settings, dict) else []), file_exists, file_size)
+        return jsonify({"settings": settings, "fields": fields, "file_info": {"exists": file_exists, "size": file_size, "preview": raw_preview}})
+    except Exception as exc:
+        log_error(f"Failed to load server settings: {exc}")
+        return jsonify({"settings": {}, "fields": []}), 500
 
 
 @app.route("/config", methods=["POST"])

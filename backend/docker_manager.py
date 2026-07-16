@@ -12,6 +12,7 @@ import urllib.request
 import zipfile
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
+import logging
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 CONFIG_PATH = BASE_DIR / "backend" / "server_config.json"
@@ -60,7 +61,9 @@ class ServerManager:
         if pid is not None and _is_process_running(pid):
             return "already running"
 
+        logger = logging.getLogger("fsm.docker_manager")
         cmd = _factorio_command()
+        logger.info("Starting factorio server with cmd: %s", cmd)
         log_file = _get_log_file()
         log_file.parent.mkdir(parents=True, exist_ok=True)
         log_handle = log_file.open("ab")
@@ -75,6 +78,7 @@ class ServerManager:
         )
         log_handle.close()
         _write_pid(process.pid)
+        logger.info("Factorio started (pid=%s)", process.pid)
         return "started"
 
     def stop_server(self) -> str:
@@ -82,6 +86,7 @@ class ServerManager:
         if pid is None:
             return "not running"
 
+        logger = logging.getLogger("fsm.docker_manager")
         if _is_process_running(pid):
             try:
                 os.kill(pid, signal.SIGTERM)
@@ -94,6 +99,7 @@ class ServerManager:
                 time.sleep(0.1)
 
         _clear_pid()
+        logger.info("Factorio stopped (pid=%s)", pid)
         return "stopped"
 
     def restart_server(self) -> str:
@@ -123,8 +129,15 @@ class ServerManager:
                 "No Factorio server archive configured. Set FACTORIO_SERVER_ARCHIVE or FACTORIO_SERVER_ARCHIVE_URL."
             )
 
+        logger = logging.getLogger("fsm.docker_manager")
         INSTALL_DIR.mkdir(parents=True, exist_ok=True)
-        _extract_archive(archive)
+        logger.info("Installing server from archive: %s", archive)
+        try:
+            _extract_archive(archive)
+        except Exception:
+            logger.exception("Extraction failed")
+            raise
+        logger.info("Installation completed")
         return "installed"
 
     def get_install_status(self) -> str:
@@ -226,6 +239,8 @@ def _download_archive(url: str) -> Path:
                     downloaded=downloaded,
                     total=total,
                 )
+
+    logging.getLogger("fsm.docker_manager").info("Downloaded archive to %s", target)
 
     return target
 
@@ -477,23 +492,75 @@ def save_server_config(
 
 def load_server_settings(config_path: Optional[Union[str, Path]] = None) -> Dict[str, Any]:
     path = Path(config_path or SERVER_SETTINGS_PATH)
+    # Ensure directory exists
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    # If the file does not exist, try to copy the example; otherwise create an empty file
     if not path.exists():
-        path.parent.mkdir(parents=True, exist_ok=True)
         if SERVER_SETTINGS_EXAMPLE_PATH.exists():
             shutil.copy(SERVER_SETTINGS_EXAMPLE_PATH, path)
+            logging.getLogger("fsm.docker_manager").info("Copied example server-settings to %s", path)
         else:
             path.write_text(json.dumps({}, indent=2), encoding="utf-8")
 
+    # If the file exists but is empty (no content or only whitespace), copy example
     try:
-        return json.loads(path.read_text(encoding="utf-8"))
+        raw = path.read_text(encoding="utf-8")
+    except OSError:
+        raw = ""
+
+    if not raw or raw.strip() == "":
+        if SERVER_SETTINGS_EXAMPLE_PATH.exists():
+            shutil.copy(SERVER_SETTINGS_EXAMPLE_PATH, path)
+            logging.getLogger("fsm.docker_manager").info("Replaced empty server-settings with example at %s", path)
+            try:
+                return json.loads(path.read_text(encoding="utf-8"))
+            except json.JSONDecodeError:
+                return {}
+        else:
+            return {}
+
+    # Attempt to parse JSON; on error, fall back to example if available
+    try:
+        parsed = json.loads(raw)
     except json.JSONDecodeError:
+        if SERVER_SETTINGS_EXAMPLE_PATH.exists():
+            shutil.copy(SERVER_SETTINGS_EXAMPLE_PATH, path)
+            logging.getLogger("fsm.docker_manager").warning(
+                "Invalid server-settings JSON; replaced with example at %s",
+                path,
+            )
+            try:
+                return json.loads(path.read_text(encoding="utf-8"))
+            except json.JSONDecodeError:
+                return {}
         return {}
+
+    # If parsed is an empty object or contains only comment keys, treat as empty and use example
+    if isinstance(parsed, dict):
+        keys = list(parsed.keys())
+        only_comments = bool(keys) and all(isinstance(k, str) and k.startswith("_comment_") for k in keys)
+        if not keys or only_comments:
+            if SERVER_SETTINGS_EXAMPLE_PATH.exists():
+                shutil.copy(SERVER_SETTINGS_EXAMPLE_PATH, path)
+                logging.getLogger("fsm.docker_manager").info(
+                    "Server-settings was empty or comments-only; replaced with example at %s",
+                    path,
+                )
+                try:
+                    return json.loads(path.read_text(encoding="utf-8"))
+                except json.JSONDecodeError:
+                    return {}
+            return {}
+
+    return parsed
 
 
 def save_server_settings(settings: Dict[str, Any], config_path: Optional[Union[str, Path]] = None) -> Dict[str, Any]:
     path = Path(config_path or SERVER_SETTINGS_PATH)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(settings, indent=2), encoding="utf-8")
+    logging.getLogger("fsm.docker_manager").info("Saved server-settings to %s", path)
     return settings
 
 
