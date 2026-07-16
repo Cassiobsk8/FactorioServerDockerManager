@@ -15,5 +15,7 @@ COPY README.md ./README.md
 RUN mkdir -p /app/data /app/logs
 
 EXPOSE 5000
+EXPOSE 34197/udp
+EXPOSE 27015
 
 CMD ["python", "backend/app.py"]

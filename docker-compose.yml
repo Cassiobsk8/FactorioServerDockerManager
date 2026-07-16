@@ -7,6 +7,8 @@ services:
     container_name: factorio-server-manager
     ports:
       - "5000:5000"
+      - "34197:34197/udp"
+      - "27015:27015/tcp"
     volumes:
       - factorio_data:/app/data
       - factorio_logs:/app/logs
