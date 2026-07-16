@@ -6,6 +6,7 @@ import signal
 import shutil
 import subprocess
 import tarfile
+import time
 import urllib.parse
 import urllib.request
 import zipfile
@@ -78,6 +79,11 @@ class ServerManager:
                 os.kill(pid, signal.SIGTERM)
             except OSError:
                 pass
+
+            for _ in range(20):
+                if not _is_process_running(pid):
+                    break
+                time.sleep(0.1)
 
         _clear_pid()
         return "stopped"
@@ -387,7 +393,7 @@ def get_logs() -> str:
 
 
 def clear_logs() -> None:
-    log_file = _get_log_file()
+    log_file = _get_factorio_generated_log_file()
     if log_file.exists():
         log_file.write_text("", encoding="utf-8")
 
@@ -399,12 +405,25 @@ def clear_installation() -> None:
             os.kill(pid, signal.SIGTERM)
         except OSError:
             pass
+
+        for _ in range(20):
+            if not _is_process_running(pid):
+                break
+            time.sleep(0.1)
+
     _clear_pid()
 
     if INSTALL_DIR.exists():
-        shutil.rmtree(INSTALL_DIR)
+        try:
+            shutil.rmtree(INSTALL_DIR)
+        except OSError as exc:
+            log_error(f"Clear installation failed while removing install directory: {exc}")
+
     if LOG_DIR.exists():
-        shutil.rmtree(LOG_DIR)
+        try:
+            shutil.rmtree(LOG_DIR)
+        except OSError as exc:
+            log_error(f"Clear installation failed while removing log directory: {exc}")
 
 
 def load_server_config(config_path: Optional[Union[str, Path]] = None) -> Dict[str, str]:
@@ -477,6 +496,6 @@ def _factorio_command() -> List[str]:
     if auto_save.exists():
         cmd.append(f"--start-server={auto_save}")
     else:
-        cmd.append(f"--create={auto_save}")
+        cmd.extend([f"--create={auto_save}", f"--start-server={auto_save}"])
 
     return cmd
