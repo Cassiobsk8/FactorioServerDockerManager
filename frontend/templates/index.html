@@ -46,8 +46,8 @@
                         </div>
                         <div class="status-info">
                             <div>
-                                <span class="status-label">Server status</span>
-                                <p class="status-value" id="server-status">{{ status }}</p>
+                            <span class="status-label">Server status</span>
+                            <span class="status-value badge {% if status and (status == 'running' or status == 'online') %}badge-online{% else %}badge-offline{% endif %}" id="server-status">{{ status }}</span>
                             </div>
                             <div>
                                 <span class="status-label">Install status</span>
@@ -58,10 +58,16 @@
                             <div class="metric-card">
                                 <span class="metric-label">CPU</span>
                                 <span class="metric-value" id="metric-cpu">0%</span>
+                                <div class="metric-progress">
+                                    <div class="metric-progress-fill" id="metric-cpu-bar"></div>
+                                </div>
                             </div>
                             <div class="metric-card">
                                 <span class="metric-label">RAM</span>
                                 <span class="metric-value" id="metric-ram">0 MB</span>
+                                <div class="metric-progress">
+                                    <div class="metric-progress-fill" id="metric-ram-bar"></div>
+                                </div>
                             </div>
                             <div class="metric-card">
                                 <span class="metric-label">Uptime</span>
@@ -70,6 +76,9 @@
                             <div class="metric-card">
                                 <span class="metric-label">Disk</span>
                                 <span class="metric-value" id="metric-disk">0 MB</span>
+                                <div class="metric-progress">
+                                    <div class="metric-progress-fill" id="metric-disk-bar"></div>
+                                </div>
                             </div>
                             <div class="metric-card">
                                 <span class="metric-label">Versão</span>
@@ -487,7 +496,10 @@
                     return;
                 }
                 const data = await response.json();
-                serverStatus.textContent = data.status || serverStatus.textContent;
+                const newStatus = data.status || serverStatus.textContent;
+                serverStatus.textContent = newStatus;
+                const isOnline = newStatus === 'running' || newStatus === 'online';
+                serverStatus.className = `status-value badge ${isOnline ? 'badge-online' : 'badge-offline'}`;
                 installStatus.textContent = data.install_status || installStatus.textContent;
             } catch (err) {
                 // ignore errors during polling
@@ -504,6 +516,9 @@
 
             if (!cpuEl) return;
 
+            const RAM_MAX_MB = 16384;
+            const DISK_MAX_MB = 51200;
+
             try {
                 const response = await fetch('/api/status');
                 if (!response.ok) return;
@@ -511,9 +526,19 @@
                 const server = data.server || {};
 
                 if (cpuEl) cpuEl.textContent = `${server.cpu_percent ?? 0}%`;
+                const cpuBar = document.getElementById('metric-cpu-bar');
+                if (cpuBar) cpuBar.style.width = `${Math.min(100, server.cpu_percent ?? 0)}%`;
+
                 if (ramEl) ramEl.textContent = `${server.ram_mb ?? 0} MB`;
+                const ramBar = document.getElementById('metric-ram-bar');
+                if (ramBar) ramBar.style.width = `${Math.min(100, ((server.ram_mb ?? 0) / RAM_MAX_MB) * 100)}%`;
+
                 if (uptimeEl) uptimeEl.textContent = formatUptime(server.uptime_seconds ?? 0);
+
                 if (diskEl) diskEl.textContent = `${server.disk_usage_mb ?? 0} MB`;
+                const diskBar = document.getElementById('metric-disk-bar');
+                if (diskBar) diskBar.style.width = `${Math.min(100, ((server.disk_usage_mb ?? 0) / DISK_MAX_MB) * 100)}%`;
+
                 if (versionEl) versionEl.textContent = server.factorio_version || '--';
                 if (saveEl) saveEl.textContent = server.active_save || '--';
             } catch (err) {
