@@ -191,7 +191,7 @@ def test_save_game_and_broadcast():
 def test_rcon_not_configured_error_when_no_password():
     save_app_settings({"rcon_password": ""})
     with pytest.raises(rcon_service.RconNotConfiguredError):
-        rcon_service.build_rcon_service()
+        rcon_service.get_rcon_service()
 
 
 def test_get_rcon_status_reports_not_configured():

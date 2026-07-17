@@ -1385,8 +1385,9 @@
             const msg = String(err || '').toLowerCase();
             if (msg.includes('not configured')) return t('rcon.error.not_configured');
             if (msg.includes('auth')) return t('rcon.error.auth_failed');
-            if (msg.includes('timeout')) return t('rcon.error.timeout');
-            if (msg.includes('connect') || msg.includes('offline')) return t('rcon.error.server_offline');
+            if (msg.includes('timed out') || msg.includes('timeout')) return t('rcon.error.timeout');
+            if (msg.includes('refused') || msg.includes('connect') || msg.includes('offline')) return t('rcon.error.server_offline');
+            // No fabricated state message: surface the real error text.
             return err || t('rcon.error.server_offline');
         }
 
@@ -1573,9 +1574,8 @@
                 rconTestResult.textContent = t('rcon.testing');
                 rconTestResult.className = 'rcon-test-result';
             }
-            setRconBadge('testing', 'runRconTest', null);
-             if (rconTestButton) rconTestButton.disabled = true;
- 
+            if (rconTestButton) rconTestButton.disabled = true;
+
              try {
                  const res = await fetch('/api/rcon/test', {
                      method: 'POST',
@@ -1587,12 +1587,10 @@
                      if (data && data.connected) {
                          rconTestResult.textContent = `✓ ${t('rcon.test_success')}`;
                          rconTestResult.className = 'rcon-test-result ok';
-                         setRconBadge('connected', 'runRconTest', data);
                      } else {
                          const reason = data && data.error ? friendlyRconError(data.error) : t('rcon.test_failed');
                          rconTestResult.textContent = `✗ ${t('rcon.test_failed')} - ${reason}`;
                          rconTestResult.className = 'rcon-test-result failed';
-                         setRconBadge('disconnected', 'runRconTest', data);
                      }
                  }
              } catch (err) {
@@ -1600,7 +1598,6 @@
                      rconTestResult.textContent = `✗ ${t('rcon.test_failed')} - ${friendlyRconError(err.message)}`;
                      rconTestResult.className = 'rcon-test-result failed';
                  }
-                 setRconBadge('disconnected', 'runRconTest', null);
              } finally {
                  if (rconTestButton) rconTestButton.disabled = false;
              }
@@ -1618,7 +1615,8 @@
                 const data = await res.json();
                 refreshRconStatusUI(data, 'pollRconStatus');
             } catch (err) {
-                setRconBadge('disconnected', 'pollRconStatus', null);
+                // Network/transport failure: the real socket state is unknown,
+                // so we leave the badge untouched instead of assuming a disconnect.
             }
         }
 
@@ -1628,7 +1626,7 @@
                 if (!res.ok) return;
                 refreshRconStatusUI(await res.json(), 'fetchRconStatusOnce');
             } catch (err) {
-                setRconBadge('disconnected', 'fetchRconStatusOnce', null);
+                // Network/transport failure: leave the badge untouched.
             }
         }
 

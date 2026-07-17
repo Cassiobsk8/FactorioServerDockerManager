@@ -13,8 +13,7 @@ from backend.services.rcon_service import (
     get_rcon_service,
     get_rcon_players,
     get_rcon_status,
-    reset_rcon_service,
-    test_rcon_connection,
+    attempt_rcon_connection,
 )
 from flask import Blueprint, jsonify, request
 
@@ -31,7 +30,6 @@ def _safe_str(value: Any, default: str = "") -> str:
 def api_rcon_status():
     try:
         status = get_rcon_status()
-        logger.info("RCON status: connected=%s players=%s error=%s", status.get("connected"), status.get("player_count"), status.get("error"))
         return jsonify(status)
     except Exception as exc:
         logger.exception("RCON status failed")
@@ -60,7 +58,7 @@ def api_rcon_test():
     timeout = int(timeout_raw) if timeout_raw else None
 
     try:
-        result = test_rcon_connection(host=host, port=port, password=password, timeout=timeout)
+        result = attempt_rcon_connection(host=host, port=port, password=password, timeout=timeout)
         return jsonify(result)
     except Exception as exc:
         logger.exception("RCON test failed")
@@ -181,7 +179,6 @@ def api_rcon_settings_post():
 
     try:
         result = apply_rcon_settings(host=host, port=port, password=password, timeout=timeout)
-        reset_rcon_service()
         return jsonify(
             {
                 "host": result.get("rcon_host"),

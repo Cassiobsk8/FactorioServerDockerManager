@@ -97,20 +97,20 @@ class RCONService:
         Returns True when authentication succeeds, raises otherwise.
         """
         if self._socket is not None:
-            logger.info("[RCON CONNECT] id=%s socket_fileno=%s already_connected=True", id(self), self._socket.fileno() if self._socket else None)
+            logger.info("[RCON CONNECT] id=%s socket_fileno=%s already_connected=True", id(self), self._socket.fileno())
             return True
 
         try:
             logger.info("[RCON CONNECT] id=%s socket_fileno=None -> connecting to %s:%s (timeout=%ss)", id(self), self.host, self.port, self.timeout)
             sock = socket.create_connection((self.host, self.port), timeout=self.timeout)
         except socket.timeout as exc:
-            logger.warning("RCON connection timed out (%s:%s)", self.host, self.port)
+            logger.warning("[RCON TIMEOUT] id=%s socket_fileno=None host=%s port=%s detail=connection_timeout", id(self), self.host, self.port)
             raise RconTimeoutError("RCON connection timed out") from exc
         except ConnectionRefusedError as exc:
-            logger.warning("RCON connection refused (%s:%s): %s", self.host, self.port, exc)
-            raise RconConnectionError(f"Could not connect to RCON server: {exc}") from exc
+            logger.warning("[RCON CONNECT] id=%s socket_fileno=None host=%s port=%s refused=True detail=%s", id(self), self.host, self.port, exc)
+            raise RconConnectionError("Could not connect to RCON server: connection refused") from exc
         except OSError as exc:
-            logger.warning("RCON connection failed (%s:%s): %s", self.host, self.port, exc)
+            logger.warning("[RCON CONNECT] id=%s socket_fileno=None host=%s port=%s detail=%s", id(self), self.host, self.port, exc)
             raise RconConnectionError(f"Could not connect to RCON server: {exc}") from exc
 
         self._socket = sock
@@ -127,14 +127,14 @@ class RCONService:
         try:
             self._authenticate()
         except RconAuthError:
-            logger.error("RCON authentication failed for %s:%s", self.host, self.port)
+            logger.error("[RCON AUTH] id=%s socket_fileno=%s host=%s port=%s result=failed", id(self), self._socket.fileno(), self.host, self.port)
             self._close_socket()
             raise
         except Exception:
-            logger.error("RCON error during authentication/handshake (%s:%s)", self.host, self.port)
+            logger.error("[RCON ERROR] id=%s socket_fileno=%s host=%s port=%s detail=auth_handshake_exception", id(self), self._socket.fileno() if self._socket else None, self.host, self.port)
             self._close_socket()
             raise
-        logger.info("RCON connected to %s:%s", self.host, self.port)
+        logger.info("[RCON CONNECT] id=%s socket_fileno=%s host=%s port=%s authenticated=True", id(self), self._socket.fileno(), self.host, self.port)
         return True
 
     def disconnect(self) -> None:
@@ -152,7 +152,7 @@ class RCONService:
 
     def _authenticate(self) -> None:
         if not self.password:
-            logger.warning("RCON authentication skipped: password is empty (%s:%s)", self.host, self.port)
+            logger.warning("[RCON AUTH] id=%s socket_fileno=%s host=%s port=%s result=skipped detail=empty_password", id(self), self._socket.fileno() if self._socket else None, self.host, self.port)
             raise RconAuthError("RCON password is empty")
         request_id = self._send(SERVERDATA_AUTH, self.password)
         logger.info("[RCON AUTH] id=%s socket_fileno=%s request_id=%s", id(self), self._socket.fileno() if self._socket else None, request_id)
@@ -161,9 +161,9 @@ class RCONService:
         #   SUCCESS  -> server echoes back the original request_id
         #   FAILURE  -> server responds with request_id == -1 (0xFFFFFFFF)
         if response_id != request_id:
-            logger.warning("RCON authentication failed (%s:%s): response_id=%s expected=%s", self.host, self.port, response_id, request_id)
+            logger.warning("[RCON AUTH] id=%s socket_fileno=%s request_id=%s response_id=%s result=failed", id(self), self._socket.fileno() if self._socket else None, request_id, response_id)
             raise RconAuthError("RCON authentication failed")
-        logger.info("RCON authenticated (%s:%s)", self.host, self.port)
+        logger.info("[RCON AUTH] id=%s socket_fileno=%s request_id=%s result=success", id(self), self._socket.fileno() if self._socket else None, request_id)
         # Drain trailing SERVERDATA_RESPONSE_VALUE packets with the same request_id.
         # Any other packet is buffered for the next read.
         try:
@@ -177,13 +177,18 @@ class RCONService:
 
     def _ensure_connected(self) -> None:
         if self._socket is None:
-            logger.info("[RCON CONNECT] id=%s socket_fileno=None -> ensure_connected triggered reconnect", id(self))
+            logger.info("[RCON CONNECT] id=%s socket_fileno=None -> ensure_connected triggered connect", id(self))
             self.connect()
         else:
             logger.debug("[RCON CONNECT] id=%s socket_fileno=%s ensure_connected no-op", id(self), self._socket.fileno())
 
     def execute_command(self, command: str) -> str:
-        """Send a command and return the server response."""
+        """Send a command and return the server response.
+
+        Performs a single automatic reconnect on the first connection/timeout/
+        auth failure, since the persistent socket may have dropped silently
+        between polls. A second failure is re-raised (it reflects a real state).
+        """
         self._last_command = command
         logger.info("[RCON EXECUTE] id=%s socket_fileno=%s command=%r", id(self), self._socket.fileno() if self._socket else None, command)
         attempts = 0
@@ -191,15 +196,15 @@ class RCONService:
             try:
                 self._ensure_connected()
                 request_id = self._send(SERVERDATA_EXECCOMMAND, command)
-                logger.debug("RCON execute_command sent request_id=%s command=%r", request_id, command)
+                logger.debug("[RCON EXECUTE] id=%s socket_fileno=%s request_id=%s command=%r sent=True", id(self), self._socket.fileno() if self._socket else None, request_id, command)
                 start = time.time()
                 response = self._receive_response(request_id)
                 self._last_response_time = time.time() - start
-                logger.debug("RCON execute_command response request_id=%s command=%r response=%r len=%s", request_id, command, response, len(response))
+                logger.debug("[RCON EXECUTE] id=%s socket_fileno=%s request_id=%s command=%r response_len=%s", id(self), self._socket.fileno() if self._socket else None, request_id, command, len(response))
                 return response
             except (RconConnectionError, RconTimeoutError, RconAuthError):
                 if attempts == 0:
-                    logger.warning("[RCON RECONNECT] id=%s socket_fileno=%s error=%s attempt=%s", id(self), self._socket.fileno() if self._socket else None, "connection/timeout/auth error", attempts)
+                    logger.warning("[RCON RECONNECT] id=%s socket_fileno=%s command=%r attempt=1 detail=connection_lost", id(self), self._socket.fileno() if self._socket else None, command)
                     self._close_socket()
                     attempts += 1
                     continue
@@ -217,25 +222,6 @@ class RCONService:
     def broadcast_message(self, message: str) -> str:
         return self.execute_command(f"/broadcast {message}")
 
-    def get_server_status(self) -> dict[str, object]:
-        """Return a status summary without leaking the password."""
-        logger.info("[RCON STATUS] id=%s socket_fileno=%s already_connected=%s command=%s", id(self), self._socket.fileno() if self._socket else None, self._socket is not None, "NONE")
-        connected = False
-        error = None
-        try:
-            connected = self.connect()
-        except (RconConnectionError, RconTimeoutError, RconAuthError, RconNotConfiguredError) as exc:
-            error = str(exc)
-
-        return {
-            "connected": connected,
-            "host": self.host,
-            "port": self.port,
-            "players": [],
-            "player_count": 0,
-            "error": error,
-        }
-
     # --- low level protocol helpers ---
 
     def _next_id(self) -> int:
@@ -249,12 +235,14 @@ class RCONService:
         payload = body.encode("utf-8", errors="replace")
         packet = struct.pack("<ii", request_id, command_type) + payload + b"\x00\x00"
         size = struct.pack("<i", len(packet))
-        logger.debug("RCON _send request_id=%s type=%s body=%r packet_size=%s raw=%s", request_id, command_type, body, len(packet), repr(size + packet))
+        logger.debug("[RCON EXECUTE] id=%s socket_fileno=%s request_id=%s type=%s body=%r packet_size=%s", id(self), self._socket.fileno() if self._socket else None, request_id, command_type, body, len(packet))
         try:
             self._socket.sendall(size + packet)
         except socket.timeout as exc:
+            logger.warning("[RCON TIMEOUT] id=%s socket_fileno=%s request_id=%s detail=send_timeout", id(self), self._socket.fileno() if self._socket else None, request_id)
             raise RconTimeoutError("RCON send timed out") from exc
         except OSError as exc:
+            logger.warning("[RCON ERROR] id=%s socket_fileno=%s request_id=%s detail=send_failed error=%s", id(self), self._socket.fileno() if self._socket else None, request_id, exc)
             raise RconConnectionError(f"RCON send failed: {exc}") from exc
         return request_id
 
@@ -268,23 +256,23 @@ class RCONService:
         try:
             size_data = self._recv_exact(4)
             if len(size_data) < 4:
-                logger.warning("RCON connection closed while reading packet size (%s:%s)", self.host, self.port)
+                logger.warning("[RCON DISCONNECT] id=%s socket_fileno=%s host=%s port=%s detail=closed_while_reading_size", id(self), self._socket.fileno() if self._socket else None, self.host, self.port)
                 raise RconConnectionError("RCON connection closed")
             size = struct.unpack("<i", size_data)[0]
             if size <= 0 or size > 65536:
-                logger.warning("RCON invalid packet size %s received from %s:%s", size, self.host, self.port)
+                logger.warning("[RCON ERROR] id=%s socket_fileno=%s host=%s port=%s detail=invalid_packet_size size=%s", id(self), self._socket.fileno() if self._socket else None, self.host, self.port, size)
                 raise RconConnectionError("RCON received an invalid packet")
             packet = self._recv_exact(size)
         except socket.timeout as exc:
-            logger.warning("RCON receive timed out (%s:%s)", self.host, self.port)
+            logger.warning("[RCON TIMEOUT] id=%s socket_fileno=%s host=%s port=%s detail=receive_timeout", id(self), self._socket.fileno() if self._socket else None, self.host, self.port)
             raise RconTimeoutError("RCON receive timed out") from exc
         except OSError as exc:
-            logger.warning("RCON socket error while receiving (%s:%s): %s", self.host, self.port, exc)
+            logger.warning("[RCON ERROR] id=%s socket_fileno=%s host=%s port=%s detail=receive_failed error=%s", id(self), self._socket.fileno() if self._socket else None, self.host, self.port, exc)
             raise RconConnectionError(f"RCON receive failed: {exc}") from exc
 
         request_id, response_type = struct.unpack("<ii", packet[:8])
         body = packet[8:-2].decode("utf-8", errors="replace").rstrip("\x00")
-        logger.debug("RCON receive request_id=%s response_type=%s body=%r packet=%s", request_id, response_type, body, repr(packet))
+        logger.debug("[RCON EXECUTE] id=%s socket_fileno=%s request_id=%s response_type=%s body=%r", id(self), self._socket.fileno() if self._socket else None, request_id, response_type, body)
         return request_id, body
 
     def _recv_exact(self, n: int) -> bytes:
@@ -295,7 +283,7 @@ class RCONService:
             except socket.timeout as exc:
                 raise RconTimeoutError("RCON receive timed out") from exc
             except OSError as exc:
-                logger.warning("RCON socket error during recv (%s:%s): %s", self.host, self.port, exc)
+                logger.warning("[RCON ERROR] id=%s socket_fileno=%s host=%s port=%s detail=recv_failed error=%s", id(self), self._socket.fileno() if self._socket else None, self.host, self.port, exc)
                 raise RconConnectionError(f"RCON receive failed: {exc}") from exc
             if not chunk:
                 break
@@ -417,19 +405,6 @@ def _parse_players(output: str) -> list[str]:
     return players
 
 
-def build_rcon_service() -> RCONService:
-    """Build an RCONService from persisted application settings."""
-    settings = _load_rcon_settings()
-    if not settings.get("password"):
-        raise RconNotConfiguredError("RCON is not configured")
-    return RCONService(
-        host=settings["host"],
-        port=settings["port"],
-        password=settings["password"],
-        timeout=settings["timeout"],
-    )
-
-
 def get_rcon_status() -> dict[str, object]:
     """Return connection status, masking the password."""
     settings = _load_rcon_settings()
@@ -450,8 +425,12 @@ def get_rcon_status() -> dict[str, object]:
         return status
     try:
         service = get_rcon_service()
-        logger.info("[RCON STATUS] id=%s socket_fileno=%s already_connected=%s command=NONE", id(service), service._socket.fileno() if service._socket else None, service._socket is not None)
-        status["connected"] = service.connect()
+        status["connected"] = service.is_connected()
+        if not status["connected"]:
+            logger.info("[RCON STATUS] id=%s socket_fileno=None host=%s port=%s detail=not_connected_attempting_connect", id(service), service.host, service.port)
+            status["connected"] = service.connect()
+        else:
+            logger.info("[RCON STATUS] id=%s socket_fileno=%s host=%s port=%s detail=already_connected", id(service), service._socket.fileno(), service.host, service.port)
         if status["connected"]:
             status["connected_since"] = service.connected_since
             status["reconnect_count"] = service.reconnect_count
@@ -481,18 +460,6 @@ def get_rcon_players() -> dict[str, object]:
         return {"connected": False, "players": [], "player_count": 0, "error": str(exc)}
 
 
-def send_rcon_command(command: str) -> str:
-    """Backwards-compatible helper used by legacy endpoints.
-
-    Raises RconNotConfiguredError when RCON is not configured.
-    """
-    service = build_rcon_service()
-    try:
-        return service.execute_command(command)
-    finally:
-        service.disconnect()
-
-
 def apply_rcon_settings(host: str, port: int, password: str, timeout: int = DEFAULT_RCON_TIMEOUT) -> dict[str, str]:
     """Persist RCON settings into data/settings.json."""
     values = {
@@ -506,8 +473,17 @@ def apply_rcon_settings(host: str, port: int, password: str, timeout: int = DEFA
     return result
 
 
-def test_rcon_connection(host: str, port: int, password: str, timeout: int = DEFAULT_RCON_TIMEOUT) -> dict[str, object]:
-    """Attempt a connection with explicit credentials (no persistence)."""
+def attempt_rcon_connection(host: str, port: int, password: str, timeout: int = DEFAULT_RCON_TIMEOUT) -> dict[str, object]:
+    """Attempt a connection with explicit (possibly unpersisted) credentials.
+
+    This opens a SECOND, SHORT-LIVED connection that is disconnected in the
+    `finally` block. It intentionally does NOT touch the persistent singleton
+    returned by `get_rcon_service()` so that "Test Connection" with temporary
+    host/port/password settings does not disturb the live connection state.
+
+    It is only used by the /api/rcon/test endpoint and is the sole place where
+    a second RCON instance is created on purpose.
+    """
     service = RCONService(host=host or DEFAULT_RCON_HOST, port=int(port or DEFAULT_RCON_PORT), password=password, timeout=int(timeout or DEFAULT_RCON_TIMEOUT))
     try:
         connected = service.connect()
