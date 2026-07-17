@@ -34,6 +34,7 @@ from backend.services.factorio_service import (
     set_install_error,
 )
 from backend.services.save_service import list_save_files, get_active_save
+from backend.services.settings_service import load_app_settings
 from flask import Blueprint, jsonify, redirect, render_template, request
 
 logger = logging.getLogger("fsm.routes.server")
@@ -54,6 +55,7 @@ def home():
         else factorio_service.get_install_status()
     )
     server_settings_fields = build_server_settings_fields(server_settings)
+    app_settings = load_app_settings()
     return render_template(
         "index.html",
         status=factorio_service.get_status(),
@@ -64,6 +66,7 @@ def home():
         active_save=get_active_save(),
         install_status=install_status,
         app_version="2.0.0",
+        language=app_settings.get("language", "en"),
     )
 
 

@@ -20,10 +20,10 @@
             </div>
 
             <nav class="tabs" aria-label="Main navigation">
-                <button class="tab-button active" data-tab="status">Status</button>
-                <button class="tab-button" data-tab="saves">Saves</button>
-                <button class="tab-button" data-tab="config">Configuração</button>
-                <button class="tab-button" data-tab="about">Sobre</button>
+                <button class="tab-button active" data-tab="status" data-i18n="menu.status">Status</button>
+                <button class="tab-button" data-tab="saves" data-i18n="menu.saves">Saves</button>
+                <button class="tab-button" data-tab="config" data-i18n="menu.config">Configuração</button>
+                <button class="tab-button" data-tab="about" data-i18n="menu.about">Sobre</button>
             </nav>
         </aside>
 
@@ -203,7 +203,24 @@
                 <div class="panel-grid config-grid">
                     <section class="panel card config-card">
                         <div class="panel-header">
-                            <h2>Servidor</h2>
+                            <h2 data-i18n="settings.language">Idioma da Interface</h2>
+                        </div>
+                        <form id="language-form" class="stacked-form">
+                            <label>
+                                <select name="language" id="language-select">
+                                    <option value="en" data-i18n="settings.language.en">English</option>
+                                    <option value="pt_BR" data-i18n="settings.language.pt_BR">Português Brasil</option>
+                                    <option value="es" data-i18n="settings.language.es">Español</option>
+                                    <option value="zh_CN" data-i18n="settings.language.zh_CN">简体中文</option>
+                                </select>
+                            </label>
+                            <button type="submit" data-i18n="config.save_changes">Salvar alterações</button>
+                        </form>
+                    </section>
+
+                    <section class="panel card config-card">
+                        <div class="panel-header">
+                            <h2 data-i18n="config.server_title">Servidor</h2>
                         </div>
                         <div class="config-detail">
                             <p><strong>Instalado:</strong> {{ status != 'not_installed' }}</p>
@@ -1185,6 +1202,90 @@
         loadSaves();
 
         fetchAndRenderSettings();
+
+        let currentLang = 'en';
+        let translations = {};
+
+        function detectBrowserLanguage() {
+            const nav = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+            if (nav.startsWith('pt-br') || nav === 'pt-br') return 'pt_BR';
+            if (nav.startsWith('es')) return 'es';
+            if (nav.startsWith('zh')) return 'zh_CN';
+            return 'en';
+        }
+
+        async function loadSettings() {
+            try {
+                const res = await fetch('/api/settings');
+                if (!res.ok) return null;
+                const data = await res.json();
+                return data.language || null;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        async function fetchTranslations(lang) {
+            try {
+                const res = await fetch(`/api/translations/${lang}`);
+                if (!res.ok) return {};
+                return await res.json();
+            } catch (e) {
+                return {};
+            }
+        }
+
+        function t(key) {
+            return translations[key] || key;
+        }
+
+        function translatePage() {
+            document.querySelectorAll('[data-i18n]').forEach((el) => {
+                const key = el.getAttribute('data-i18n');
+                const value = t(key);
+                if (value) el.textContent = value;
+            });
+
+            document.querySelectorAll('[data-i18n-html]').forEach((el) => {
+                const key = el.getAttribute('data-i18n-html');
+                const value = t(key);
+                if (value) el.innerHTML = value;
+            });
+        }
+
+        async function applyLanguage(lang) {
+            currentLang = lang;
+            translations = await fetchTranslations(lang);
+            translatePage();
+        }
+
+        async function changeLanguage(lang) {
+            try {
+                await fetch('/api/settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ language: lang }),
+                });
+            } catch (e) {
+                // ignore
+            }
+            await applyLanguage(lang);
+        }
+
+        async function initLanguage() {
+            const saved = await loadSettings();
+            const lang = saved || detectBrowserLanguage();
+            const select = document.getElementById('language-select');
+            if (select) {
+                select.value = lang;
+                select.addEventListener('change', (e) => {
+                    changeLanguage(e.target.value);
+                });
+            }
+            await applyLanguage(lang);
+        }
+
+        initLanguage();
     </script>
 </body>
 

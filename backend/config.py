@@ -14,10 +14,15 @@ PID_PATH = BASE_DIR / "backend" / "server.pid"
 INSTALL_PROGRESS_PATH = LOG_DIR / "install_progress.json"
 MODS_DIR = BASE_DIR / "data" / "mods"
 BACKUPS_DIR = BASE_DIR / "data" / "backups"
+APP_SETTINGS_PATH = BASE_DIR / "data" / "settings.json"
 
 DEFAULT_CONFIG: dict[str, str] = {
     "server_name": "factorio",
     "server_password": "change-me",
+}
+
+DEFAULT_APP_SETTINGS: dict[str, str] = {
+    "language": "en",
 }
 
 DEFAULT_INSTALL_ARCHIVE = os.getenv("FACTORIO_SERVER_ARCHIVE", "")

@@ -1,8 +1,13 @@
 from __future__ import annotations
 
+from __future__ import annotations
+
+import json
 import logging
 import os
 from pathlib import Path
+
+from backend.config import BASE_DIR
 
 from backend.services.factorio_service import (
     FactorioService,
@@ -13,6 +18,7 @@ from backend.services.factorio_service import (
 )
 from backend.services.metrics_service import get_factorio_version, get_process_metrics
 from backend.services.save_service import load_active_save, get_save_info
+from backend.services.settings_service import load_app_settings, save_app_settings
 from flask import Blueprint, jsonify, request
 
 logger = logging.getLogger("fsm.routes.api")
@@ -140,6 +146,37 @@ def api_backup_restore():
 @api_bp.route("/api/backup/delete", methods=["POST"])
 def api_backup_delete():
     return jsonify({"error": "Backup service not yet implemented"}), 501
+
+
+SUPPORTED_LANGS = {"en", "pt_BR", "es", "zh_CN"}
+
+
+@api_bp.route("/api/translations/<lang>")
+def api_translations(lang: str):
+    if lang not in SUPPORTED_LANGS:
+        lang = "en"
+    try:
+        path = BASE_DIR / "frontend" / "i18n" / f"{lang}.json"
+        data = json.loads(path.read_text(encoding="utf-8"))
+        return jsonify(data)
+    except Exception as exc:
+        logger.exception("Failed to load translations for %s", lang)
+        return jsonify({}), 500
+
+
+@api_bp.route("/api/settings", methods=["GET"])
+def api_settings_get():
+    return jsonify(load_app_settings())
+
+
+@api_bp.route("/api/settings", methods=["POST"])
+def api_settings_post():
+    data = request.get_json(silent=True) or {}
+    language = data.get("language")
+    if language and language not in SUPPORTED_LANGS:
+        language = "en"
+    updated = save_app_settings({"language": language} if language else data)
+    return jsonify(updated)
 
 
 def register_api_routes(app):
