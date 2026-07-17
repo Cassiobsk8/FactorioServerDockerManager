@@ -1007,3 +1007,235 @@ pre {
         align-items: flex-start;
     }
 }
+
+/* ---------------- RCON ---------------- */
+
+.rcon-status-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: var(--surface-muted);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+
+.console-grid {
+    grid-template-columns: 1fr 320px;
+    align-items: start;
+}
+
+.console-card {
+    display: flex;
+    flex-direction: column;
+    min-height: 420px;
+}
+
+.console-output {
+    flex: 1;
+    overflow-y: auto;
+    background: #05070d;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.75rem;
+    margin: 0.75rem 0;
+    font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    max-height: 60vh;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.console-line {
+    padding: 1px 0;
+}
+
+.console-line-cmd {
+    color: #93c5fd;
+}
+
+.console-line-response {
+    color: var(--text);
+}
+
+.console-line-error {
+    color: #f87171;
+}
+
+.console-form {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.console-prompt {
+    color: var(--success);
+    font-family: ui-monospace, monospace;
+    font-weight: 700;
+}
+
+.console-form input {
+    flex: 1;
+    background: var(--surface-muted);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.6rem 0.75rem;
+    color: var(--text);
+}
+
+.console-hint {
+    margin: 0.5rem 0 0;
+    font-size: 0.75rem;
+    color: var(--subtext);
+}
+
+.quick-actions-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.quick-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.quick-actions button {
+    width: 100%;
+    text-align: left;
+    background: var(--surface-strong);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 10px;
+    padding: 0.6rem 0.75rem;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.quick-actions button:hover {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+}
+
+.broadcast-box {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+}
+
+.broadcast-box label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.8rem;
+    color: var(--subtext);
+}
+
+.broadcast-box input {
+    background: var(--surface-muted);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.55rem 0.7rem;
+    color: var(--text);
+}
+
+.broadcast-box button {
+    align-self: flex-start;
+    background: var(--accent);
+    border: none;
+    color: #fff;
+    border-radius: 10px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}
+
+.players-card-header {
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+}
+
+.players-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.players-list li {
+    background: var(--surface-muted);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.5rem 0.7rem;
+    font-size: 0.85rem;
+}
+
+.players-empty {
+    color: var(--subtext);
+    background: transparent !important;
+    border: none !important;
+    font-style: italic;
+}
+
+.rcon-test-result {
+    margin: 0;
+    font-size: 0.85rem;
+    min-height: 1.1rem;
+}
+
+.rcon-test-result.ok {
+    color: var(--success);
+}
+
+.rcon-test-result.failed {
+    color: #f87171;
+}
+
+@media (max-width: 900px) {
+    .console-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.console-toolbar {
+    display: flex;
+    gap: 0.5rem;
+    margin: 0.5rem 0 0;
+}
+
+.console-toolbar .text-button {
+    background: var(--surface-strong);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 0.35rem 0.7rem;
+    cursor: pointer;
+}
+
+.console-toolbar .text-button:hover {
+    border-color: var(--accent);
+}
+
+#rcon-test-button:disabled,
+.rcon-test-button:disabled {
+    opacity: 0.6;
+    cursor: progress;
+}
+
+.badge-offline {
+    background: rgba(248, 113, 113, 0.16);
+    color: #f87171;
+    border: 1px solid rgba(248, 113, 113, 0.35);
+}
+
+.badge-online {
+    background: rgba(16, 185, 129, 0.16);
+    color: var(--success);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+}

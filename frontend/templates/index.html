@@ -23,6 +23,7 @@
                 <button class="tab-button active" data-tab="status" data-i18n="menu.status">Status</button>
                 <button class="tab-button" data-tab="saves" data-i18n="menu.saves">Saves</button>
                 <button class="tab-button" data-tab="config" data-i18n="menu.config">Configuração</button>
+                <button class="tab-button" data-tab="console" data-i18n="menu.console">Console</button>
                 <button class="tab-button" data-tab="about" data-i18n="menu.about">Sobre</button>
             </nav>
         </aside>
@@ -68,6 +69,10 @@
                                 <span class="active-save-sep">•</span>
                                 <span id="active-save-modified">--</span>
                             </div>
+                        </div>
+                        <div class="rcon-status-card" id="rcon-status-card">
+                            <span class="status-label" data-i18n="rcon.connection">RCON</span>
+                            <span class="badge badge-offline" id="rcon-status-badge">🔴 <span data-i18n="rcon.disconnected">Disconnected</span></span>
                         </div>
                         <div class="metrics-grid">
                             <div class="metric-card">
@@ -220,6 +225,33 @@
 
                     <section class="panel card config-card">
                         <div class="panel-header">
+                            <h2 data-i18n="rcon.settings_title">RCON Settings</h2>
+                            <button type="button" class="text-button" id="rcon-test-button" data-i18n="rcon.test_connection">Test Connection</button>
+                        </div>
+                        <form id="rcon-settings-form" class="stacked-form">
+                            <label>
+                                <span data-i18n="rcon.host">RCON Host</span>
+                                <input type="text" name="rcon_host" id="rcon-host" value="{{ rcon_settings.host }}" />
+                            </label>
+                            <label>
+                                <span data-i18n="rcon.port">RCON Port</span>
+                                <input type="number" name="rcon_port" id="rcon-port" value="{{ rcon_settings.port }}" />
+                            </label>
+                            <label>
+                                <span data-i18n="rcon.password">RCON Password</span>
+                                <input type="password" name="rcon_password" id="rcon-password" value="{{ rcon_settings.password or '' }}" placeholder="••••••••" />
+                            </label>
+                            <label>
+                                <span data-i18n="rcon.timeout">Timeout (seconds)</span>
+                                <input type="number" name="rcon_timeout" id="rcon-timeout" value="{{ rcon_settings.timeout }}" />
+                            </label>
+                            <p class="rcon-test-result" id="rcon-test-result"></p>
+                            <button type="submit" data-i18n="rcon.save_settings">Save RCON Settings</button>
+                        </form>
+                    </section>
+
+                    <section class="panel card config-card">
+                        <div class="panel-header">
                             <h2 data-i18n="config.server_title">Servidor</h2>
                         </div>
                         <div class="config-detail">
@@ -309,6 +341,53 @@
                             <button type="submit" data-i18n="config.save_server_settings">Save server settings</button>
                         </form>
                     </section>
+                </div>
+            </div>
+
+            <div class="tab-panel" id="console-panel">
+                <div class="panel-grid console-grid">
+                    <section class="panel card console-card">
+                        <div class="panel-header">
+                            <h2 data-i18n="rcon.console_title">RCON Console</h2>
+                            <span class="badge badge-offline" id="console-status-badge">🔴 <span data-i18n="rcon.disconnected">Disconnected</span></span>
+                        </div>
+                        <div class="console-output" id="console-output"></div>
+                        <div class="console-toolbar">
+                            <button type="button" id="console-copy" class="text-button" data-i18n="rcon.copy_output">Copy Output</button>
+                            <button type="button" id="console-clear" class="text-button" data-i18n="rcon.clear_console">Clear Console</button>
+                        </div>
+                        <form id="console-form" class="console-form">
+                            <span class="console-prompt">&gt;</span>
+                            <input type="text" id="console-input" autocomplete="off" data-i18n-placeholder="rcon.command_placeholder" />
+                            <button type="submit" data-i18n="rcon.execute">Execute</button>
+                        </form>
+                        <p class="console-hint" data-i18n="rcon.history_hint">Use ↑ / ↓ to navigate command history</p>
+                    </section>
+
+                    <aside class="panel card quick-actions-card">
+                        <div class="panel-header">
+                            <h2 data-i18n="rcon.quick_actions">Quick Actions</h2>
+                        </div>
+                        <div class="quick-actions">
+                            <button type="button" id="qa-save-world" data-i18n="rcon.save_world">Save World</button>
+                            <button type="button" id="qa-players-online" data-i18n="rcon.players_online">Players Online</button>
+                            <button type="button" id="qa-server-status" data-i18n="rcon.server_status">Server Status</button>
+                        </div>
+                        <div class="broadcast-box">
+                            <h3 data-i18n="rcon.broadcast">Broadcast</h3>
+                            <label>
+                                <span data-i18n="rcon.broadcast_message">Message</span>
+                                <input type="text" id="broadcast-message" />
+                            </label>
+                            <button type="button" id="qa-broadcast" data-i18n="rcon.send">Send</button>
+                        </div>
+                        <div class="panel-header players-card-header">
+                            <h3 data-i18n="rcon.players_card">Players Online</h3>
+                        </div>
+                        <ul class="players-list" id="players-list">
+                            <li class="players-empty" data-i18n="rcon.no_players">No players online</li>
+                        </ul>
+                    </aside>
                 </div>
             </div>
 
@@ -441,6 +520,10 @@
     </div>
 
     <script>
+        let currentLang = 'en';
+        let translations = {};
+        let fallbackTranslations = {};
+
         const tabButtons = document.querySelectorAll('.tab-button');
         const panels = document.querySelectorAll('.tab-panel');
         const installButton = document.getElementById('install-button');
@@ -463,6 +546,9 @@
                 document.getElementById(`${button.dataset.tab}-panel`).classList.add('active');
                 if (button.dataset.tab === 'config') {
                     fetchAndRenderSettings();
+                }
+                if (button.dataset.tab === 'console') {
+                    fetchRconStatusOnce();
                 }
             });
         });
@@ -1200,9 +1286,354 @@
 
         fetchAndRenderSettings();
 
-        let currentLang = 'en';
-        let translations = {};
-        let fallbackTranslations = {};
+        // ---------------- RCON / Console ----------------
+
+        const consoleOutput = document.getElementById('console-output');
+        const consoleInput = document.getElementById('console-input');
+        const consoleForm = document.getElementById('console-form');
+        const consoleStatusBadge = document.getElementById('console-status-badge');
+        const rconStatusBadge = document.getElementById('rcon-status-badge');
+        const playersList = document.getElementById('players-list');
+        const commandHistory = [];
+        let historyIndex = -1;
+
+        function appendConsole(text, kind) {
+            if (!consoleOutput) return;
+            const line = document.createElement('div');
+            line.className = `console-line${kind ? ' console-line-' + kind : ''}`;
+            line.textContent = text;
+            consoleOutput.appendChild(line);
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        }
+
+        function setRconBadge(state, caller, apiResponse) {
+            const previous = consoleStatusBadge ? consoleStatusBadge.textContent : 'unknown';
+            console.debug('[RCON BADGE]', {
+                caller: caller || 'unknown',
+                previousState: previous,
+                newState: state,
+                apiResponse: apiResponse || null
+            });
+            let text, cls;
+            if (state === 'connected') {
+                text = `🟢 ${t('rcon.connected')}`;
+                cls = 'badge-online';
+            } else if (state === 'not_configured') {
+                text = `⚪ ${t('rcon.not_configured')}`;
+                cls = 'badge-offline';
+            } else if (state === 'testing') {
+                text = `🟡 ${t('rcon.testing')}`;
+                cls = 'badge-offline';
+            } else {
+                text = `🔴 ${t('rcon.disconnected')}`;
+                cls = 'badge-offline';
+            }
+            if (consoleStatusBadge) {
+                consoleStatusBadge.textContent = text;
+                consoleStatusBadge.className = `badge ${cls}`;
+            }
+            if (rconStatusBadge) {
+                rconStatusBadge.textContent = text;
+                rconStatusBadge.className = `badge ${cls}`;
+            }
+        }
+
+        function refreshRconStatusUI(status, caller) {
+            if (!status) return;
+            const previousBadge = consoleStatusBadge ? consoleStatusBadge.textContent : 'unknown';
+            const isStatusEndpoint = Object.prototype.hasOwnProperty.call(status, 'configured');
+            if (!isStatusEndpoint) {
+                console.debug('[RCON BADGE SKIP] response is not from /api/rcon/status', {
+                    caller: caller || 'unknown',
+                    previousBadge,
+                    statusKeys: Object.keys(status)
+                });
+                if (playersList && Array.isArray(status.players)) {
+                    renderPlayers(status.players);
+                }
+                return;
+            }
+            if (!status.configured) {
+                setRconBadge('not_configured', caller || 'refreshRconStatusUI', status);
+            } else {
+                setRconBadge(status.connected ? 'connected' : 'disconnected', caller || 'refreshRconStatusUI', status);
+            }
+            if (playersList && Array.isArray(status.players)) {
+                renderPlayers(status.players);
+            }
+        }
+
+        function renderPlayers(players) {
+            if (!playersList) return;
+            playersList.innerHTML = '';
+            const list = players || [];
+            if (!list.length) {
+                const li = document.createElement('li');
+                li.className = 'players-empty';
+                li.textContent = t('rcon.no_players');
+                playersList.appendChild(li);
+                return;
+            }
+            for (const name of list) {
+                const li = document.createElement('li');
+                li.textContent = name;
+                playersList.appendChild(li);
+            }
+        }
+
+        function friendlyRconError(err) {
+            const msg = String(err || '').toLowerCase();
+            if (msg.includes('not configured')) return t('rcon.error.not_configured');
+            if (msg.includes('auth')) return t('rcon.error.auth_failed');
+            if (msg.includes('timeout')) return t('rcon.error.timeout');
+            if (msg.includes('connect') || msg.includes('offline')) return t('rcon.error.server_offline');
+            return err || t('rcon.error.server_offline');
+        }
+
+        async function rconCommand(command) {
+            if (!command) return;
+            appendConsole(`> ${command}`, 'cmd');
+            try {
+                const res = await fetch('/api/rcon/command', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ command }),
+                });
+                const data = await res.json().catch(() => ({}));
+                if (!res.ok) {
+                    appendConsole(friendlyRconError(data.error), 'error');
+                } else {
+                    if (data.response) appendConsole(data.response, 'response');
+                }
+            } catch (err) {
+                appendConsole(friendlyRconError(err.message), 'error');
+            }
+        }
+
+        async function rconQuick(action, body) {
+            try {
+                const res = await fetch(`/api/rcon/${action}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body || {}),
+                });
+                const data = await res.json().catch(() => ({}));
+                if (!res.ok) {
+                    appendConsole(friendlyRconError(data.error), 'error');
+                } else {
+                    if (data.response) appendConsole(data.response, 'response');
+                }
+                return data;
+            } catch (err) {
+                appendConsole(friendlyRconError(err.message), 'error');
+                return null;
+            }
+        }
+
+        const consoleCopy = document.getElementById('console-copy');
+        if (consoleCopy) {
+            consoleCopy.addEventListener('click', async () => {
+                if (!consoleOutput) return;
+                const text = consoleOutput.innerText || '';
+                try {
+                    await navigator.clipboard.writeText(text);
+                    consoleCopy.textContent = t('rcon.copied');
+                    setTimeout(() => { consoleCopy.textContent = t('rcon.copy_output'); }, 1500);
+                } catch (err) {
+                    consoleCopy.textContent = t('rcon.copy_failed');
+                    setTimeout(() => { consoleCopy.textContent = t('rcon.copy_output'); }, 1500);
+                }
+            });
+        }
+
+        const consoleClear = document.getElementById('console-clear');
+        if (consoleClear) {
+            consoleClear.addEventListener('click', () => {
+                if (consoleOutput) consoleOutput.innerHTML = '';
+            });
+        }
+
+        if (consoleForm) {
+            consoleForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const value = consoleInput.value.trim();
+                if (!value) return;
+                commandHistory.push(value);
+                if (commandHistory.length > 50) commandHistory.shift();
+                historyIndex = commandHistory.length;
+                rconCommand(value);
+                consoleInput.value = '';
+            });
+        }
+
+        if (consoleInput) {
+            consoleInput.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowUp') {
+                    if (commandHistory.length === 0) return;
+                    historyIndex = Math.max(0, historyIndex - 1);
+                    consoleInput.value = commandHistory[historyIndex] || '';
+                    e.preventDefault();
+                } else if (e.key === 'ArrowDown') {
+                    if (commandHistory.length === 0) return;
+                    historyIndex = Math.min(commandHistory.length, historyIndex + 1);
+                    consoleInput.value = commandHistory[historyIndex] || '';
+                    e.preventDefault();
+                }
+            });
+        }
+
+        const qaSaveWorld = document.getElementById('qa-save-world');
+        if (qaSaveWorld) qaSaveWorld.addEventListener('click', () => rconQuick('save'));
+
+        const qaPlayersOnline = document.getElementById('qa-players-online');
+        if (qaPlayersOnline) qaPlayersOnline.addEventListener('click', () => rconCommand('/players'));
+
+        const qaServerStatus = document.getElementById('qa-server-status');
+        if (qaServerStatus) qaServerStatus.addEventListener('click', async () => {
+            try {
+                const res = await fetch('/api/rcon/status');
+                const data = await res.json().catch(() => ({}));
+                if (!res.ok) {
+                    appendConsole(friendlyRconError(data.error), 'error');
+                } else {
+                    renderPlayers(data.players || []);
+                    appendConsole(t('rcon.server_status') + ': ' + (data.connected ? t('rcon.connected') : t('rcon.disconnected')), 'response');
+                }
+            } catch (err) {
+                appendConsole(friendlyRconError(err.message), 'error');
+            }
+        });
+
+        const qaBroadcast = document.getElementById('qa-broadcast');
+        const broadcastMessage = document.getElementById('broadcast-message');
+        if (qaBroadcast) qaBroadcast.addEventListener('click', () => {
+            const msg = broadcastMessage ? broadcastMessage.value.trim() : '';
+            if (!msg) return;
+            rconQuick('broadcast', { message: msg });
+            if (broadcastMessage) broadcastMessage.value = '';
+        });
+
+        const rconSettingsForm = document.getElementById('rcon-settings-form');
+        const rconTestButton = document.getElementById('rcon-test-button');
+        const rconTestResult = document.getElementById('rcon-test-result');
+
+        if (rconSettingsForm) {
+            rconSettingsForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const host = document.getElementById('rcon-host').value.trim();
+                const port = document.getElementById('rcon-port').value.trim();
+                const password = document.getElementById('rcon-password').value;
+                const timeout = document.getElementById('rcon-timeout').value.trim();
+                try {
+                    const res = await fetch('/api/rcon/settings', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ host, port, password, timeout }),
+                    });
+                    if (!res.ok) {
+                        const err = await res.json().catch(() => ({}));
+                        alert(err.error || t('error.create_world_exception'));
+                        return;
+                    }
+                } catch (err) {
+                    alert(t('error.create_world_exception'));
+                }
+            });
+        }
+
+        async function runRconTest() {
+            const host = document.getElementById('rcon-host').value.trim();
+            const portRaw = document.getElementById('rcon-port').value.trim();
+            const password = document.getElementById('rcon-password').value;
+            const timeoutRaw = document.getElementById('rcon-timeout').value.trim();
+
+            if (!host) {
+                if (rconTestResult) {
+                    rconTestResult.textContent = t('rcon.error.host_required');
+                    rconTestResult.className = 'rcon-test-result failed';
+                }
+                return;
+            }
+            if (!portRaw || !/^\d+$/.test(portRaw) || Number(portRaw) < 1 || Number(portRaw) > 65535) {
+                if (rconTestResult) {
+                    rconTestResult.textContent = t('rcon.error.port_invalid');
+                    rconTestResult.className = 'rcon-test-result failed';
+                }
+                return;
+            }
+            if (!password) {
+                if (rconTestResult) {
+                    rconTestResult.textContent = t('rcon.error.password_required');
+                    rconTestResult.className = 'rcon-test-result failed';
+                }
+                return;
+            }
+
+            if (rconTestResult) {
+                rconTestResult.textContent = t('rcon.testing');
+                rconTestResult.className = 'rcon-test-result';
+            }
+            setRconBadge('testing', 'runRconTest', null);
+             if (rconTestButton) rconTestButton.disabled = true;
+ 
+             try {
+                 const res = await fetch('/api/rcon/test', {
+                     method: 'POST',
+                     headers: { 'Content-Type': 'application/json' },
+                     body: JSON.stringify({ host, port: portRaw, password, timeout: timeoutRaw }),
+                 });
+                 const data = await res.json().catch(() => ({}));
+                 if (rconTestResult) {
+                     if (data && data.connected) {
+                         rconTestResult.textContent = `✓ ${t('rcon.test_success')}`;
+                         rconTestResult.className = 'rcon-test-result ok';
+                         setRconBadge('connected', 'runRconTest', data);
+                     } else {
+                         const reason = data && data.error ? friendlyRconError(data.error) : t('rcon.test_failed');
+                         rconTestResult.textContent = `✗ ${t('rcon.test_failed')} - ${reason}`;
+                         rconTestResult.className = 'rcon-test-result failed';
+                         setRconBadge('disconnected', 'runRconTest', data);
+                     }
+                 }
+             } catch (err) {
+                 if (rconTestResult) {
+                     rconTestResult.textContent = `✗ ${t('rcon.test_failed')} - ${friendlyRconError(err.message)}`;
+                     rconTestResult.className = 'rcon-test-result failed';
+                 }
+                 setRconBadge('disconnected', 'runRconTest', null);
+             } finally {
+                 if (rconTestButton) rconTestButton.disabled = false;
+             }
+        }
+
+        if (rconTestButton) {
+            rconTestButton.addEventListener('click', runRconTest);
+        }
+
+        // Auto monitoring every 30 seconds
+        async function pollRconStatus() {
+            try {
+                const res = await fetch('/api/rcon/status');
+                if (!res.ok) return;
+                const data = await res.json();
+                refreshRconStatusUI(data, 'pollRconStatus');
+            } catch (err) {
+                setRconBadge('disconnected', 'pollRconStatus', null);
+            }
+        }
+
+        async function fetchRconStatusOnce() {
+            try {
+                const res = await fetch('/api/rcon/status');
+                if (!res.ok) return;
+                refreshRconStatusUI(await res.json(), 'fetchRconStatusOnce');
+            } catch (err) {
+                setRconBadge('disconnected', 'fetchRconStatusOnce', null);
+            }
+        }
+
+        pollRconStatus();
+        setInterval(pollRconStatus, 30000);
 
         function detectBrowserLanguage() {
             const nav = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
@@ -1253,6 +1684,33 @@
                 const value = t(key);
                 if (value) el.innerHTML = value;
             });
+
+            document.querySelectorAll('[data-i18n-attr]').forEach((el) => {
+                const spec = el.getAttribute('data-i18n-attr');
+                const [attr, key] = spec.split(',').map((s) => s.trim());
+                const value = t(key);
+                if (value && attr) el.setAttribute(attr, value);
+            });
+
+            document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                const value = t(key);
+                if (value) el.setAttribute('placeholder', value);
+            });
+
+            document.querySelectorAll('[data-i18n-title]').forEach((el) => {
+                const key = el.getAttribute('data-i18n-title');
+                const value = t(key);
+                if (value) el.setAttribute('title', value);
+            });
+
+            retranslateRcon();
+        }
+
+        function retranslateRcon() {
+            // All RCON labels use data-i18n / data-i18n-placeholder and are
+            // refreshed by translatePage(); the badge and players list are
+            // kept in sync by pollRconStatus / fetchRconStatusOnce.
         }
 
         async function applyLanguage(lang) {

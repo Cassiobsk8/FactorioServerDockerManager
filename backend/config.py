@@ -23,6 +23,10 @@ DEFAULT_CONFIG: dict[str, str] = {
 
 DEFAULT_APP_SETTINGS: dict[str, str] = {
     "language": "en",
+    "rcon_host": "127.0.0.1",
+    "rcon_port": "27015",
+    "rcon_password": "",
+    "rcon_timeout": "5",
 }
 
 DEFAULT_INSTALL_ARCHIVE = os.getenv("FACTORIO_SERVER_ARCHIVE", "")

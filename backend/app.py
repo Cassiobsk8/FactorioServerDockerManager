@@ -19,8 +19,9 @@ logging.getLogger("werkzeug").setLevel(logging.WARNING)
 from backend.routes.server_routes import register_server_routes
 from backend.routes.save_routes import register_save_routes
 from backend.routes.api_routes import register_api_routes
+from backend.routes.rcon_routes import register_rcon_routes
 
-APP_VERSION = "2.0.0"
+APP_VERSION = "2.1.0"
 
 
 def create_app():
@@ -34,6 +35,7 @@ def create_app():
     register_server_routes(app)
     register_save_routes(app)
     register_api_routes(app)
+    register_rcon_routes(app)
 
     return app
 

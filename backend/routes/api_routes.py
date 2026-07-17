@@ -104,13 +104,23 @@ def api_rcon():
     if not command:
         return jsonify({"error": "command required"}), 400
 
-    from backend.services.rcon_service import send_rcon_command
+    from backend.services.rcon_service import (
+        RconAuthError,
+        RconConnectionError,
+        RconNotConfiguredError,
+        RconTimeoutError,
+        get_rcon_service,
+    )
+
     try:
-        response = send_rcon_command(command)
-        return jsonify({"response": response})
+        service = get_rcon_service()
+        response = service.execute_command(command)
+        return jsonify({"response": response, "connected": True})
+    except (RconConnectionError, RconTimeoutError, RconAuthError) as exc:
+        return jsonify({"error": str(exc), "connected": False}), 503
     except Exception as exc:
         logger.exception("RCON command failed")
-        return jsonify({"error": str(exc)}), 500
+        return jsonify({"error": str(exc), "connected": False}), 500
 
 
 @api_bp.route("/api/mods", methods=["GET"])

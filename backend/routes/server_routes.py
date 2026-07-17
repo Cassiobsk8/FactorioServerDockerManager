@@ -56,6 +56,13 @@ def home():
     )
     server_settings_fields = build_server_settings_fields(server_settings)
     app_settings = load_app_settings()
+    rcon_settings = {
+        "host": app_settings.get("rcon_host", "127.0.0.1"),
+        "port": app_settings.get("rcon_port", 27015),
+        "timeout": app_settings.get("rcon_timeout", 5),
+        "password": app_settings.get("rcon_password", ""),
+        "configured": bool(app_settings.get("rcon_password")),
+    }
     return render_template(
         "index.html",
         status=factorio_service.get_status(),
@@ -65,8 +72,9 @@ def home():
         save_files=list_save_files(),
         active_save=get_active_save(),
         install_status=install_status,
-        app_version="2.0.0",
+        app_version="2.1.0",
         language=app_settings.get("language", "en"),
+        rcon_settings=rcon_settings,
     )
 
 

@@ -31,6 +31,7 @@ from backend.config import (
     SERVER_SETTINGS_PATH,
 )
 from backend.services.save_service import load_active_save
+from backend.services.settings_service import load_app_settings
 
 logger = logging.getLogger("fsm.factorio")
 
@@ -684,7 +685,28 @@ def _factorio_command(install_dir: Optional[Path] = None) -> List[str]:
             "No active save configured. Create a new world, upload a save, or select an existing save before starting the server."
         )
 
+    app_settings = load_app_settings()
+    rcon_host = app_settings.get("rcon_host", "127.0.0.1")
+    rcon_port = app_settings.get("rcon_port", "27015")
+    rcon_password = app_settings.get("rcon_password", "")
+
+    logger.info("RCON Host: %s", rcon_host)
+    logger.info("RCON Port: %s", rcon_port)
+    logger.info("RCON Enabled: %s", bool(rcon_password))
+
     cmd = [str(factorio_bin), f"--start-server={active_save}"]
+
+    if rcon_password:
+        cmd.extend([f"--rcon-port={rcon_port}", f"--rcon-password={rcon_password}"])
+    else:
+        logger.warning("RCON disabled: password not configured")
+
+    masked_cmd = [
+        part if not part.startswith("--rcon-password=") else "--rcon-password=******"
+        for part in cmd
+    ]
+    logger.info("Starting factorio with args: %s", masked_cmd)
+
     return cmd
 
 
