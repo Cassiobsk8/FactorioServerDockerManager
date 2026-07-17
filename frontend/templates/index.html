@@ -296,24 +296,118 @@
             </div>
 
             <div class="tab-panel" id="about-panel">
-                <section class="panel card about-card">
-                    <div class="panel-header">
-                        <h2>Sobre</h2>
+                <div class="about-page">
+                    <div class="about-hero card">
+                        <div class="about-hero-icon">⚙️</div>
+                        <div class="about-hero-body">
+                            <h2>Factorio Server Manager</h2>
+                            <p>Gerenciador web para servidores Factorio
+                                compatível com Docker, Linux e ZimaOS.</p>
+                            <span class="about-version">Versão {{ app_version }}</span>
+                        </div>
                     </div>
-                    <div class="about-content">
-                        <p><strong>Desenvolvedor:</strong> Cássio Klafke Ferreira</p>
-                        <p><strong>LinkedIn / GitHub:</strong> <a href="https://github.com/Cassiobsk8" target="_blank"
-                                rel="noopener noreferrer">https://github.com/Cassiobsk8</a></p>
-                        <p><strong>Versão da aplicação:</strong> {{ app_version }}</p>
-                        <h3>Licenças usadas</h3>
-                        <ul>
-                            <li>Python 3.14 — Python Software Foundation License</li>
-                            <li>Flask 3.0.3 — BSD 3-Clause License</li>
-                            <li>HTML / CSS / JavaScript — Tecnologias Web padrão</li>
-                            <li>Factorio headless server — regido pela licença / EULA da Factorio</li>
-                        </ul>
+
+                    <div class="about-grid">
+                        <div class="card about-card about-developer-card">
+                            <div class="panel-header">
+                                <h3>Desenvolvedor</h3>
+                            </div>
+                            <p>Cássio Klafke Ferreira</p>
+                            <a class="about-link" href="https://github.com/Cassiobsk8" target="_blank" rel="noopener noreferrer">GitHub: @Cassiobsk8</a>
+                        </div>
+
+                        <div class="card about-card about-project-card">
+                            <div class="panel-header">
+                                <h3>Projeto</h3>
+                            </div>
+                            <p>Factorio Server Manager é um projeto open-source
+                                criado para facilitar a instalação, gerenciamento
+                                e administração de servidores dedicados do Factorio.</p>
+                            <ul class="about-features">
+                                <li>Dashboard</li>
+                                <li>Gerenciamento de Saves</li>
+                                <li>Configuração visual</li>
+                                <li>Logs</li>
+                                <li>Instalação automática do servidor</li>
+                                <li>Docker Ready</li>
+                            </ul>
+                        </div>
                     </div>
-                </section>
+
+                    <div class="card about-card about-support-card">
+                        <div class="panel-header">
+                            <h3>☕ Apoie o Projeto</h3>
+                        </div>
+                        <p>Se este projeto foi útil para você e ajudou
+                            a simplificar o gerenciamento do seu servidor
+                            Factorio, considere apoiar o desenvolvimento.</p>
+                        <a class="about-paypal-button" href="https://www.paypal.com/cassiokf" target="_blank" rel="noopener noreferrer">Doar via PayPal</a>
+                    </div>
+
+                    <div class="about-grid about-bottom-grid">
+                        <div class="card about-card about-licenses-card">
+                            <div class="panel-header">
+                                <h3>Licenças e Créditos</h3>
+                            </div>
+                            <div class="about-licenses-grid">
+                                <div class="about-license-item">
+                                    <strong>Python</strong>
+                                    <span>Python 3.14</span>
+                                    <span>PSF License</span>
+                                    <a href="https://www.python.org/" target="_blank" rel="noopener noreferrer">python.org</a>
+                                </div>
+                                <div class="about-license-item">
+                                    <strong>Flask</strong>
+                                    <span>Flask</span>
+                                    <span>BSD 3-Clause License</span>
+                                    <a href="https://flask.palletsprojects.com/" target="_blank" rel="noopener noreferrer">flask.palletsprojects.com</a>
+                                </div>
+                                <div class="about-license-item">
+                                    <strong>Factorio</strong>
+                                    <span>Factorio Dedicated Server</span>
+                                    <span>Licença e EULA pertencem à Wube Software</span>
+                                    <a href="https://www.factorio.com/" target="_blank" rel="noopener noreferrer">factorio.com</a>
+                                </div>
+                                <div class="about-license-item">
+                                    <strong>Docker</strong>
+                                    <span>Docker</span>
+                                    <span>Apache License 2.0</span>
+                                    <a href="https://www.docker.com/" target="_blank" rel="noopener noreferrer">docker.com</a>
+                                </div>
+                                <div class="about-license-item">
+                                    <strong>Frontend</strong>
+                                    <span>HTML / CSS / JavaScript</span>
+                                    <span>Tecnologias Web abertas</span>
+                                    <span></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card about-card about-stats-card">
+                            <div class="panel-header">
+                                <h3>Estatísticas do Projeto</h3>
+                            </div>
+                            <div class="about-stats">
+                                <div class="about-stat">
+                                    <span class="about-stat-label">Versão atual</span>
+                                    <span class="about-stat-value">{{ app_version }}</span>
+                                </div>
+                                <div class="about-stat">
+                                    <span class="about-stat-label">Backend</span>
+                                    <span class="about-stat-value">Python + Flask</span>
+                                </div>
+                                <div class="about-stat">
+                                    <span class="about-stat-label">Frontend</span>
+                                    <span class="about-stat-value">HTML + CSS + JavaScript</span>
+                                </div>
+                                <div class="about-stat">
+                                    <span class="about-stat-label">Compatibilidade</span>
+                                    <span class="about-stat-value">Docker / Linux / ZimaOS</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
     </main>
