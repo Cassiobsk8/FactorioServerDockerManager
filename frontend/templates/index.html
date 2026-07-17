@@ -32,9 +32,9 @@
                 <div class="panel-grid">
                     <section class="panel card log-card">
                         <div class="panel-header">
-                            <h2>Logs</h2>
+                            <h2 data-i18n="logs.title">Logs</h2>
                             <form action="/logs/clear" method="post" class="header-action">
-                                <button type="submit" class="text-button">Limpar</button>
+                                <button type="submit" class="text-button" data-i18n="logs.clear">Clear</button>
                             </form>
                         </div>
                         <pre id="logs-output">{{ logs }}</pre>
@@ -42,25 +42,25 @@
 
                     <aside class="panel card status-card">
                         <div class="panel-header">
-                            <h2>Dashboard</h2>
+                            <h2 data-i18n="dashboard.title">Dashboard</h2>
                         </div>
                         <div class="status-info">
                             <div class="status-primary">
                                 <span class="status-dot {% if status and (status == 'running' or status == 'online') %}status-dot-online{% else %}status-dot-offline{% endif %}" id="server-status-dot"></span>
                                 <div>
-                                    <span class="status-label">Server status</span>
+                                    <span class="status-label" data-i18n="status.server_status">Server status</span>
                                     <span class="status-value badge {% if status and (status == 'running' or status == 'online') %}badge-online{% else %}badge-offline{% endif %}" id="server-status">{{ status }}</span>
                                 </div>
                             </div>
                             <div class="status-secondary">
-                                <span class="status-label">Install status</span>
+                                <span class="status-label" data-i18n="status.install_status">Install status</span>
                                 <p class="status-value" id="install-status">{{ install_status }}</p>
                             </div>
                         </div>
                         <div class="active-save" id="active-save-card">
                             <div class="active-save-header">
-                                <span class="status-label">Save ativo</span>
-                                <span class="badge badge-active" id="active-save-badge">ATIVO</span>
+                                <span class="status-label" data-i18n="status.active_save">Active save</span>
+                                <span class="badge badge-active" id="active-save-badge" data-i18n="status.active">ACTIVE</span>
                             </div>
                             <p class="active-save-name" id="active-save-name">--</p>
                             <div class="active-save-meta">
@@ -71,14 +71,14 @@
                         </div>
                         <div class="metrics-grid">
                             <div class="metric-card">
-                                <span class="metric-label">CPU</span>
+                                <span class="metric-label" data-i18n="metric.cpu">CPU</span>
                                 <span class="metric-value" id="metric-cpu">0%</span>
                                 <div class="metric-progress">
                                     <div class="metric-progress-fill" id="metric-cpu-bar"></div>
                                 </div>
                             </div>
                             <div class="metric-card">
-                                <span class="metric-label">RAM</span>
+                                <span class="metric-label" data-i18n="metric.ram">RAM</span>
                                 <span class="metric-value" id="metric-ram">0 MB</span>
                                 <span class="metric-detail" id="metric-ram-detail">de 0 MB</span>
                                 <div class="metric-progress">
@@ -86,11 +86,11 @@
                                 </div>
                             </div>
                             <div class="metric-card">
-                                <span class="metric-label">Uptime</span>
+                                <span class="metric-label" data-i18n="metric.uptime">Uptime</span>
                                 <span class="metric-value" id="metric-uptime">0s</span>
                             </div>
                             <div class="metric-card">
-                                <span class="metric-label">Disk</span>
+                                <span class="metric-label" data-i18n="metric.disk">Disk</span>
                                 <span class="metric-value" id="metric-disk">0 MB</span>
                                 <span class="metric-detail" id="metric-disk-detail">de 0 MB</span>
                                 <div class="metric-progress">
@@ -98,23 +98,23 @@
                                 </div>
                             </div>
                             <div class="metric-card">
-                                <span class="metric-label">Versão</span>
+                                <span class="metric-label" data-i18n="metric.version">Version</span>
                                 <span class="metric-value" id="metric-version">--</span>
                             </div>
                             <div class="metric-card">
-                                <span class="metric-label">Saves</span>
+                                <span class="metric-label" data-i18n="metric.saves">Saves</span>
                                 <span class="metric-value" id="metric-saves-count">--</span>
                             </div>
                         </div>
                         <div class="action-group">
                             <form action="/control/start" method="post">
-                                <button type="submit">Start</button>
+                                <button type="submit" data-i18n="action.start">Start</button>
                             </form>
                             <form action="/control/stop" method="post">
-                                <button type="submit">Stop</button>
+                                <button type="submit" data-i18n="action.stop">Stop</button>
                             </form>
                             <form action="/control/restart" method="post">
-                                <button type="submit">Restart</button>
+                                <button type="submit" data-i18n="action.restart">Restart</button>
                             </form>
                         </div>
                     </aside>
@@ -125,49 +125,49 @@
                 <div class="panel-grid config-grid">
                     <section class="panel card config-card">
                         <div class="panel-header">
-                            <h2>Criar Novo Mundo</h2>
+                            <h2 data-i18n="saves.create_title">Create New World</h2>
                         </div>
                         <form id="create-save-form" class="stacked-form">
                             <label>
-                                Nome do Mundo
+                                <span data-i18n="saves.world_name">World Name</span>
                                 <input type="text" id="new-save-name" placeholder="meu_mundo" required />
                             </label>
                             <label>
-                                Seed (opcional)
+                                <span data-i18n="saves.seed_optional">Seed (optional)</span>
                                 <input type="text" id="new-save-seed" placeholder="123456789" />
                             </label>
-                            <button type="submit">Criar Mundo</button>
+                            <button type="submit" data-i18n="saves.create_button">Create World</button>
                         </form>
                     </section>
 
                     <section class="panel card config-card">
                         <div class="panel-header">
-                            <h2>Upload de Save</h2>
+                            <h2 data-i18n="saves.upload_title">Upload Save</h2>
                         </div>
                         <form action="/upload-save" method="post" enctype="multipart/form-data" class="stacked-form">
                             <label>
-                                Arquivo .zip
+                                <span data-i18n="saves.zip_file">.zip file</span>
                                 <input type="file" name="save_file" accept=".zip" required />
                             </label>
-                            <button type="submit">Enviar save</button>
+                            <button type="submit" data-i18n="saves.upload_button">Upload save</button>
                         </form>
                     </section>
 
                     <section class="panel card config-card" style="grid-column: 1 / -1;">
                         <div class="panel-header">
-                            <h2>Lista de Saves</h2>
+                            <h2 data-i18n="saves.list_title">Save List</h2>
                         </div>
                         <div id="saves-empty" style="display:none;">
-                            <p>Nenhum mundo configurado. Crie um novo mundo ou faça upload de um save.</p>
+                            <p data-i18n="saves.empty_message">No world configured. Create a new world or upload a save.</p>
                         </div>
                         <table class="saves-table" id="saves-table">
                             <thead>
                                 <tr>
-                                    <th>Nome</th>
-                                    <th>Data</th>
-                                    <th>Tamanho</th>
-                                    <th>Status</th>
-                                    <th>Ações</th>
+                                    <th data-i18n="saves.table.name">Name</th>
+                                    <th data-i18n="saves.table.date">Date</th>
+                                    <th data-i18n="saves.table.size">Size</th>
+                                    <th data-i18n="saves.table.status">Status</th>
+                                    <th data-i18n="saves.table.actions">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="saves-list">
@@ -184,11 +184,11 @@
                                     <td>
                                         <div class="button-row">
                                             {% if filename != active_save %}
-                                            <button type="button" class="text-button select-save" data-filename="{{ filename }}">Selecionar</button>
+                                            <button type="button" class="text-button select-save" data-filename="{{ filename }}" data-i18n="saves.select">Select</button>
                                             {% endif %}
-                                            <button type="button" class="text-button rename-save" data-filename="{{ filename }}">Renomear</button>
+                                            <button type="button" class="text-button rename-save" data-filename="{{ filename }}" data-i18n="saves.rename">Rename</button>
                                             {% if filename != active_save %}
-                                            <button type="button" class="text-button danger-button delete-save" data-filename="{{ filename }}">Excluir</button>
+                                            <button type="button" class="text-button danger-button delete-save" data-filename="{{ filename }}" data-i18n="saves.delete">Delete</button>
                                             {% endif %}
                                         </div>
                                     </td>
@@ -223,46 +223,46 @@
                             <h2 data-i18n="config.server_title">Servidor</h2>
                         </div>
                         <div class="config-detail">
-                            <p><strong>Instalado:</strong> {{ status != 'not_installed' }}</p>
+                            <p><strong data-i18n="config.installed">Installed</strong>: {{ status != 'not_installed' }}</p>
                         </div>
                         <form id="install-form">
                             <label>
-                                Archive URL (opcional)
+                                <span data-i18n="config.archive_url">Archive URL (optional)</span>
                                 <input type="text" name="archive_path" id="archive-path"
                                     placeholder="Use o download oficial do Factorio Linux" />
                             </label>
-                            <button type="button" class="btn-install" id="install-button" style="margin-bottom: 20px;">Instalar servidor</button>
+                            <button type="button" class="btn-install" id="install-button" style="margin-bottom: 20px;" data-i18n="config.install_button">Install server</button>
                         </form>
                         <form action="/install/clear" method="post"
-                            onsubmit="return confirm('Tem certeza que deseja deletar a instalação do servidor? Isso removerá apenas os arquivos de instalação e logs, sem excluir saves nem configuração.');">
-                            <button type="submit" class="danger-button">Deletar servidor instalado</button>
+                            onsubmit="return confirm(t('config.confirm_delete_install'));">
+                            <button type="submit" class="danger-button" data-i18n="config.delete_install">Delete installed server</button>
                         </form>
                     </section>
 
                     <section class="panel card config-card">
                         <div class="panel-header">
-                            <h2>Configuração</h2>
+                            <h2 data-i18n="config.general_title">Configuration</h2>
                         </div>
                         <form action="/config" method="post" class="stacked-form">
                             <label>
-                                Nome do servidor
+                                <span data-i18n="config.server_name">Server name</span>
                                 <input type="text" name="server_name" value="{{ config.server_name }}" />
                             </label>
                             <label>
-                                Senha do servidor
+                                <span data-i18n="config.server_password">Server password</span>
                                 <input type="password" name="server_password" value="{{ config.server_password }}" />
                             </label>
-                            <button type="submit">Salvar alterações</button>
+                            <button type="submit" data-i18n="config.save_changes">Save changes</button>
                         </form>
                     </section>
 
                     <section class="panel card config-card settings-card">
                         <div class="panel-header">
-                            <h2>server-settings.json</h2>
-                            <button type="button" class="text-button" id="toggle-all-sections">Expandir tudo</button>
+                            <h2 data-i18n="config.server_settings_title">server-settings.json</h2>
+                            <button type="button" class="text-button" id="toggle-all-sections" data-i18n="config.expand_all">Expand all</button>
                         </div>
-                        <p class="settings-description">Campos carregados de <code>config/server-settings.json</code>.
-                            Passe o mouse no <span class="tooltip-inline" data-tip="Dica de ajuda">ⓘ</span> para ver a descrição de cada opção.</p>
+                        <p class="settings-description" data-i18n-html="config.settings_description">Fields loaded from <code>config/server-settings.json</code>.
+                            Hover over the <span class="tooltip-inline" data-tip="Help tip">ⓘ</span> to see the description of each option.</p>
                         <form id="server-settings-form" action="/config" method="post" class="stacked-form">
                             <div id="server-settings-container">
                                 {% macro render_settings(fields) %}
@@ -302,11 +302,11 @@
                                 {% if server_settings_fields %}
                                 {{ render_settings(server_settings_fields) }}
                                 {% else %}
-                                <p>Nenhuma configuração de servidor encontrada.</p>
+                                <p data-i18n="config.no_settings">No server configuration found.</p>
                                 {% endif %}
                             </div>
 
-                            <button type="submit">Salvar configurações do servidor</button>
+                            <button type="submit" data-i18n="config.save_server_settings">Save server settings</button>
                         </form>
                     </section>
                 </div>
@@ -317,109 +317,104 @@
                     <div class="about-hero card">
                         <div class="about-hero-icon">⚙️</div>
                         <div class="about-hero-body">
-                            <h2>Factorio Server Manager</h2>
-                            <p>Gerenciador web para servidores Factorio
-                                compatível com Docker, Linux e ZimaOS.</p>
-                            <span class="about-version">Versão {{ app_version }}</span>
+                            <h2 data-i18n="about.hero_title">Factorio Server Manager</h2>
+                            <p data-i18n="about.hero_description">Web manager for Factorio servers compatible with Docker, Linux and ZimaOS.</p>
+                            <span class="about-version" data-i18n="about.version">Version</span> {{ app_version }}
                         </div>
                     </div>
 
                     <div class="about-grid">
                         <div class="card about-card about-developer-card">
                             <div class="panel-header">
-                                <h3>Desenvolvedor</h3>
+                                <h3 data-i18n="about.developer_title">Developer</h3>
                             </div>
-                            <p>Cássio Klafke Ferreira</p>
-                            <a class="about-link" href="https://github.com/Cassiobsk8" target="_blank" rel="noopener noreferrer">GitHub: @Cassiobsk8</a>
+                            <p data-i18n="about.developer_name">Cássio Klafke Ferreira</p>
+                            <a class="about-link" href="https://github.com/Cassiobsk8" target="_blank" rel="noopener noreferrer" data-i18n="about.github">GitHub: @Cassiobsk8</a>
                         </div>
 
                         <div class="card about-card about-project-card">
                             <div class="panel-header">
-                                <h3>Projeto</h3>
+                                <h3 data-i18n="about.project_title">Project</h3>
                             </div>
-                            <p>Factorio Server Manager é um projeto open-source
-                                criado para facilitar a instalação, gerenciamento
-                                e administração de servidores dedicados do Factorio.</p>
+                            <p data-i18n="about.project_description">Factorio Server Manager is an open-source project created to facilitate the installation, management and administration of dedicated Factorio servers.</p>
                             <ul class="about-features">
-                                <li>Dashboard</li>
-                                <li>Gerenciamento de Saves</li>
-                                <li>Configuração visual</li>
-                                <li>Logs</li>
-                                <li>Instalação automática do servidor</li>
-                                <li>Docker Ready</li>
+                                <li data-i18n="about.feature.dashboard">Dashboard</li>
+                                <li data-i18n="about.feature.saves">Save Management</li>
+                                <li data-i18n="about.feature.config">Visual Configuration</li>
+                                <li data-i18n="about.feature.logs">Logs</li>
+                                <li data-i18n="about.feature.install">Automatic server installation</li>
+                                <li data-i18n="about.feature.docker">Docker Ready</li>
                             </ul>
                         </div>
                     </div>
 
                     <div class="card about-card about-support-card">
                         <div class="panel-header">
-                            <h3>☕ Apoie o Projeto</h3>
+                            <h3 data-i18n="about.support_title">☕ Support the Project</h3>
                         </div>
-                        <p>Se este projeto foi útil para você e ajudou
-                            a simplificar o gerenciamento do seu servidor
-                            Factorio, considere apoiar o desenvolvimento.</p>
-                        <a class="about-paypal-button" href="https://www.paypal.com/cassiokf" target="_blank" rel="noopener noreferrer">Doar via PayPal</a>
+                        <p data-i18n="about.support_description">If this project was useful to you and helped simplify the management of your Factorio server, consider supporting the development.</p>
+                        <a class="about-paypal-button" href="https://www.paypal.com/cassiokf" target="_blank" rel="noopener noreferrer" data-i18n="about.donate_paypal">Donate via PayPal</a>
                     </div>
 
                     <div class="about-grid about-bottom-grid">
                         <div class="card about-card about-licenses-card">
                             <div class="panel-header">
-                                <h3>Licenças e Créditos</h3>
+                                <h3 data-i18n="about.licenses_title">Licenses and Credits</h3>
                             </div>
                             <div class="about-licenses-grid">
                                 <div class="about-license-item">
-                                    <strong>Python</strong>
-                                    <span>Python 3.14</span>
-                                    <span>PSF License</span>
-                                    <a href="https://www.python.org/" target="_blank" rel="noopener noreferrer">python.org</a>
+                                    <strong data-i18n="about.license.python">Python</strong>
+                                    <span data-i18n="about.license.python_version">Python 3.14</span>
+                                    <span data-i18n="about.license.python_license">PSF License</span>
+                                    <a href="https://www.python.org/" target="_blank" rel="noopener noreferrer" data-i18n="about.license.python_url">python.org</a>
                                 </div>
                                 <div class="about-license-item">
-                                    <strong>Flask</strong>
-                                    <span>Flask</span>
-                                    <span>BSD 3-Clause License</span>
-                                    <a href="https://flask.palletsprojects.com/" target="_blank" rel="noopener noreferrer">flask.palletsprojects.com</a>
+                                    <strong data-i18n="about.license.flask">Flask</strong>
+                                    <span data-i18n="about.license.flask_version">Flask</span>
+                                    <span data-i18n="about.license.flask_license">BSD 3-Clause License</span>
+                                    <a href="https://flask.palletsprojects.com/" target="_blank" rel="noopener noreferrer" data-i18n="about.license.flask_url">flask.palletsprojects.com</a>
                                 </div>
                                 <div class="about-license-item">
-                                    <strong>Factorio</strong>
-                                    <span>Factorio Dedicated Server</span>
-                                    <span>Licença e EULA pertencem à Wube Software</span>
-                                    <a href="https://www.factorio.com/" target="_blank" rel="noopener noreferrer">factorio.com</a>
+                                    <strong data-i18n="about.license.factorio">Factorio</strong>
+                                    <span data-i18n="about.license.factorio_version">Factorio Dedicated Server</span>
+                                    <span data-i18n="about.license.factorio_license">License and EULA belong to Wube Software</span>
+                                    <a href="https://www.factorio.com/" target="_blank" rel="noopener noreferrer" data-i18n="about.license.factorio_url">factorio.com</a>
                                 </div>
                                 <div class="about-license-item">
-                                    <strong>Docker</strong>
-                                    <span>Docker</span>
-                                    <span>Apache License 2.0</span>
-                                    <a href="https://www.docker.com/" target="_blank" rel="noopener noreferrer">docker.com</a>
+                                    <strong data-i18n="about.license.docker">Docker</strong>
+                                    <span data-i18n="about.license.docker_version">Docker</span>
+                                    <span data-i18n="about.license.docker_license">Apache License 2.0</span>
+                                    <a href="https://www.docker.com/" target="_blank" rel="noopener noreferrer" data-i18n="about.license.docker_url">docker.com</a>
                                 </div>
                                 <div class="about-license-item">
-                                    <strong>Frontend</strong>
-                                    <span>HTML / CSS / JavaScript</span>
-                                    <span>Tecnologias Web abertas</span>
-                                    <span></span>
+                                    <strong data-i18n="about.license.frontend">Frontend</strong>
+                                    <span data-i18n="about.license.frontend_version">HTML / CSS / JavaScript</span>
+                                    <span data-i18n="about.license.frontend_license">Open Web Technologies</span>
+                                    <a href="" target="_blank" rel="noopener noreferrer" data-i18n="about.license.frontend_url"></a>
                                 </div>
                             </div>
                         </div>
 
                         <div class="card about-card about-stats-card">
                             <div class="panel-header">
-                                <h3>Estatísticas do Projeto</h3>
+                                <h3 data-i18n="about.stats_title">Project Statistics</h3>
                             </div>
                             <div class="about-stats">
                                 <div class="about-stat">
-                                    <span class="about-stat-label">Versão atual</span>
+                                    <span class="about-stat-label" data-i18n="about.stat.current_version">Current version</span>
                                     <span class="about-stat-value">{{ app_version }}</span>
                                 </div>
                                 <div class="about-stat">
-                                    <span class="about-stat-label">Backend</span>
-                                    <span class="about-stat-value">Python + Flask</span>
+                                    <span class="about-stat-label" data-i18n="about.stat.backend">Backend</span>
+                                    <span class="about-stat-value" data-i18n="about.stat.backend_value">Python + Flask</span>
                                 </div>
                                 <div class="about-stat">
-                                    <span class="about-stat-label">Frontend</span>
-                                    <span class="about-stat-value">HTML + CSS + JavaScript</span>
+                                    <span class="about-stat-label" data-i18n="about.stat.frontend">Frontend</span>
+                                    <span class="about-stat-value" data-i18n="about.stat.frontend_value">HTML + CSS + JavaScript</span>
                                 </div>
                                 <div class="about-stat">
-                                    <span class="about-stat-label">Compatibilidade</span>
-                                    <span class="about-stat-value">Docker / Linux / ZimaOS</span>
+                                    <span class="about-stat-label" data-i18n="about.stat.compatibility">Compatibility</span>
+                                    <span class="about-stat-value" data-i18n="about.stat.compatibility_value">Docker / Linux / ZimaOS</span>
                                 </div>
                             </div>
                         </div>
@@ -432,14 +427,16 @@
     <div class="modal-overlay" id="install-modal" style="display:none;">
         <div class="modal-card">
             <div class="modal-header">
-                <h3>Instalação do servidor</h3>
-                <button class="text-button" id="close-modal" type="button">Fechar</button>
+                <h3 data-i18n="modal.install_title">Server Installation</h3>
+                <button class="text-button" id="close-modal" type="button" data-i18n="modal.close">Close</button>
             </div>
-            <p id="install-modal-message">Preparando instalação...</p>
+            <p id="install-modal-message" data-i18n="modal.preparing">Preparing installation...</p>
             <div class="progress-bar">
                 <div class="progress-fill" id="install-progress-fill"></div>
             </div>
-            <p class="progress-meta" id="install-progress-meta">Aguardando início...</p>
+            <p class="progress-meta" id="install-progress-meta" data-i18n="modal.waiting">Waiting to start...</p>
+        </div>
+    </div>
         </div>
     </div>
 
@@ -482,7 +479,7 @@
                 const fields = data.fields || [];
                 if (!fields.length) {
                     const info = data.file_info || {};
-                    container.innerHTML = `<p>Nenhuma configuração de servidor encontrada. arquivo_exists=${info.exists} size=${info.size}</p>`;
+                    container.innerHTML = `<p>${t('config.no_settings')} arquivo_exists=${info.exists} size=${info.size}</p>`;
                     return;
                 }
                 container.innerHTML = renderSettingsFields(fields);
@@ -512,62 +509,62 @@
         }
 
         const SETTINGS_META = {
-            name: { label: 'Nome do servidor', category: 'Geral', open: true },
-            description: { label: 'Descrição', category: 'Geral', open: true },
-            tags: { label: 'Tags', category: 'Geral', open: true, type: 'tags' },
-            game_password: { label: 'Senha do jogo', category: 'Geral', open: true, type: 'password' },
+            name: { label: t('settings.name'), category: t('settings.cat_general'), open: true },
+            description: { label: t('settings.description'), category: t('settings.cat_general'), open: true },
+            tags: { label: t('settings.tags'), category: t('settings.cat_general'), open: true, type: 'tags' },
+            game_password: { label: t('settings.game_password'), category: t('settings.cat_general'), open: true, type: 'password' },
 
-            visibility: { label: 'Visibilidade', category: 'Rede', open: true, type: 'visibility' },
-            'visibility.public': { label: 'Público', category: 'Rede' },
-            'visibility.lan': { label: 'LAN', category: 'Rede' },
-            require_user_verification: { label: 'Verificação de Usuário', category: 'Rede', open: true },
+            visibility: { label: t('settings.visibility'), category: t('settings.cat_network'), open: true, type: 'visibility' },
+            'visibility.public': { label: t('settings.visibility_public'), category: t('settings.cat_network') },
+            'visibility.lan': { label: t('settings.visibility_lan'), category: t('settings.cat_network') },
+            require_user_verification: { label: t('settings.require_user_verification'), category: t('settings.cat_network'), open: true },
 
-            username: { label: 'Usuário', category: 'Avançado', type: 'password', hint: 'Login do factorio.com. Necessário para servidores públicos.' },
-            password: { label: 'Senha da conta', category: 'Avançado', type: 'password', hint: 'Senha do factorio.com. Necessário para servidores públicos.' },
-            token: { label: 'Token', category: 'Avançado', type: 'password', hint: 'Token de autenticação. Pode substituir a senha acima.' },
+            username: { label: t('settings.username'), category: t('settings.cat_advanced'), type: 'password', hint: t('settings.username_hint') },
+            password: { label: t('settings.password'), category: t('settings.cat_advanced'), type: 'password', hint: t('settings.password_hint') },
+            token: { label: t('settings.token'), category: t('settings.cat_advanced'), type: 'password', hint: t('settings.token_hint') },
 
             max_players: {
-                label: 'Máximo de jogadores', category: 'Jogadores', open: true, min: 0, step: 1,
-                hint: 'Admins podem entrar mesmo com servidor cheio. 0 = ilimitado.',
+                label: t('settings.max_players'), category: t('settings.cat_players'), open: true, min: 0, step: 1,
+                hint: t('settings.max_players_hint'),
             },
             ignore_player_limit_for_returning_players: {
-                label: 'Ignorar limite para jogadores recorrentes', category: 'Jogadores', open: true,
+                label: t('settings.ignore_player_limit'), category: t('settings.cat_players'), open: true,
             },
             allow_commands: {
-                label: 'Permissões de comandos', category: 'Jogadores', open: true, type: 'select',
+                label: t('settings.allow_commands'), category: t('settings.cat_players'), open: true, type: 'select',
                 options: ['true', 'false', 'admins-only'],
-                hint: 'Valores possíveis: true, false e admins-only.',
+                hint: t('settings.allow_commands_hint'),
             },
             afk_autokick_interval: {
-                label: 'AFK Kick', category: 'Jogadores', open: true, min: 0, step: 1,
-                hint: 'Minutos até alguém ser expulso por inatividade. 0 = nunca.',
+                label: t('settings.afk_autokick_interval'), category: t('settings.cat_players'), open: true, min: 0, step: 1,
+                hint: t('settings.afk_autokick_hint'),
             },
 
             autosave_interval: {
-                label: 'Intervalo', category: 'Autosave', open: true, min: 0, step: 1,
-                hint: 'Intervalo de autosave em minutos.',
+                label: t('settings.autosave_interval'), category: t('settings.cat_autosave'), open: true, min: 0, step: 1,
+                hint: t('settings.autosave_interval_hint'),
             },
             autosave_slots: {
-                label: 'Slots', category: 'Autosave', open: true, min: 1, step: 1,
-                hint: 'Slots de autosave, ciclados a cada autosave.',
+                label: t('settings.autosave_slots'), category: t('settings.cat_autosave'), open: true, min: 1, step: 1,
+                hint: t('settings.autosave_slots_hint'),
             },
-            autosave_only_on_server: { label: 'Autosave apenas no servidor', category: 'Autosave', open: true },
-            auto_pause: { label: 'Auto Pause', category: 'Autosave', open: true },
-            auto_pause_when_players_connect: { label: 'Auto Pause ao conectar', category: 'Autosave', open: true },
-            only_admins_can_pause_the_game: { label: 'Apenas admins pausam', category: 'Autosave', open: true },
-            non_blocking_saving: { label: 'Salvamento não bloqueante', category: 'Autosave', open: true },
+            autosave_only_on_server: { label: t('settings.autosave_only_on_server'), category: t('settings.cat_autosave'), open: true },
+            auto_pause: { label: t('settings.auto_pause'), category: t('settings.cat_autosave'), open: true },
+            auto_pause_when_players_connect: { label: t('settings.auto_pause_when_connect'), category: t('settings.cat_autosave'), open: true },
+            only_admins_can_pause_the_game: { label: t('settings.only_admins_pause'), category: t('settings.cat_autosave'), open: true },
+            non_blocking_saving: { label: t('settings.non_blocking_saving'), category: t('settings.cat_autosave'), open: true },
 
             max_upload_in_kilobytes_per_second: {
-                label: 'Upload Rate', category: 'Upload', open: true, min: 0, step: 1,
-                hint: 'KB/s de upload. 0 = ilimitado.',
+                label: t('settings.max_upload_kbps'), category: t('settings.cat_upload'), open: true, min: 0, step: 1,
+                hint: t('settings.max_upload_kbps_hint'),
             },
             max_upload_slots: {
-                label: 'Upload Slots', category: 'Upload', open: true, min: 0, step: 1,
-                hint: 'Slots de upload. 0 = ilimitado.',
+                label: t('settings.max_upload_slots'), category: t('settings.cat_upload'), open: true, min: 0, step: 1,
+                hint: t('settings.max_upload_slots_hint'),
             },
             minimum_latency_in_ticks: {
-                label: 'Latência mínima', category: 'Upload', open: true, min: 0, step: 1,
-                hint: 'Ticks mínimos de latência (1 tick = 16ms). 0 = sem mínimo.',
+                label: t('settings.min_latency_ticks'), category: t('settings.cat_upload'), open: true, min: 0, step: 1,
+                hint: t('settings.min_latency_ticks_hint'),
             },
         };
 
@@ -587,9 +584,9 @@
         function fieldCategory(field) {
             const meta = SETTINGS_META[field.path];
             if (meta && meta.category) return meta.category;
-            if (ADVANCED_PATHS.includes(field.path)) return 'Avançado';
-            if (field.type === 'object' && field.key === 'visibility') return 'Rede';
-            return 'Avançado';
+            if (ADVANCED_PATHS.includes(field.path)) return t('settings.cat_advanced');
+            if (field.type === 'object' && field.key === 'visibility') return t('settings.cat_network');
+            return t('settings.cat_advanced');
         }
 
         function tooltipHtml(field) {
@@ -611,12 +608,12 @@
             if (meta.type === 'tags') {
                 const arr = Array.isArray(field.value) ? field.value : [];
                 const text = arr.join(', ');
-                return `<input type="text" class="tags-input" name="${name}" value="${escapeAttr(text)}" data-tags="1" placeholder="game, tags" />`;
+                return `<input type="text" class="tags-input" name="${name}" value="${escapeAttr(text)}" data-tags="1" placeholder="${t('settings.tags_placeholder')}" />`;
             }
             if (meta.type === 'password') {
                 return `<span class="password-field">
                     <input type="password" name="${name}" value="${escapeAttr(field.value || '')}" data-mask="1" />
-                    <button type="button" class="text-button reveal-button" data-reveal>Mostrar</button>
+                    <button type="button" class="text-button reveal-button" data-reveal>${t('config.show')}</button>
                 </span>`;
             }
             if (meta.type === 'select') {
@@ -684,16 +681,16 @@
 
         function renderSettingsFields(fields) {
             const categories = {
-                'Geral': [], 'Rede': [], 'Jogadores': [], 'Autosave': [], 'Upload': [], 'Avançado': [],
+                [t('settings.cat_general')]: [], [t('settings.cat_network')]: [], [t('settings.cat_players')]: [], [t('settings.cat_autosave')]: [], [t('settings.cat_upload')]: [], [t('settings.cat_advanced')]: [],
             };
 
             for (const field of fields) {
                 const cat = fieldCategory(field);
-                (categories[cat] || categories['Avançado']).push(field);
+                (categories[cat] || categories[t('settings.cat_advanced')]).push(field);
             }
 
-            const columnLeft = ['Geral', 'Jogadores', 'Upload'];
-            const columnRight = ['Rede', 'Autosave', 'Avançado'];
+            const columnLeft = [t('settings.cat_general'), t('settings.cat_players'), t('settings.cat_upload')];
+            const columnRight = [t('settings.cat_network'), t('settings.cat_autosave'), t('settings.cat_advanced')];
 
             function renderColumn(cats) {
                 return cats.map((cat) => {
@@ -722,10 +719,10 @@
                     if (!input) return;
                     if (input.type === 'password') {
                         input.type = 'text';
-                        btn.textContent = 'Ocultar';
+                        btn.textContent = t('config.hide');
                     } else {
                         input.type = 'password';
-                        btn.textContent = 'Mostrar';
+                        btn.textContent = t('config.show');
                     }
                 });
             });
@@ -775,7 +772,7 @@
                         const icon = s.querySelector('.summary-icon');
                         if (icon) icon.textContent = anyClosed ? '▼' : '▶';
                     });
-                    toggleAll.textContent = anyClosed ? 'Recolher tudo' : 'Expandir tudo';
+                    toggleAll.textContent = anyClosed ? t('config.collapse_all') : t('config.expand_all');
                 };
             }
         }
@@ -793,13 +790,13 @@
             try {
                 const response = await fetch('/install/progress');
                 if (!response.ok) {
-                    installModalMessage.textContent = 'Não foi possível obter o progresso.';
+                    installModalMessage.textContent = t('modal.progress_error');
                     return;
                 }
                 const progress = await response.json();
                 const { status, stage, message, downloaded, total } = progress;
 
-                installModalMessage.textContent = message || 'Progresso recebido.';
+                installModalMessage.textContent = message || t('modal.progress_received');
 
                 if (stage === 'download' && total > 0) {
                     const percent = Math.min(100, Math.round((downloaded / total) * 100));
@@ -807,22 +804,22 @@
                     installProgressMeta.textContent = `${percent}% (${downloaded}/${total} bytes)`;
                 } else if (stage === 'install') {
                     installProgressFill.style.width = '100%';
-                    installProgressMeta.textContent = 'Instalando os arquivos do servidor...';
+                    installProgressMeta.textContent = t('modal.installing');
                 } else if (status === 'complete') {
                     installProgressFill.style.width = '100%';
-                    installProgressMeta.textContent = 'Instalação concluída.';
+                    installProgressMeta.textContent = t('modal.complete');
                     try { fetchAndRenderSettings(); } catch (e) { /* ignore */ }
                     clearInterval(installInterval);
                 } else if (status === 'error') {
                     installProgressFill.style.width = '100%';
-                    installProgressMeta.textContent = `Erro: ${message}`;
+                    installProgressMeta.textContent = `${t('modal.unknown_error')}: ${message}`;
                     clearInterval(installInterval);
                 } else {
                     installProgressFill.style.width = '0%';
-                    installProgressMeta.textContent = message || 'Aguardando ação...';
+                    installProgressMeta.textContent = message || t('modal.waiting_action');
                 }
             } catch (err) {
-                installModalMessage.textContent = 'Erro ao acessar o progresso.';
+                installModalMessage.textContent = t('modal.progress_fetch_error');
                 installProgressMeta.textContent = err.message;
                 clearInterval(installInterval);
             }
@@ -830,9 +827,9 @@
 
         async function startInstallation() {
             openInstallModal();
-            installModalMessage.textContent = 'Iniciando download...';
+            installModalMessage.textContent = t('modal.preparing');
             installProgressFill.style.width = '0%';
-            installProgressMeta.textContent = 'Aguardando início...';
+            installProgressMeta.textContent = t('modal.waiting');
 
             const response = await fetch('/install/start', {
                 method: 'POST',
@@ -842,8 +839,8 @@
 
             if (!response.ok) {
                 const error = await response.json().catch(() => ({}));
-                installModalMessage.textContent = 'Falha ao iniciar a instalação';
-                installProgressMeta.textContent = error.error || 'Erro desconhecido';
+                installModalMessage.textContent = t('modal.start_failed');
+                installProgressMeta.textContent = error.error || t('modal.unknown_error');
                 return;
             }
 
@@ -904,7 +901,7 @@
 
         function formatDate(timestamp) {
             if (!timestamp) return '--';
-            return new Date(timestamp * 1000).toLocaleString('pt-BR');
+            return new Date(timestamp * 1000).toLocaleString(currentLang === 'zh_CN' ? 'zh-CN' : currentLang.replace('_', '-'));
         }
 
         function percent(used, total) {
@@ -981,7 +978,7 @@
             if (!activeSave || !activeSave.name) {
                 card.classList.add('active-save-empty');
                 badgeEl.style.display = 'none';
-                nameEl.textContent = 'Nenhum save ativo';
+                nameEl.textContent = t('status.no_save');
                 if (sizeEl) sizeEl.textContent = '--';
                 if (modifiedEl) modifiedEl.textContent = '--';
                 return;
@@ -1070,7 +1067,7 @@
                     const tr = document.createElement('tr');
                     tr.dataset.filename = save.name;
 
-                    const date = new Date(save.modified * 1000).toLocaleDateString('pt-BR');
+                    const date = new Date(save.modified * 1000).toLocaleDateString(currentLang === 'zh_CN' ? 'zh-CN' : currentLang.replace('_', '-'));
                     const size = (save.size / (1024 * 1024)).toFixed(1) + ' MB';
                     const isActive = save.active;
 
@@ -1080,14 +1077,14 @@
                         <td class="save-size">${size}</td>
                         <td>
                             <span class="badge ${isActive ? 'badge-active' : 'badge-inactive'}">
-                                ${isActive ? 'ATIVO' : 'INATIVO'}
+                                ${isActive ? t('status.active') : t('status.inactive')}
                             </span>
                         </td>
                         <td>
                             <div class="button-row">
-                                ${!isActive ? `<button type="button" class="text-button select-save" data-filename="${escapeHtml(save.name)}">Selecionar</button>` : ''}
-                                <button type="button" class="text-button rename-save" data-filename="${escapeHtml(save.name)}">Renomear</button>
-                                ${!isActive ? `<button type="button" class="text-button danger-button delete-save" data-filename="${escapeHtml(save.name)}">Excluir</button>` : ''}
+                                ${!isActive ? `<button type="button" class="text-button select-save" data-filename="${escapeHtml(save.name)}">${t('saves.select')}</button>` : ''}
+                                <button type="button" class="text-button rename-save" data-filename="${escapeHtml(save.name)}">${t('saves.rename')}</button>
+                                ${!isActive ? `<button type="button" class="text-button danger-button delete-save" data-filename="${escapeHtml(save.name)}">${t('saves.delete')}</button>` : ''}
                             </div>
                         </td>
                     `;
@@ -1115,14 +1112,14 @@
                 });
                 if (!res.ok) {
                     const err = await res.json().catch(() => ({}));
-                    alert(err.error || 'Falha ao criar mundo');
+                    alert(err.error || t('error.create_world_failed'));
                     return;
                 }
                 nameInput.value = '';
                 if (seedInput) seedInput.value = '';
                 loadSaves();
             } catch (err) {
-                alert('Erro ao criar mundo');
+                alert(t('error.create_world_exception'));
             }
         }
 
@@ -1135,32 +1132,32 @@
                 });
                 if (!res.ok) {
                     const err = await res.json().catch(() => ({}));
-                    alert(err.error || 'Falha ao selecionar save');
+                    alert(err.error || t('error.select_save_failed'));
                     return;
                 }
                 loadSaves();
             } catch (err) {
-                alert('Erro ao selecionar save');
+                alert(t('error.select_save_exception'));
             }
         }
 
         async function deleteSave(filename) {
-            if (!confirm(`Tem certeza que deseja excluir "${filename}"?`)) return;
+            if (!confirm(t('confirm.delete_save').replace('{filename}', filename))) return;
             try {
                 const res = await fetch(`/api/saves/${encodeURIComponent(filename)}`, { method: 'DELETE' });
                 if (!res.ok) {
                     const err = await res.json().catch(() => ({}));
-                    alert(err.error || 'Falha ao excluir save');
+                    alert(err.error || t('error.delete_save_failed'));
                     return;
                 }
                 loadSaves();
             } catch (err) {
-                alert('Erro ao excluir save');
+                alert(t('error.delete_save_exception'));
             }
         }
 
         async function renameSave(filename) {
-            const newName = prompt('Novo nome do save (sem espaços, termine com .zip):', filename);
+            const newName = prompt(t('prompt.rename_save'), filename);
             if (!newName || newName === filename) return;
             try {
                 const res = await fetch('/api/saves/rename', {
@@ -1170,12 +1167,12 @@
                 });
                 if (!res.ok) {
                     const err = await res.json().catch(() => ({}));
-                    alert(err.error || 'Falha ao renomear save');
+                    alert(err.error || t('error.rename_save_failed'));
                     return;
                 }
                 loadSaves();
             } catch (err) {
-                alert('Erro ao renomear save');
+                alert(t('error.rename_save_exception'));
             }
         }
 
@@ -1205,6 +1202,7 @@
 
         let currentLang = 'en';
         let translations = {};
+        let fallbackTranslations = {};
 
         function detectBrowserLanguage() {
             const nav = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
@@ -1236,7 +1234,11 @@
         }
 
         function t(key) {
-            return translations[key] || key;
+            const value = translations[key];
+            if (value !== undefined && value !== '') return value;
+            const fallback = fallbackTranslations[key];
+            if (fallback !== undefined && fallback !== '') return fallback;
+            return key;
         }
 
         function translatePage() {
@@ -1255,8 +1257,11 @@
 
         async function applyLanguage(lang) {
             currentLang = lang;
-            translations = await fetchTranslations(lang);
+            const fetched = await fetchTranslations(lang);
+            translations = Object.assign({}, fallbackTranslations, fetched);
             translatePage();
+            try { loadSaves(); } catch (e) { /* ignore */ }
+            try { fetchAndRenderSettings(); } catch (e) { /* ignore */ }
         }
 
         async function changeLanguage(lang) {
@@ -1273,6 +1278,7 @@
         }
 
         async function initLanguage() {
+            fallbackTranslations = await fetchTranslations('en');
             const saved = await loadSettings();
             const lang = saved || detectBrowserLanguage();
             const select = document.getElementById('language-select');
