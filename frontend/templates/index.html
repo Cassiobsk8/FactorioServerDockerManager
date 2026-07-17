@@ -21,6 +21,7 @@
 
             <nav class="tabs" aria-label="Main navigation">
                 <button class="tab-button active" data-tab="status">Status</button>
+                <button class="tab-button" data-tab="saves">Saves</button>
                 <button class="tab-button" data-tab="config">Configuração</button>
                 <button class="tab-button" data-tab="about">Sobre</button>
             </nav>
@@ -41,7 +42,7 @@
 
                     <aside class="panel card status-card">
                         <div class="panel-header">
-                            <h2>Status</h2>
+                            <h2>Dashboard</h2>
                         </div>
                         <div class="status-info">
                             <div>
@@ -51,6 +52,32 @@
                             <div>
                                 <span class="status-label">Install status</span>
                                 <p class="status-value" id="install-status">{{ install_status }}</p>
+                            </div>
+                        </div>
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <span class="metric-label">CPU</span>
+                                <span class="metric-value" id="metric-cpu">0%</span>
+                            </div>
+                            <div class="metric-card">
+                                <span class="metric-label">RAM</span>
+                                <span class="metric-value" id="metric-ram">0 MB</span>
+                            </div>
+                            <div class="metric-card">
+                                <span class="metric-label">Uptime</span>
+                                <span class="metric-value" id="metric-uptime">0s</span>
+                            </div>
+                            <div class="metric-card">
+                                <span class="metric-label">Disk</span>
+                                <span class="metric-value" id="metric-disk">0 MB</span>
+                            </div>
+                            <div class="metric-card">
+                                <span class="metric-label">Versão</span>
+                                <span class="metric-value" id="metric-version">--</span>
+                            </div>
+                            <div class="metric-card">
+                                <span class="metric-label">Save ativo</span>
+                                <span class="metric-value" id="metric-save">--</span>
                             </div>
                         </div>
                         <div class="action-group">
@@ -68,6 +95,84 @@
                 </div>
             </div>
 
+            <div class="tab-panel" id="saves-panel">
+                <div class="panel-grid config-grid">
+                    <section class="panel card config-card">
+                        <div class="panel-header">
+                            <h2>Criar Novo Mundo</h2>
+                        </div>
+                        <form id="create-save-form" class="stacked-form">
+                            <label>
+                                Nome do Mundo
+                                <input type="text" id="new-save-name" placeholder="meu_mundo" required />
+                            </label>
+                            <label>
+                                Seed (opcional)
+                                <input type="text" id="new-save-seed" placeholder="123456789" />
+                            </label>
+                            <button type="submit">Criar Mundo</button>
+                        </form>
+                    </section>
+
+                    <section class="panel card config-card">
+                        <div class="panel-header">
+                            <h2>Upload de Save</h2>
+                        </div>
+                        <form action="/upload-save" method="post" enctype="multipart/form-data" class="stacked-form">
+                            <label>
+                                Arquivo .zip
+                                <input type="file" name="save_file" accept=".zip" required />
+                            </label>
+                            <button type="submit">Enviar save</button>
+                        </form>
+                    </section>
+
+                    <section class="panel card config-card" style="grid-column: 1 / -1;">
+                        <div class="panel-header">
+                            <h2>Lista de Saves</h2>
+                        </div>
+                        <div id="saves-empty" style="display:none;">
+                            <p>Nenhum mundo configurado. Crie um novo mundo ou faça upload de um save.</p>
+                        </div>
+                        <table class="saves-table" id="saves-table">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Data</th>
+                                    <th>Tamanho</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="saves-list">
+                                {% for filename in save_files %}
+                                <tr data-filename="{{ filename }}">
+                                    <td>{{ filename }}</td>
+                                    <td class="save-date">--</td>
+                                    <td class="save-size">--</td>
+                                    <td>
+                                        <span class="badge {% if filename == active_save %}badge-active{% else %}badge-inactive{% endif %}">
+                                            {% if filename == active_save %}ATIVO{% else %}INATIVO{% endif %}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="button-row">
+                                            {% if filename != active_save %}
+                                            <button type="button" class="text-button select-save" data-filename="{{ filename }}">Selecionar</button>
+                                            {% endif %}
+                                            <button type="button" class="text-button rename-save" data-filename="{{ filename }}">Renomear</button>
+                                            {% if filename != active_save %}
+                                            <button type="button" class="text-button danger-button delete-save" data-filename="{{ filename }}">Excluir</button>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </section>
+                </div>
+            </div>
             <div class="tab-panel" id="config-panel">
                 <div class="panel-grid config-grid">
                     <section class="panel card config-card">
@@ -83,7 +188,7 @@
                                 <input type="text" name="archive_path" id="archive-path"
                                     placeholder="Use o download oficial do Factorio Linux" />
                             </label>
-                            <button type="button" id="install-button">Instalar servidor</button>
+                            <button type="button" class="btn-install" id="install-button" style="margin-bottom: 20px;">Instalar servidor</button>
                         </form>
                         <form action="/install/clear" method="post"
                             onsubmit="return confirm('Tem certeza que deseja deletar a instalação do servidor? Isso removerá apenas os arquivos de instalação e logs, sem excluir saves nem configuração.');">
@@ -159,25 +264,6 @@
 
                             <button type="submit">Salvar configurações do servidor</button>
                         </form>
-                    </section>
-
-                    <section class="panel card config-card">
-                        <div class="panel-header">
-                            <h2>Save files</h2>
-                        </div>
-                        <form action="/upload-save" method="post" enctype="multipart/form-data">
-                            <input type="file" name="save_file" />
-                            <button type="submit">Enviar save</button>
-                        </form>
-                        {% if save_files %}
-                        <ul class="file-list">
-                            {% for filename in save_files %}
-                            <li><a href="/download-save/{{ filename }}">{{ filename }}</a></li>
-                            {% endfor %}
-                        </ul>
-                        {% else %}
-                        <p>Nenhum save enviado ainda.</p>
-                        {% endif %}
                     </section>
                 </div>
             </div>
@@ -408,15 +494,49 @@
             }
         }
 
+        async function fetchMetrics() {
+            const cpuEl = document.getElementById('metric-cpu');
+            const ramEl = document.getElementById('metric-ram');
+            const uptimeEl = document.getElementById('metric-uptime');
+            const diskEl = document.getElementById('metric-disk');
+            const versionEl = document.getElementById('metric-version');
+            const saveEl = document.getElementById('metric-save');
+
+            if (!cpuEl) return;
+
+            try {
+                const response = await fetch('/api/status');
+                if (!response.ok) return;
+                const data = await response.json();
+                const server = data.server || {};
+
+                if (cpuEl) cpuEl.textContent = `${server.cpu_percent ?? 0}%`;
+                if (ramEl) ramEl.textContent = `${server.ram_mb ?? 0} MB`;
+                if (uptimeEl) uptimeEl.textContent = formatUptime(server.uptime_seconds ?? 0);
+                if (diskEl) diskEl.textContent = `${server.disk_usage_mb ?? 0} MB`;
+                if (versionEl) versionEl.textContent = server.factorio_version || '--';
+                if (saveEl) saveEl.textContent = server.active_save || '--';
+            } catch (err) {
+                // ignore
+            }
+        }
+
+        function formatUptime(seconds) {
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            const s = seconds % 60;
+            if (h > 0) return `${h}h ${m}m`;
+            if (m > 0) return `${m}m ${s}s`;
+            return `${s}s`;
+        }
+
         if (logsOutput) {
             fetchLogs();
             logsInterval = setInterval(fetchLogs, 2000);
         }
 
-        if (logsOutput) {
-            fetchStatus();
-            setInterval(fetchStatus, 2000);
-        }
+        fetchMetrics();
+        setInterval(fetchMetrics, 2000);
 
         // Poll install progress in background to auto-reload server-settings when done
         let lastInstallStatus = null;
@@ -450,6 +570,163 @@
         if (closeModal) {
             closeModal.addEventListener('click', closeInstallModal);
         }
+
+        async function loadSaves() {
+            const tbody = document.getElementById('saves-list');
+            const empty = document.getElementById('saves-empty');
+            const table = document.getElementById('saves-table');
+            if (!tbody) return;
+
+            try {
+                const res = await fetch('/api/saves');
+                if (!res.ok) return;
+                const data = await res.json();
+                const saves = data.saves || [];
+
+                tbody.innerHTML = '';
+                if (saves.length === 0) {
+                    if (empty) empty.style.display = 'block';
+                    if (table) table.style.display = 'none';
+                    return;
+                }
+
+                if (empty) empty.style.display = 'none';
+                if (table) table.style.display = 'table';
+
+                for (const save of saves) {
+                    const tr = document.createElement('tr');
+                    tr.dataset.filename = save.name;
+
+                    const date = new Date(save.modified * 1000).toLocaleDateString('pt-BR');
+                    const size = (save.size / (1024 * 1024)).toFixed(1) + ' MB';
+                    const isActive = save.active;
+
+                    tr.innerHTML = `
+                        <td>${escapeHtml(save.name)}</td>
+                        <td class="save-date">${date}</td>
+                        <td class="save-size">${size}</td>
+                        <td>
+                            <span class="badge ${isActive ? 'badge-active' : 'badge-inactive'}">
+                                ${isActive ? 'ATIVO' : 'INATIVO'}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="button-row">
+                                ${!isActive ? `<button type="button" class="text-button select-save" data-filename="${escapeHtml(save.name)}">Selecionar</button>` : ''}
+                                <button type="button" class="text-button rename-save" data-filename="${escapeHtml(save.name)}">Renomear</button>
+                                ${!isActive ? `<button type="button" class="text-button danger-button delete-save" data-filename="${escapeHtml(save.name)}">Excluir</button>` : ''}
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+            } catch (err) {
+                // ignore
+            }
+        }
+
+        async function createSave() {
+            const nameInput = document.getElementById('new-save-name');
+            const seedInput = document.getElementById('new-save-seed');
+            if (!nameInput) return;
+
+            const name = nameInput.value.trim();
+            const seed = seedInput ? seedInput.value.trim() : null;
+            if (!name) return;
+
+            try {
+                const res = await fetch('/api/saves/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, seed }),
+                });
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    alert(err.error || 'Falha ao criar mundo');
+                    return;
+                }
+                nameInput.value = '';
+                if (seedInput) seedInput.value = '';
+                loadSaves();
+            } catch (err) {
+                alert('Erro ao criar mundo');
+            }
+        }
+
+        async function selectSave(filename) {
+            try {
+                const res = await fetch('/api/saves/select', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ filename }),
+                });
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    alert(err.error || 'Falha ao selecionar save');
+                    return;
+                }
+                loadSaves();
+            } catch (err) {
+                alert('Erro ao selecionar save');
+            }
+        }
+
+        async function deleteSave(filename) {
+            if (!confirm(`Tem certeza que deseja excluir "${filename}"?`)) return;
+            try {
+                const res = await fetch(`/api/saves/${encodeURIComponent(filename)}`, { method: 'DELETE' });
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    alert(err.error || 'Falha ao excluir save');
+                    return;
+                }
+                loadSaves();
+            } catch (err) {
+                alert('Erro ao excluir save');
+            }
+        }
+
+        async function renameSave(filename) {
+            const newName = prompt('Novo nome do save (sem espaços, termine com .zip):', filename);
+            if (!newName || newName === filename) return;
+            try {
+                const res = await fetch('/api/saves/rename', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ old_name: filename, new_name: newName }),
+                });
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    alert(err.error || 'Falha ao renomear save');
+                    return;
+                }
+                loadSaves();
+            } catch (err) {
+                alert('Erro ao renomear save');
+            }
+        }
+
+        document.addEventListener('click', (e) => {
+            const target = e.target;
+            if (target.classList.contains('select-save')) {
+                selectSave(target.dataset.filename);
+            } else if (target.classList.contains('delete-save')) {
+                deleteSave(target.dataset.filename);
+            } else if (target.classList.contains('rename-save')) {
+                renameSave(target.dataset.filename);
+            }
+        });
+
+        const createForm = document.getElementById('create-save-form');
+        if (createForm) {
+            createForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                createSave();
+            });
+        }
+
+        setInterval(loadSaves, 5000);
+        loadSaves();
     </script>
 </body>
 

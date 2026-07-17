@@ -1,4 +1,4 @@
-import io
+import json
 import os
 from pathlib import Path
 
@@ -29,7 +29,7 @@ def test_get_save_directory_creates_directory(tmp_path):
         docker_manager.SAVE_DIR = original_save_dir
 
 
-def test_list_save_files_returns_only_files(tmp_path):
+def test_list_save_files_returns_only_zip_files(tmp_path):
     original_save_dir = docker_manager.SAVE_DIR
     docker_manager.SAVE_DIR = tmp_path / "saves"
     docker_manager.SAVE_DIR.mkdir(parents=True, exist_ok=True)
@@ -39,7 +39,7 @@ def test_list_save_files_returns_only_files(tmp_path):
 
     try:
         result = docker_manager.list_save_files()
-        assert result == ["a.zip", "b.txt"]
+        assert result == ["a.zip"]
     finally:
         docker_manager.SAVE_DIR = original_save_dir
 
