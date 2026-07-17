@@ -242,9 +242,10 @@
                     <section class="panel card config-card settings-card">
                         <div class="panel-header">
                             <h2>server-settings.json</h2>
+                            <button type="button" class="text-button" id="toggle-all-sections">Expandir tudo</button>
                         </div>
                         <p class="settings-description">Campos carregados de <code>config/server-settings.json</code>.
-                            Comentários do arquivo aparecem antes de cada opção.</p>
+                            Passe o mouse no <span class="tooltip-inline" data-tip="Dica de ajuda">ⓘ</span> para ver a descrição de cada opção.</p>
                         <form id="server-settings-form" action="/config" method="post" class="stacked-form">
                             <div id="server-settings-container">
                                 {% macro render_settings(fields) %}
@@ -374,6 +375,7 @@
                     return;
                 }
                 container.innerHTML = renderSettingsFields(fields);
+                bindSettingsFieldEvents();
             } catch (err) {
                 // ignore
             }
@@ -388,27 +390,283 @@
                 .replace(/'/g, '&#39;');
         }
 
-        function renderSettingsFields(fields) {
-            let html = '';
-            for (const field of fields) {
-                if (field.type === 'object') {
-                    html += `<details class="settings-section" open><summary><strong>${escapeHtml(field.key)}</strong>`;
-                    if (field.comment) html += `<span class="field-comment">${escapeHtml(field.comment)}</span>`;
-                    html += `</summary>`;
-                    html += renderSettingsFields(field.children || []);
-                    html += `</details>`;
-                } else if (field.type === 'boolean') {
-                    html += `<label>${escapeHtml(field.comment || field.key)}<select name="settings.${escapeHtml(field.path)}">`;
-                    html += `<option value="true" ${field.value ? 'selected' : ''}>true</option>`;
-                    html += `<option value="false" ${!field.value ? 'selected' : ''}>false</option>`;
-                    html += `</select></label>`;
-                } else if (field.type === 'json') {
-                    html += `<label>${escapeHtml(field.comment || field.key)}<textarea name="settings.${escapeHtml(field.path)}" rows="6">${escapeHtml(field.value || '')}</textarea></label>`;
-                } else {
-                    html += `<label>${escapeHtml(field.comment || field.key)}<input type="text" name="settings.${escapeHtml(field.path)}" value="${escapeHtml(field.value || '')}" /></label>`;
-                }
+        function escapeAttr(str) {
+            return escapeHtml(str);
+        }
+
+        function formatComment(comment) {
+            if (Array.isArray(comment)) return comment.map((c) => escapeHtml(c)).join('\n');
+            if (typeof comment === 'string') return escapeHtml(comment);
+            return '';
+        }
+
+        const SETTINGS_META = {
+            name: { label: 'Nome do servidor', category: 'Geral', open: true },
+            description: { label: 'Descrição', category: 'Geral', open: true },
+            tags: { label: 'Tags', category: 'Geral', open: true, type: 'tags' },
+            game_password: { label: 'Senha do jogo', category: 'Geral', open: true, type: 'password' },
+
+            visibility: { label: 'Visibilidade', category: 'Rede', open: true, type: 'visibility' },
+            'visibility.public': { label: 'Público', category: 'Rede' },
+            'visibility.lan': { label: 'LAN', category: 'Rede' },
+            require_user_verification: { label: 'Verificação de Usuário', category: 'Rede', open: true },
+
+            username: { label: 'Usuário', category: 'Avançado', type: 'password', hint: 'Login do factorio.com. Necessário para servidores públicos.' },
+            password: { label: 'Senha da conta', category: 'Avançado', type: 'password', hint: 'Senha do factorio.com. Necessário para servidores públicos.' },
+            token: { label: 'Token', category: 'Avançado', type: 'password', hint: 'Token de autenticação. Pode substituir a senha acima.' },
+
+            max_players: {
+                label: 'Máximo de jogadores', category: 'Jogadores', open: true, min: 0, step: 1,
+                hint: 'Admins podem entrar mesmo com servidor cheio. 0 = ilimitado.',
+            },
+            ignore_player_limit_for_returning_players: {
+                label: 'Ignorar limite para jogadores recorrentes', category: 'Jogadores', open: true,
+            },
+            allow_commands: {
+                label: 'Permissões de comandos', category: 'Jogadores', open: true, type: 'select',
+                options: ['true', 'false', 'admins-only'],
+                hint: 'Valores possíveis: true, false e admins-only.',
+            },
+            afk_autokick_interval: {
+                label: 'AFK Kick', category: 'Jogadores', open: true, min: 0, step: 1,
+                hint: 'Minutos até alguém ser expulso por inatividade. 0 = nunca.',
+            },
+
+            autosave_interval: {
+                label: 'Intervalo', category: 'Autosave', open: true, min: 0, step: 1,
+                hint: 'Intervalo de autosave em minutos.',
+            },
+            autosave_slots: {
+                label: 'Slots', category: 'Autosave', open: true, min: 1, step: 1,
+                hint: 'Slots de autosave, ciclados a cada autosave.',
+            },
+            autosave_only_on_server: { label: 'Autosave apenas no servidor', category: 'Autosave', open: true },
+            auto_pause: { label: 'Auto Pause', category: 'Autosave', open: true },
+            auto_pause_when_players_connect: { label: 'Auto Pause ao conectar', category: 'Autosave', open: true },
+            only_admins_can_pause_the_game: { label: 'Apenas admins pausam', category: 'Autosave', open: true },
+            non_blocking_saving: { label: 'Salvamento não bloqueante', category: 'Autosave', open: true },
+
+            max_upload_in_kilobytes_per_second: {
+                label: 'Upload Rate', category: 'Upload', open: true, min: 0, step: 1,
+                hint: 'KB/s de upload. 0 = ilimitado.',
+            },
+            max_upload_slots: {
+                label: 'Upload Slots', category: 'Upload', open: true, min: 0, step: 1,
+                hint: 'Slots de upload. 0 = ilimitado.',
+            },
+            minimum_latency_in_ticks: {
+                label: 'Latência mínima', category: 'Upload', open: true, min: 0, step: 1,
+                hint: 'Ticks mínimos de latência (1 tick = 16ms). 0 = sem mínimo.',
+            },
+        };
+
+        const ADVANCED_PATHS = [
+            'username', 'password', 'token',
+            'max_heartbeats_per_second',
+            'minimum_segment_size', 'minimum_segment_size_peer_count',
+            'maximum_segment_size', 'maximum_segment_size_peer_count',
+        ];
+
+        function fieldLabel(field) {
+            const meta = SETTINGS_META[field.path];
+            if (meta && meta.label) return meta.label;
+            return field.key;
+        }
+
+        function fieldCategory(field) {
+            const meta = SETTINGS_META[field.path];
+            if (meta && meta.category) return meta.category;
+            if (ADVANCED_PATHS.includes(field.path)) return 'Avançado';
+            if (field.type === 'object' && field.key === 'visibility') return 'Rede';
+            return 'Avançado';
+        }
+
+        function tooltipHtml(field) {
+            const meta = SETTINGS_META[field.path];
+            let tip = '';
+            if (meta && meta.hint) tip = meta.hint;
+            else if (field.comment) tip = Array.isArray(field.comment) ? field.comment.join(' ') : field.comment;
+            if (!tip) return '';
+            return `<span class="field-tooltip" tabindex="0" role="button" aria-label="Ajuda">ⓘ<span class="tooltip-pop">${escapeHtml(tip)}</span></span>`;
+        }
+
+        function renderInput(field) {
+            const name = `settings.${escapeAttr(field.path)}`;
+            const meta = SETTINGS_META[field.path] || {};
+
+            if (meta.type === 'visibility') {
+                return '';
             }
-            return html;
+            if (meta.type === 'tags') {
+                const arr = Array.isArray(field.value) ? field.value : [];
+                const text = arr.join(', ');
+                return `<input type="text" class="tags-input" name="${name}" value="${escapeAttr(text)}" data-tags="1" placeholder="game, tags" />`;
+            }
+            if (meta.type === 'password') {
+                return `<span class="password-field">
+                    <input type="password" name="${name}" value="${escapeAttr(field.value || '')}" data-mask="1" />
+                    <button type="button" class="text-button reveal-button" data-reveal>Mostrar</button>
+                </span>`;
+            }
+            if (meta.type === 'select') {
+                const opts = meta.options || [];
+                const sel = opts.map((o) => `<option value="${escapeAttr(o)}" ${String(field.value) === String(o) ? 'selected' : ''}>${escapeHtml(o)}</option>`).join('');
+                return `<select name="${name}">${sel}</select>`;
+            }
+            if (field.type === 'boolean') {
+                return `<select name="${name}">
+                    <option value="true" ${field.value ? 'selected' : ''}>true</option>
+                    <option value="false" ${!field.value ? 'selected' : ''}>false</option>
+                </select>`;
+            }
+            if (field.type === 'integer' || field.type === 'number') {
+                const min = meta.min !== undefined ? `min="${meta.min}"` : '';
+                const max = meta.max !== undefined ? `max="${meta.max}"` : '';
+                const step = meta.step !== undefined ? `step="${meta.step}"` : '';
+                return `<input type="number" name="${name}" value="${escapeAttr(field.value)}" ${min} ${max} ${step} />`;
+            }
+            if (field.type === 'json') {
+                return `<textarea name="${name}" rows="6">${escapeHtml(field.value || '')}</textarea>`;
+            }
+            return `<input type="text" name="${name}" value="${escapeAttr(field.value || '')}" />`;
+        }
+
+        function renderVisibilityChildren(children) {
+            return children.map((child) => {
+                const cname = `settings.${escapeAttr(child.path)}`;
+                const checked = child.value ? 'checked' : '';
+                const label = fieldLabel(child);
+                return `<label class="checkbox-row">
+                    <input type="checkbox" name="${cname}" value="true" data-bool="1" ${checked} />
+                    <input type="hidden" name="${cname}" value="${child.value ? 'true' : 'false'}" data-bool-hidden="1" />
+                    <span>${escapeHtml(label)}</span>
+                </label>`;
+            }).join('');
+        }
+
+        function renderField(field) {
+            if (field.type === 'object') {
+                if (field.key === 'visibility') {
+                    const meta = SETTINGS_META[field.path] || {};
+                    return `<div class="field-row">
+                        <div class="field-label">${escapeHtml(fieldLabel(field))} ${tooltipHtml(field)}</div>
+                        <div class="visibility-box">
+                            ${renderVisibilityChildren(field.children || [])}
+                        </div>
+                    </div>`;
+                }
+                return `<div class="field-row">
+                    <div class="field-label">${escapeHtml(fieldLabel(field))} ${tooltipHtml(field)}</div>
+                    <div class="object-children">
+                        ${(field.children || []).map(renderField).join('')}
+                    </div>
+                </div>`;
+            }
+
+            if (SETTINGS_META[field.path] && SETTINGS_META[field.path].type === 'visibility') return '';
+
+            return `<div class="field-row">
+                <div class="field-label">${escapeHtml(fieldLabel(field))} ${tooltipHtml(field)}</div>
+                ${renderInput(field)}
+            </div>`;
+        }
+
+        function renderSettingsFields(fields) {
+            const categories = {
+                'Geral': [], 'Rede': [], 'Jogadores': [], 'Autosave': [], 'Upload': [], 'Avançado': [],
+            };
+
+            for (const field of fields) {
+                const cat = fieldCategory(field);
+                (categories[cat] || categories['Avançado']).push(field);
+            }
+
+            const columnLeft = ['Geral', 'Jogadores', 'Upload'];
+            const columnRight = ['Rede', 'Autosave', 'Avançado'];
+
+            function renderColumn(cats) {
+                return cats.map((cat) => {
+                    const items = categories[cat] || [];
+                    if (!items.length) return '';
+                    const open = (SETTINGS_META[items[0].path] && SETTINGS_META[items[0].path].open) || false;
+                    const openAttr = open ? 'open' : '';
+                    const body = items.map(renderField).join('');
+                    return `<details class="settings-section" ${openAttr} data-category="${escapeAttr(cat)}">
+                        <summary><span class="summary-icon">${open ? '▼' : '▶'}</span>${escapeHtml(cat)}</summary>
+                        <div class="section-body">${body}</div>
+                    </details>`;
+                }).join('');
+            }
+
+            return `<div class="settings-columns">
+                <div class="settings-column">${renderColumn(columnLeft)}</div>
+                <div class="settings-column">${renderColumn(columnRight)}</div>
+            </div>`;
+        }
+
+        function bindSettingsFieldEvents() {
+            document.querySelectorAll('#server-settings-container .reveal-button').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const input = btn.parentElement.querySelector('input[data-mask]');
+                    if (!input) return;
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        btn.textContent = 'Ocultar';
+                    } else {
+                        input.type = 'password';
+                        btn.textContent = 'Mostrar';
+                    }
+                });
+            });
+
+            document.querySelectorAll('#server-settings-container details.settings-section').forEach((det) => {
+                const summary = det.querySelector('summary');
+                if (!summary) return;
+                summary.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    det.open = !det.open;
+                    const icon = summary.querySelector('.summary-icon');
+                    if (icon) icon.textContent = det.open ? '▼' : '▶';
+                });
+            });
+
+            document.querySelectorAll('#server-settings-container input[data-bool]').forEach((cb) => {
+                const hidden = cb.parentElement.querySelector('input[data-bool-hidden]');
+                if (!hidden) return;
+                cb.addEventListener('change', () => {
+                    hidden.value = cb.checked ? 'true' : 'false';
+                });
+            });
+
+            const form = document.getElementById('server-settings-form');
+            if (form && !form.dataset.bound) {
+                form.dataset.bound = '1';
+                form.addEventListener('submit', () => {
+                    document.querySelectorAll('#server-settings-container input[data-tags]').forEach((input) => {
+                        const parts = input.value.split(',').map((p) => p.trim()).filter((p) => p.length);
+                        const hidden = document.createElement('input');
+                        hidden.type = 'hidden';
+                        hidden.name = input.name;
+                        hidden.value = JSON.stringify(parts);
+                        input.name = '';
+                        form.appendChild(hidden);
+                    });
+                });
+            }
+
+            const toggleAll = document.getElementById('toggle-all-sections');
+            if (toggleAll) {
+                toggleAll.onclick = () => {
+                    const sections = document.querySelectorAll('#server-settings-container details.settings-section');
+                    const anyClosed = Array.from(sections).some((s) => !s.open);
+                    sections.forEach((s) => {
+                        s.open = anyClosed;
+                        const icon = s.querySelector('.summary-icon');
+                        if (icon) icon.textContent = anyClosed ? '▼' : '▶';
+                    });
+                    toggleAll.textContent = anyClosed ? 'Recolher tudo' : 'Expandir tudo';
+                };
+            }
         }
 
         function openInstallModal() {
@@ -831,6 +1089,8 @@
 
         setInterval(loadSaves, 5000);
         loadSaves();
+
+        fetchAndRenderSettings();
     </script>
 </body>
 
