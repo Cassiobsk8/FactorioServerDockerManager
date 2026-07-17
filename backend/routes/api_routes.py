@@ -19,6 +19,7 @@ from backend.services.factorio_service import (
 from backend.services.metrics_service import get_factorio_version, get_process_metrics
 from backend.services.save_service import load_active_save, get_save_info
 from backend.services.settings_service import load_app_settings, save_app_settings
+from backend.version import APP_VERSION, RELEASE_NAME, BUILD_DATE
 from flask import Blueprint, jsonify, request
 
 logger = logging.getLogger("fsm.routes.api")
@@ -58,6 +59,9 @@ def api_status():
                 "factorio_version": get_factorio_version(),
                 "active_save": _build_active_save_payload(),
             },
+            "version": APP_VERSION,
+            "release_name": RELEASE_NAME,
+            "build_date": BUILD_DATE,
         }
     )
 

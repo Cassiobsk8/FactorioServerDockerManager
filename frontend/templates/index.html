@@ -399,6 +399,10 @@
                             <h2 data-i18n="about.hero_title">Factorio Server Manager</h2>
                             <p data-i18n="about.hero_description">Web manager for Factorio servers compatible with Docker, Linux and ZimaOS.</p>
                             <span class="about-version" data-i18n="about.version">Version</span> {{ app_version }}
+                            <div class="about-meta">
+                                <span data-i18n="about.release_name">Release</span>: {{ app_release_name }}
+                                <span data-i18n="about.build_date">Released</span>: {{ app_build_date }}
+                            </div>
                         </div>
                     </div>
 
@@ -482,6 +486,14 @@
                                 <div class="about-stat">
                                     <span class="about-stat-label" data-i18n="about.stat.current_version">Current version</span>
                                     <span class="about-stat-value">{{ app_version }}</span>
+                                </div>
+                                <div class="about-stat">
+                                    <span class="about-stat-label" data-i18n="about.stat.release_name">Release</span>
+                                    <span class="about-stat-value">{{ app_release_name }}</span>
+                                </div>
+                                <div class="about-stat">
+                                    <span class="about-stat-label" data-i18n="about.stat.build_date">Build date</span>
+                                    <span class="about-stat-value">{{ app_build_date }}</span>
                                 </div>
                                 <div class="about-stat">
                                     <span class="about-stat-label" data-i18n="about.stat.backend">Backend</span>

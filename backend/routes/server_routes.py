@@ -35,6 +35,7 @@ from backend.services.factorio_service import (
 )
 from backend.services.save_service import list_save_files, get_active_save
 from backend.services.settings_service import load_app_settings
+from backend.version import APP_VERSION, RELEASE_NAME, BUILD_DATE
 from flask import Blueprint, jsonify, redirect, render_template, request
 
 logger = logging.getLogger("fsm.routes.server")
@@ -72,7 +73,9 @@ def home():
         save_files=list_save_files(),
         active_save=get_active_save(),
         install_status=install_status,
-        app_version="2.1.0",
+        app_version=APP_VERSION,
+        app_release_name=RELEASE_NAME,
+        app_build_date=BUILD_DATE,
         language=app_settings.get("language", "en"),
         rcon_settings=rcon_settings,
     )

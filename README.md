@@ -2,6 +2,20 @@
 
 This project aims to control and monitor a Factorio server installed and run inside the same container on ZimaOS.
 
+## Current Version
+
+**2.5.0**
+
+**Release:** RCON Edition
+
+## Highlights
+
+- Persistent RCON
+- Save Manager
+- Dashboard
+- Multi-language
+- Configuration Editor
+
 ## Current scope (Level 1 MVP)
 
 The project now includes a simple web interface for:
