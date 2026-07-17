@@ -12,7 +12,7 @@ from backend.services.factorio_service import (
     log_error,
 )
 from backend.services.metrics_service import get_factorio_version, get_process_metrics
-from backend.services.save_service import load_active_save
+from backend.services.save_service import load_active_save, get_save_info
 from flask import Blueprint, jsonify, request
 
 logger = logging.getLogger("fsm.routes.api")
@@ -44,11 +44,13 @@ def api_status():
                     else factorio_service.get_install_status()
                 ),
                 "cpu_percent": metrics.get("cpu_percent", 0.0),
-                "ram_mb": metrics.get("ram_mb", 0),
+                "ram_used_mb": metrics.get("ram_used_mb", 0),
+                "ram_total_mb": metrics.get("ram_total_mb", 0),
                 "uptime_seconds": metrics.get("uptime_seconds", 0),
-                "disk_usage_mb": metrics.get("disk_usage_mb", 0),
+                "disk_used_mb": metrics.get("disk_used_mb", 0),
+                "disk_total_mb": metrics.get("disk_total_mb", 0),
                 "factorio_version": get_factorio_version(),
-                "active_save": load_active_save().name if load_active_save() else None,
+                "active_save": _build_active_save_payload(),
             },
         }
     )
@@ -142,3 +144,18 @@ def api_backup_delete():
 
 def register_api_routes(app):
     app.register_blueprint(api_bp)
+
+
+def _build_active_save_payload():
+    active_path = load_active_save()
+    if not active_path:
+        return None
+    try:
+        info = get_save_info(active_path.name)
+        return {
+            "name": info["name"],
+            "size": info["size"],
+            "modified": info["modified"],
+        }
+    except Exception:
+        return {"name": active_path.name, "size": None, "modified": None}

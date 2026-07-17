@@ -14,9 +14,11 @@ from backend.config import BASE_DIR, INSTALL_DIR, LOG_DIR, PID_PATH, SAVE_DIR
 def get_process_metrics(pid: Optional[int] = None) -> dict:
     metrics: dict = {
         "cpu_percent": 0.0,
-        "ram_mb": 0,
+        "ram_used_mb": 0,
+        "ram_total_mb": 0,
         "uptime_seconds": 0,
-        "disk_usage_mb": 0,
+        "disk_used_mb": 0,
+        "disk_total_mb": 0,
     }
 
     if pid is None:
@@ -69,14 +71,20 @@ def get_process_metrics(pid: Optional[int] = None) -> dict:
                     if line.startswith("VmRSS:"):
                         parts = line.split()
                         if len(parts) >= 2:
-                            metrics["ram_mb"] = round(int(parts[1]) / 1024, 1)
+                            metrics["ram_used_mb"] = round(int(parts[1]) / 1024, 1)
                         break
         except Exception:
             pass
 
     try:
+        metrics["ram_total_mb"] = round(os.sysconf("SC_PAGE_SIZE") * os.sysconf("SC_PHYS_PAGES") / (1024 * 1024), 1)
+    except Exception:
+        pass
+
+    try:
         usage = shutil.disk_usage(str(BASE_DIR))
-        metrics["disk_usage_mb"] = round(usage.used / (1024 * 1024), 1)
+        metrics["disk_used_mb"] = round(usage.used / (1024 * 1024), 1)
+        metrics["disk_total_mb"] = round(usage.total / (1024 * 1024), 1)
     except Exception:
         pass
 

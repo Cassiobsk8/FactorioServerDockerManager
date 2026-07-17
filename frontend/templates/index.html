@@ -45,13 +45,28 @@
                             <h2>Dashboard</h2>
                         </div>
                         <div class="status-info">
-                            <div>
-                            <span class="status-label">Server status</span>
-                            <span class="status-value badge {% if status and (status == 'running' or status == 'online') %}badge-online{% else %}badge-offline{% endif %}" id="server-status">{{ status }}</span>
+                            <div class="status-primary">
+                                <span class="status-dot {% if status and (status == 'running' or status == 'online') %}status-dot-online{% else %}status-dot-offline{% endif %}" id="server-status-dot"></span>
+                                <div>
+                                    <span class="status-label">Server status</span>
+                                    <span class="status-value badge {% if status and (status == 'running' or status == 'online') %}badge-online{% else %}badge-offline{% endif %}" id="server-status">{{ status }}</span>
+                                </div>
                             </div>
-                            <div>
+                            <div class="status-secondary">
                                 <span class="status-label">Install status</span>
                                 <p class="status-value" id="install-status">{{ install_status }}</p>
+                            </div>
+                        </div>
+                        <div class="active-save" id="active-save-card">
+                            <div class="active-save-header">
+                                <span class="status-label">Save ativo</span>
+                                <span class="badge badge-active" id="active-save-badge">ATIVO</span>
+                            </div>
+                            <p class="active-save-name" id="active-save-name">--</p>
+                            <div class="active-save-meta">
+                                <span id="active-save-size">--</span>
+                                <span class="active-save-sep">•</span>
+                                <span id="active-save-modified">--</span>
                             </div>
                         </div>
                         <div class="metrics-grid">
@@ -65,6 +80,7 @@
                             <div class="metric-card">
                                 <span class="metric-label">RAM</span>
                                 <span class="metric-value" id="metric-ram">0 MB</span>
+                                <span class="metric-detail" id="metric-ram-detail">de 0 MB</span>
                                 <div class="metric-progress">
                                     <div class="metric-progress-fill" id="metric-ram-bar"></div>
                                 </div>
@@ -76,6 +92,7 @@
                             <div class="metric-card">
                                 <span class="metric-label">Disk</span>
                                 <span class="metric-value" id="metric-disk">0 MB</span>
+                                <span class="metric-detail" id="metric-disk-detail">de 0 MB</span>
                                 <div class="metric-progress">
                                     <div class="metric-progress-fill" id="metric-disk-bar"></div>
                                 </div>
@@ -85,8 +102,8 @@
                                 <span class="metric-value" id="metric-version">--</span>
                             </div>
                             <div class="metric-card">
-                                <span class="metric-label">Save ativo</span>
-                                <span class="metric-value" id="metric-save">--</span>
+                                <span class="metric-label">Saves</span>
+                                <span class="metric-value" id="metric-saves-count">--</span>
                             </div>
                         </div>
                         <div class="action-group">
@@ -500,10 +517,32 @@
                 serverStatus.textContent = newStatus;
                 const isOnline = newStatus === 'running' || newStatus === 'online';
                 serverStatus.className = `status-value badge ${isOnline ? 'badge-online' : 'badge-offline'}`;
+                const statusDot = document.getElementById('server-status-dot');
+                if (statusDot) {
+                    statusDot.className = `status-dot ${isOnline ? 'status-dot-online' : 'status-dot-offline'}`;
+                }
                 installStatus.textContent = data.install_status || installStatus.textContent;
             } catch (err) {
                 // ignore errors during polling
             }
+        }
+
+        function formatMB(mb) {
+            const value = Number(mb) || 0;
+            if (value >= 1024) return `${(value / 1024).toFixed(1)} GB`;
+            return `${value.toFixed(0)} MB`;
+        }
+
+        function formatDate(timestamp) {
+            if (!timestamp) return '--';
+            return new Date(timestamp * 1000).toLocaleString('pt-BR');
+        }
+
+        function percent(used, total) {
+            const u = Number(used) || 0;
+            const t = Number(total) || 0;
+            if (t <= 0) return 0;
+            return Math.min(100, Math.round((u / t) * 100));
         }
 
         async function fetchMetrics() {
@@ -512,12 +551,9 @@
             const uptimeEl = document.getElementById('metric-uptime');
             const diskEl = document.getElementById('metric-disk');
             const versionEl = document.getElementById('metric-version');
-            const saveEl = document.getElementById('metric-save');
+            const savesCountEl = document.getElementById('metric-saves-count');
 
             if (!cpuEl) return;
-
-            const RAM_MAX_MB = 16384;
-            const DISK_MAX_MB = 51200;
 
             try {
                 const response = await fetch('/api/status');
@@ -525,25 +561,68 @@
                 const data = await response.json();
                 const server = data.server || {};
 
-                if (cpuEl) cpuEl.textContent = `${server.cpu_percent ?? 0}%`;
+                const cpu = server.cpu_percent ?? 0;
+                if (cpuEl) cpuEl.textContent = `${cpu}%`;
                 const cpuBar = document.getElementById('metric-cpu-bar');
-                if (cpuBar) cpuBar.style.width = `${Math.min(100, server.cpu_percent ?? 0)}%`;
+                if (cpuBar) cpuBar.style.width = `${Math.min(100, cpu)}%`;
 
-                if (ramEl) ramEl.textContent = `${server.ram_mb ?? 0} MB`;
+                const ramUsed = server.ram_used_mb ?? 0;
+                const ramTotal = server.ram_total_mb ?? 0;
+                if (ramEl) ramEl.textContent = formatMB(ramUsed);
+                const ramDetail = document.getElementById('metric-ram-detail');
+                if (ramDetail) ramDetail.textContent = `de ${formatMB(ramTotal)}`;
                 const ramBar = document.getElementById('metric-ram-bar');
-                if (ramBar) ramBar.style.width = `${Math.min(100, ((server.ram_mb ?? 0) / RAM_MAX_MB) * 100)}%`;
+                if (ramBar) ramBar.style.width = `${percent(ramUsed, ramTotal)}%`;
 
                 if (uptimeEl) uptimeEl.textContent = formatUptime(server.uptime_seconds ?? 0);
 
-                if (diskEl) diskEl.textContent = `${server.disk_usage_mb ?? 0} MB`;
+                const diskUsed = server.disk_used_mb ?? 0;
+                const diskTotal = server.disk_total_mb ?? 0;
+                if (diskEl) diskEl.textContent = formatMB(diskUsed);
+                const diskDetail = document.getElementById('metric-disk-detail');
+                if (diskDetail) diskDetail.textContent = `de ${formatMB(diskTotal)}`;
                 const diskBar = document.getElementById('metric-disk-bar');
-                if (diskBar) diskBar.style.width = `${Math.min(100, ((server.disk_usage_mb ?? 0) / DISK_MAX_MB) * 100)}%`;
+                if (diskBar) diskBar.style.width = `${percent(diskUsed, diskTotal)}%`;
 
                 if (versionEl) versionEl.textContent = server.factorio_version || '--';
-                if (saveEl) saveEl.textContent = server.active_save || '--';
+
+                renderActiveSave(server.active_save);
+
+                if (savesCountEl) {
+                    const res = await fetch('/api/saves');
+                    if (res.ok) {
+                        const savesData = await res.json();
+                        const saves = savesData.saves || [];
+                        savesCountEl.textContent = String(saves.length);
+                    }
+                }
             } catch (err) {
                 // ignore
             }
+        }
+
+        function renderActiveSave(activeSave) {
+            const card = document.getElementById('active-save-card');
+            const nameEl = document.getElementById('active-save-name');
+            const sizeEl = document.getElementById('active-save-size');
+            const modifiedEl = document.getElementById('active-save-modified');
+            const badgeEl = document.getElementById('active-save-badge');
+            if (!card || !nameEl) return;
+
+            if (!activeSave || !activeSave.name) {
+                card.classList.add('active-save-empty');
+                badgeEl.style.display = 'none';
+                nameEl.textContent = 'Nenhum save ativo';
+                if (sizeEl) sizeEl.textContent = '--';
+                if (modifiedEl) modifiedEl.textContent = '--';
+                return;
+            }
+
+            card.classList.remove('active-save-empty');
+            if (badgeEl) badgeEl.style.display = '';
+            nameEl.textContent = activeSave.name;
+            if (sizeEl) sizeEl.textContent = formatMB((activeSave.size || 0) / (1024 * 1024));
+            if (modifiedEl) modifiedEl.textContent = formatDate(activeSave.modified);
         }
 
         function formatUptime(seconds) {
