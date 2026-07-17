@@ -17,6 +17,13 @@ This file contains:
 
 All other parts of the project import from this file. Never hardcode version numbers elsewhere.
 
+## Release History
+
+| Version | Release Name | Status | Build Date |
+| --- | --- | --- | --- |
+| 2.6.0 | Frontend Foundation | Stable | 2026-07-17 |
+| 2.5.0 | RCON Edition | Stable | 2026-07-17 |
+
 ## Version Bump Rules
 
 ### Patch version (2.5.0 -> 2.5.1)

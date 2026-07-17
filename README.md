@@ -4,17 +4,21 @@ This project aims to control and monitor a Factorio server installed and run ins
 
 ## Current Version
 
-**2.5.0**
+**2.6.0**
 
-**Release:** RCON Edition
+**Release:** Frontend Foundation
+
+**Status:** Stable
 
 ## Highlights
 
-- Persistent RCON
-- Save Manager
-- Dashboard
-- Multi-language
-- Configuration Editor
+- Frontend modularizado
+- CSS separado
+- JavaScript modularizado
+- Logs separados (install/server)
+- Arquitetura reorganizada
+- Backend preservado
+- Estrutura preparada para futuras funcionalidades
 
 ## Current scope (Level 1 MVP)
 
@@ -66,6 +70,13 @@ pytest -q backend/tests
 ```
 
 This coverage includes config persistence, save file handling, extraction normalization, and platform startup guards.
+
+## Statistics
+
+- Version: 2.6.0 (Frontend Foundation)
+- Automated tests: 74
+- JavaScript modules: 7
+- CSS files: 1
 
 ## Notes for ZimaOS
 

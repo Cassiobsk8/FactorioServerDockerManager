@@ -22,10 +22,12 @@ from backend.config import (
     DEFAULT_INSTALL_ARCHIVE,
     DEFAULT_INSTALL_URL,
     INSTALL_DIR,
+    INSTALL_LOG_PATH,
     INSTALL_PROGRESS_PATH,
     LOG_DIR,
     PID_PATH,
     SAVE_DIR,
+    SERVER_LOG_PATH,
     SERVER_SETTINGS_DIR,
     SERVER_SETTINGS_EXAMPLE_PATH,
     SERVER_SETTINGS_PATH,
@@ -63,7 +65,7 @@ class FactorioService:
 
         cmd = _factorio_command()
         logger.info("Starting factorio server with cmd: %s", cmd)
-        log_file = _get_log_file()
+        log_file = _get_server_log_file()
         log_file.parent.mkdir(parents=True, exist_ok=True)
         log_handle = log_file.open("ab")
 
@@ -323,13 +325,18 @@ def is_server_installed() -> bool:
     return (INSTALL_DIR / "bin" / "x64" / "factorio").exists()
 
 
-def _get_log_file() -> Path:
+def _get_server_log_file() -> Path:
     LOG_DIR.mkdir(parents=True, exist_ok=True)
-    return LOG_DIR / "factorio-server.log"
+    return SERVER_LOG_PATH
+
+
+def _get_install_log_file() -> Path:
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
+    return INSTALL_LOG_PATH
 
 
 def _get_factorio_generated_log_file() -> Path:
-    log_file = _get_log_file()
+    log_file = _get_server_log_file()
     if log_file.exists():
         return log_file
 
@@ -407,11 +414,20 @@ def set_install_error(message: str) -> None:
     )
 
 
+def _install_in_progress() -> bool:
+    progress = _read_install_progress()
+    return progress.get("status") == "progress"
+
+
 def get_logs() -> str:
     if not is_server_installed():
         return "Servidor não instalado."
 
-    log_file = _get_log_file()
+    if _install_in_progress():
+        log_file = _get_install_log_file()
+    else:
+        log_file = _get_server_log_file()
+
     if log_file.exists():
         return log_file.read_text(encoding="utf-8", errors="replace")
 
@@ -423,13 +439,39 @@ def get_logs() -> str:
 
 
 def clear_logs() -> None:
-    log_file = _get_log_file()
+    if _install_in_progress():
+        log_file = _get_install_log_file()
+    else:
+        log_file = _get_server_log_file()
+
     if log_file.exists():
         log_file.write_text("", encoding="utf-8")
 
     generated_log_file = _get_factorio_generated_log_file()
     if generated_log_file.exists() and generated_log_file != log_file:
         generated_log_file.write_text("", encoding="utf-8")
+
+
+def clear_install_logs() -> None:
+    log_file = _get_install_log_file()
+    if log_file.exists():
+        log_file.write_text("", encoding="utf-8")
+
+
+def begin_install_logging() -> logging.Handler:
+    log_file = _get_install_log_file()
+    log_file.parent.mkdir(parents=True, exist_ok=True)
+    handler = logging.FileHandler(log_file, encoding="utf-8")
+    handler.setFormatter(
+        logging.Formatter("%(asctime)s %(levelname)s %(name)s: %(message)s")
+    )
+    logging.getLogger().addHandler(handler)
+    return handler
+
+
+def end_install_logging(handler: logging.Handler) -> None:
+    logging.getLogger().removeHandler(handler)
+    handler.close()
 
 
 def clear_installation() -> None:
@@ -711,7 +753,7 @@ def _factorio_command(install_dir: Optional[Path] = None) -> List[str]:
 
 
 def log_error(message: str) -> None:
-    log_file = _get_log_file()
+    log_file = _get_server_log_file()
     log_file.parent.mkdir(parents=True, exist_ok=True)
     with log_file.open("a", encoding="utf-8") as handler:
         handler.write(message + "\n")

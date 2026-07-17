@@ -21,7 +21,7 @@ from backend.services.factorio_service import (
     _clear_pid,
     _extract_archive,
     _get_factorio_generated_log_file,
-    _get_log_file,
+    _get_server_log_file,
     _is_process_running,
     _read_pid,
     _write_pid,
@@ -103,7 +103,7 @@ __all__ = [
     "_clear_pid",
     "_is_process_running",
     "_factorio_command",
-    "_get_log_file",
+    "_get_server_log_file",
     "_get_factorio_generated_log_file",
     "_extract_archive",
 ]

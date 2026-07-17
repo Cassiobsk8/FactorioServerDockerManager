@@ -1,3 +1,3 @@
-APP_VERSION = "2.5.0"
-RELEASE_NAME = "RCON Edition"
+APP_VERSION = "2.6.0"
+RELEASE_NAME = "Frontend Foundation"
 BUILD_DATE = "2026-07-17"

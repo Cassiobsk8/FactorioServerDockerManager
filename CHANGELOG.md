@@ -1,5 +1,35 @@
 # Changelog
 
+## 2.6.0 - Frontend Foundation
+
+### Added
+
+- Frontend modular architecture
+- Dedicated install.log
+- Dedicated server.log
+
+### Changed
+
+- JavaScript separated into modules
+- CSS extracted from template
+- Backend log routing
+- Centralized frontend bootstrap
+
+### Fixed
+
+- Configuration layout regression
+- Dashboard polling
+- RCON Test Connection
+- Installation log history
+- Active tab navigation
+- Server log handling
+
+### Removed
+
+- Inline JavaScript
+- Inline CSS
+- Shared installation/server log
+
 ## 2.5.0 - RCON Edition
 
 ### Added

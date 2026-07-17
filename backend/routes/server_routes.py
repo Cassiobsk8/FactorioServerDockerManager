@@ -30,6 +30,9 @@ from backend.services.factorio_service import (
     build_server_settings_fields,
     get_logs,
     clear_logs,
+    clear_install_logs,
+    begin_install_logging,
+    end_install_logging,
     clear_installation,
     set_install_error,
 )
@@ -130,8 +133,10 @@ def install_start():
         return jsonify({"error": "Installation already running."}), 409
 
     clear_install_progress()
+    clear_install_logs()
 
     def run_install():
+        install_handler = begin_install_logging()
         try:
             logger.info("Starting server installation (archive: %s)", archive_path)
             factorio_service.install_server(archive_path=archive_path)
@@ -139,7 +144,8 @@ def install_start():
         except Exception as exc:
             logger.exception("Install failed")
             set_install_error(str(exc))
-            log_error(f"Install failed: {exc}")
+        finally:
+            end_install_logging(install_handler)
 
     thread = threading.Thread(target=run_install, daemon=True)
     thread.start()
