@@ -407,6 +407,9 @@ def set_install_error(message: str) -> None:
 
 
 def get_logs() -> str:
+    if not is_server_installed():
+        return "Servidor não instalado."
+
     log_file = _get_log_file()
     if log_file.exists():
         return log_file.read_text(encoding="utf-8", errors="replace")
@@ -454,6 +457,9 @@ def clear_installation() -> None:
             shutil.rmtree(LOG_DIR)
         except OSError as exc:
             log_error(f"Clear installation failed while removing log directory: {exc}")
+
+    clear_logs()
+    clear_install_progress()
 
 
 def load_server_config(config_path: Optional[Union[str, Path]] = None) -> Dict[str, str]:
