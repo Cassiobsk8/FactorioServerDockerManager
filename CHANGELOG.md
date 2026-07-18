@@ -1,5 +1,25 @@
 # Changelog
 
+## 2.6.1 - Frontend Polish Preview
+
+### Changed
+
+- Dashboard reorganizado
+- Hero Card redesenhado
+- Cards de Save e RCON incorporados ao Hero
+- Logs em largura total
+- Botões contextuais
+- Status internacionalizados
+- Botão "Parar" com estilo Danger
+- Dashboard preparado para futura arquitetura Multi-Server
+
+### Fixed
+
+- Hierarquia visual do Dashboard
+- Espaçamentos
+- Traduções de estados
+- Consistência visual
+
 ## 2.6.0 - Frontend Foundation
 
 ### Added

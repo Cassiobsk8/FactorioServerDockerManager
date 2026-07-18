@@ -4,21 +4,27 @@ This project aims to control and monitor a Factorio server installed and run ins
 
 ## Current Version
 
-**2.6.0**
+**2.6.1**
 
-**Release:** Frontend Foundation
+**Release:** Frontend Polish Preview
 
-**Status:** Stable
+**Status:** Development
 
 ## Highlights
 
-- Frontend modularizado
-- CSS separado
-- JavaScript modularizado
-- Logs separados (install/server)
-- Arquitetura reorganizada
-- Backend preservado
-- Estrutura preparada para futuras funcionalidades
+• Dashboard reorganizado
+
+• Hero Card reformulado
+
+• Botões contextuais
+
+• RCON integrado ao Hero
+
+• Save ativo integrado ao Hero
+
+• Dashboard preparado para múltiplos servidores
+
+• Melhorias de internacionalização
 
 ## Current scope (Level 1 MVP)
 
@@ -73,7 +79,7 @@ This coverage includes config persistence, save file handling, extraction normal
 
 ## Statistics
 
-- Version: 2.6.0 (Frontend Foundation)
+- Version: 2.6.1 (Frontend Polish Preview)
 - Automated tests: 74
 - JavaScript modules: 7
 - CSS files: 1

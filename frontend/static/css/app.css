@@ -5,8 +5,9 @@
     --color-success: #10b981;
     --color-warning: #f59e0b;
     --color-danger: #ef4444;
-    --color-info: #93c5fd;
+    --color-danger-hover: #dc2626;
     --color-danger-light: #f87171;
+    --color-info: #93c5fd;
 
     --bg-primary: #090b12;
     --bg-secondary: #111827;
@@ -406,6 +407,34 @@ select {
     border-bottom: 1px solid rgba(148, 163, 184, 0.08);
 }
 
+.logs-header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-left: auto;
+}
+
+.logs-auto-scroll {
+    padding: var(--spacing-sm) var(--font-sm);
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.logs-auto-scroll:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.logs-auto-scroll.active {
+    background: rgba(16, 185, 129, 0.12);
+    color: var(--success);
+    border-color: rgba(16, 185, 129, 0.35);
+}
+
 .dashboard-row {
     display: grid;
     gap: var(--spacing-lg);
@@ -429,6 +458,11 @@ select {
     flex: 1 1 auto;
     min-height: 0;
     max-height: 560px;
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: #e2e8f0;
+    background: #0b0f19;
+    border: 1px solid rgba(148, 163, 184, 0.18);
 }
 
 @media (max-width: 980px) {
@@ -886,23 +920,19 @@ button:hover {
     background: var(--color-danger);
     color: white;
     cursor: pointer;
-    transition: filter var(--transition-fast), transform var(--transition-fast);
+    transition: background var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .danger-button:hover {
-    filter: brightness(1.05);
+    background: var(--color-danger-hover);
+}
+
+.danger-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.35);
 }
 
 /* Danger action: Stop button */
-#action-stop button {
-    background: var(--color-danger);
-    color: white;
-}
-
-#action-stop button:hover {
-    background: #dc2626;
-    filter: none;
-}
 
 pre {
     flex: 1 1 auto;
@@ -915,6 +945,8 @@ pre {
     border-radius: var(--radius-sm);
     border: 1px solid rgba(148, 163, 184, 0.12);
     overflow: auto;
+    font-size: 0.92rem;
+    line-height: 1.6;
 }
 
 .file-list {

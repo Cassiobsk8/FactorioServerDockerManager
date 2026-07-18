@@ -44,7 +44,7 @@
                 const progress = await response.json();
                 const { status, stage, message, downloaded, total } = progress;
 
-                installModalMessage.textContent = message || t('modal.progress_received');
+                installModalMessage.textContent = formatInstallProgressMessage(stage, status, message);
 
                 if (stage === 'download' && total > 0) {
                     const percent = Math.min(100, Math.round((downloaded / total) * 100));
@@ -60,7 +60,7 @@
                     clearInterval(installInterval);
                 } else if (status === 'error') {
                     installProgressFill.style.width = '100%';
-                    installProgressMeta.textContent = `${t('modal.unknown_error')}: ${message}`;
+                    installProgressMeta.textContent = t('install_progress.error');
                     clearInterval(installInterval);
                 } else {
                     installProgressFill.style.width = '0%';
@@ -71,6 +71,14 @@
                 installProgressMeta.textContent = err.message;
                 clearInterval(installInterval);
             }
+        }
+
+        function formatInstallProgressMessage(stage, status, message) {
+            if (status === 'complete') return t('install_progress.complete');
+            if (status === 'error') return t('install_progress.error');
+            if (stage === 'download') return t('install_progress.downloading');
+            if (stage === 'install') return t('install_progress.extracting');
+            return message || '';
         }
 
         async function startInstallation() {

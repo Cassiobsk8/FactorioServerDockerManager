@@ -69,7 +69,7 @@
                         <div class="panel-header">
                             <h2 data-i18n="dashboard.title">Dashboard</h2>
                             <span class="status-label" data-i18n="status.install_status">Install status</span>
-                            <span class="status-value" id="install-status">{{ install_status }}</span>
+                            <span class="status-value" id="install-status" data-raw-install-status="{{ install_status }}">{{ install_status }}</span>
                         </div>
                         <div class="server-hero">
                             <div class="server-hero-left">
@@ -82,16 +82,7 @@
                                 </div>
                                 <div class="server-hero-status-line">
                                     <span class="status-label" data-i18n="status.server_status">Status</span>
-                                    {% set status_labels = {
-                                        'not_installed': 'Não instalado',
-                                        'running': 'Online',
-                                        'online': 'Online',
-                                        'stopped': 'Offline',
-                                        'offline': 'Offline',
-                                        'starting': 'Inicializando',
-                                        'stopping': 'Parando'
-                                    } %}
-                                    <span class="status-value badge {% if status and (status == 'running' or status == 'online') %}badge-online{% else %}badge-offline{% endif %}" id="server-status">{{ status_labels.get((status or '')|string|lower, 'Estado desconhecido') }}</span>
+                                    <span class="status-value badge {% if status and (status == 'running' or status == 'online') %}badge-online{% else %}badge-offline{% endif %}" id="server-status" data-raw-status="{{ status or 'unknown' }}">{{ status }}</span>
                                 </div>
                                 <div class="server-hero-meta">
                                     <div class="hero-meta-item">
@@ -146,7 +137,7 @@
                                     <button type="submit" data-i18n="action.restart">Restart</button>
                                 </form>
                                 <form action="/control/stop" method="post" id="action-stop" class="hero-action-form">
-                                    <button type="submit" data-i18n="action.stop">Stop</button>
+                                    <button type="submit" class="danger-button" data-i18n="action.stop">Stop</button>
                                 </form>
                                 <div class="hero-loading" id="hero-loading" aria-hidden="true">
                                     <span class="hero-loading-dot"></span>
@@ -161,9 +152,12 @@
                         <div class="panel card log-card log-card-compact">
                             <div class="panel-header">
                                 <h2 data-i18n="logs.title">Logs</h2>
-                                <form action="/logs/clear" method="post" class="header-action">
-                                    <button type="submit" class="text-button" data-i18n="logs.clear">Clear</button>
-                                </form>
+                                <div class="logs-header-actions">
+                                    <button type="button" class="text-button logs-auto-scroll active" id="logs-auto-scroll" data-i18n="logs.auto_scroll">Auto Scroll</button>
+                                    <form action="/logs/clear" method="post" class="header-action">
+                                        <button type="submit" class="text-button" data-i18n="logs.clear">Clear</button>
+                                    </form>
+                                </div>
                             </div>
                             <pre id="logs-output">{{ logs }}</pre>
                         </div>

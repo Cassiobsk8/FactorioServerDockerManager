@@ -1,15 +1,17 @@
         const logsOutput = document.getElementById('logs-output');
         let logsInterval;
+        let logsAutoScroll = true;
 
         function formatInstallStatus(status) {
             if (!status) return '';
-            if (status === 'installed') return 'Installed';
-            if (status === 'not installed') return 'Not installed';
-            if (status === 'installing') return 'Installing...';
+            if (status === 'installed') return t('status.install_status.installed');
+            if (status === 'not installed') return t('status.install_status.not_installed');
+            if (status === 'installing') return t('status.install_status.installing');
             if (status.startsWith('configured archive:')) {
-                return status.replace('configured archive:', 'Archive configured:');
+                const url = status.replace('configured archive:', '').trim();
+                return `${t('status.install_status.archive_configured')} ${url}`;
             }
-            if (status === 'configured install URL') return 'Installation configured';
+            if (status === 'configured install URL') return t('status.install_status.install_configured');
             return status;
         }
 
@@ -23,6 +25,8 @@
                 'offline': 'status.state.stopped',
                 'starting': 'status.state.starting',
                 'stopping': 'status.state.stopping',
+                'installing': 'status.state.installing',
+                'error': 'status.state.error',
             };
             const normalized = String(status || '')
                 .trim()
@@ -44,7 +48,9 @@
                 }
                 const data = await response.json();
                 logsOutput.textContent = data.logs || '';
-                logsOutput.scrollTop = logsOutput.scrollHeight;
+                if (logsAutoScroll) {
+                    logsOutput.scrollTop = logsOutput.scrollHeight;
+                }
             } catch (err) {
                 // ignore; keep current logs
             }
@@ -66,13 +72,14 @@
                 const rawStatus = data.status || serverStatus.textContent;
                 const isOnline = rawStatus === 'running' || rawStatus === 'online';
                 serverStatus.textContent = formatStatus(rawStatus);
+                serverStatus.dataset.rawStatus = rawStatus;
                 serverStatus.className = `status-value badge ${isOnline ? 'badge-online' : 'badge-offline'}`;
                 const statusDot = document.getElementById('server-status-dot');
                 if (statusDot) {
                     statusDot.className = `status-dot ${isOnline ? 'status-dot-online' : 'status-dot-offline'}`;
                 }
                 installStatus.textContent = formatInstallStatus(data.install_status) || installStatus.textContent;
-                renderHeroActions(rawStatus);
+                renderHeroActions();
             } catch (err) {
                 // ignore errors during polling
             }
@@ -182,7 +189,9 @@
             if (modifiedEl) modifiedEl.textContent = formatDate(activeSave.modified);
         }
 
-        function renderHeroActions(status) {
+        function renderHeroActions() {
+            const serverStatusEl = document.getElementById('server-status');
+            const status = serverStatusEl?.dataset.rawStatus || '';
             const forms = document.querySelectorAll('.hero-action-form');
             const loading = document.getElementById('hero-loading');
             if (!forms.length && !loading) return;
@@ -213,8 +222,17 @@
             logsInterval = setInterval(fetchLogs, 2000);
         }
 
-        const initialStatus = document.getElementById('server-status')?.textContent || '';
-        renderHeroActions(initialStatus);
+        renderHeroActions();
+        fetchStatus();
+        setInterval(fetchStatus, 2000);
 
         fetchMetrics();
         setInterval(fetchMetrics, 2000);
+
+        const logsAutoScrollBtn = document.getElementById('logs-auto-scroll');
+        if (logsAutoScrollBtn) {
+            logsAutoScrollBtn.addEventListener('click', () => {
+                logsAutoScroll = !logsAutoScroll;
+                logsAutoScrollBtn.classList.toggle('active', logsAutoScroll);
+            });
+        }
