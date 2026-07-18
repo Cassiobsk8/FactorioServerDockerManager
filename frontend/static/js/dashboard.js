@@ -1,6 +1,37 @@
         const logsOutput = document.getElementById('logs-output');
         let logsInterval;
 
+        function formatInstallStatus(status) {
+            if (!status) return '';
+            if (status === 'installed') return 'Installed';
+            if (status === 'not installed') return 'Not installed';
+            if (status === 'installing') return 'Installing...';
+            if (status.startsWith('configured archive:')) {
+                return status.replace('configured archive:', 'Archive configured:');
+            }
+            if (status === 'configured install URL') return 'Installation configured';
+            return status;
+        }
+
+        function formatStatus(status) {
+            // Presentation layer only: never expose internal/technical API states.
+            const known = {
+                'not_installed': 'status.state.not_installed',
+                'running': 'status.state.running',
+                'online': 'status.state.running',
+                'stopped': 'status.state.stopped',
+                'offline': 'status.state.stopped',
+                'starting': 'status.state.starting',
+                'stopping': 'status.state.stopping',
+            };
+            const normalized = String(status || '')
+                .trim()
+                .toLowerCase()
+                .replace(/[\s-]+/g, '_');
+            const key = known[normalized] || 'status.state.unknown';
+            return t(key);
+        }
+
         async function fetchLogs() {
             if (!logsOutput) {
                 return;
@@ -32,15 +63,16 @@
                     return;
                 }
                 const data = await response.json();
-                const newStatus = data.status || serverStatus.textContent;
-                serverStatus.textContent = newStatus;
-                const isOnline = newStatus === 'running' || newStatus === 'online';
+                const rawStatus = data.status || serverStatus.textContent;
+                const isOnline = rawStatus === 'running' || rawStatus === 'online';
+                serverStatus.textContent = formatStatus(rawStatus);
                 serverStatus.className = `status-value badge ${isOnline ? 'badge-online' : 'badge-offline'}`;
                 const statusDot = document.getElementById('server-status-dot');
                 if (statusDot) {
                     statusDot.className = `status-dot ${isOnline ? 'status-dot-online' : 'status-dot-offline'}`;
                 }
-                installStatus.textContent = data.install_status || installStatus.textContent;
+                installStatus.textContent = formatInstallStatus(data.install_status) || installStatus.textContent;
+                renderHeroActions(rawStatus);
             } catch (err) {
                 // ignore errors during polling
             }
@@ -53,6 +85,8 @@
             const diskEl = document.getElementById('metric-disk');
             const versionEl = document.getElementById('metric-version');
             const savesCountEl = document.getElementById('metric-saves-count');
+            const playersEl = document.getElementById('metric-players');
+            const modsEl = document.getElementById('metric-mods');
 
             if (!cpuEl) return;
 
@@ -97,6 +131,28 @@
                         savesCountEl.textContent = String(saves.length);
                     }
                 }
+
+                if (playersEl) {
+                    const playersRes = await fetch('/api/rcon/players');
+                    if (playersRes.ok) {
+                        const playersData = await playersRes.json();
+                        const count = Array.isArray(playersData.players) ? playersData.players.length : (playersData.player_count ?? '--');
+                        playersEl.textContent = String(count);
+                    } else {
+                        playersEl.textContent = '--';
+                    }
+                }
+
+                if (modsEl) {
+                    const modsRes = await fetch('/api/mods');
+                    if (modsRes.ok) {
+                        const modsData = await modsRes.json();
+                        const mods = Array.isArray(modsData.mods) ? modsData.mods : [];
+                        modsEl.textContent = String(mods.length);
+                    } else {
+                        modsEl.textContent = '--';
+                    }
+                }
             } catch (err) {
                 // ignore
             }
@@ -126,10 +182,39 @@
             if (modifiedEl) modifiedEl.textContent = formatDate(activeSave.modified);
         }
 
+        function renderHeroActions(status) {
+            const forms = document.querySelectorAll('.hero-action-form');
+            const loading = document.getElementById('hero-loading');
+            if (!forms.length && !loading) return;
+
+            const busy = status === 'starting' || status === 'stopping';
+            forms.forEach((form) => {
+                form.classList.toggle('visible', !busy);
+            });
+            if (loading) {
+                loading.classList.toggle('active', busy);
+            }
+
+            if (busy) return;
+
+            const installForm = document.getElementById('action-install');
+            const startForm = document.getElementById('action-start');
+            const restartForm = document.getElementById('action-restart');
+            const stopForm = document.getElementById('action-stop');
+
+            if (installForm) installForm.classList.toggle('visible', status === 'not_installed');
+            if (startForm) startForm.classList.toggle('visible', status === 'stopped');
+            if (restartForm) restartForm.classList.toggle('visible', status === 'running');
+            if (stopForm) stopForm.classList.toggle('visible', status === 'running');
+        }
+
         if (logsOutput) {
             fetchLogs();
             logsInterval = setInterval(fetchLogs, 2000);
         }
+
+        const initialStatus = document.getElementById('server-status')?.textContent || '';
+        renderHeroActions(initialStatus);
 
         fetchMetrics();
         setInterval(fetchMetrics, 2000);

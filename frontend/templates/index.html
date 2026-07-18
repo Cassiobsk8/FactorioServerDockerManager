@@ -12,7 +12,15 @@
     <main class="app-shell">
         <aside class="sidebar">
             <div class="brand">
-                <span class="brand-icon">⚙️</span>
+                <span class="brand-icon">
+                    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <rect x="6" y="4" width="36" height="40" rx="8" stroke="currentColor" stroke-width="2.5" fill="none"/>
+                        <rect x="12" y="10" width="24" height="5" rx="2.5" fill="currentColor"/>
+                        <rect x="12" y="21" width="24" height="5" rx="2.5" fill="currentColor" opacity="0.7"/>
+                        <rect x="12" y="32" width="24" height="5" rx="2.5" fill="currentColor" opacity="0.4"/>
+                        <circle cx="36" cy="12.5" r="2.5" fill="#10b981"/>
+                    </svg>
+                </span>
                 <div>
                     <h1>Factorio</h1>
                     <p>Server Manager</p>
@@ -30,99 +38,136 @@
 
         <section class="content">
             <div class="tab-panel active" id="status-panel">
-                <div class="panel-grid">
-                    <section class="panel card log-card">
-                        <div class="panel-header">
-                            <h2 data-i18n="logs.title">Logs</h2>
-                            <form action="/logs/clear" method="post" class="header-action">
-                                <button type="submit" class="text-button" data-i18n="logs.clear">Clear</button>
-                            </form>
+                <div class="dashboard-grid">
+                    <section class="dashboard-row dashboard-row-metrics">
+                        <div class="panel card metric-card">
+                            <span class="metric-label" data-i18n="metric.cpu">CPU</span>
+                            <span class="metric-value" id="metric-cpu">0%</span>
+                            <div class="metric-progress">
+                                <div class="metric-progress-fill" id="metric-cpu-bar"></div>
+                            </div>
                         </div>
-                        <pre id="logs-output">{{ logs }}</pre>
+                        <div class="panel card metric-card">
+                            <span class="metric-label" data-i18n="metric.ram">RAM</span>
+                            <span class="metric-value" id="metric-ram">0 MB</span>
+                            <span class="metric-detail" id="metric-ram-detail">de 0 MB</span>
+                            <div class="metric-progress">
+                                <div class="metric-progress-fill" id="metric-ram-bar"></div>
+                            </div>
+                        </div>
+                        <div class="panel card metric-card">
+                            <span class="metric-label" data-i18n="metric.disk">Disk</span>
+                            <span class="metric-value" id="metric-disk">0 MB</span>
+                            <span class="metric-detail" id="metric-disk-detail">de 0 MB</span>
+                            <div class="metric-progress">
+                                <div class="metric-progress-fill" id="metric-disk-bar"></div>
+                            </div>
+                        </div>
                     </section>
 
-                    <aside class="panel card status-card">
+                    <aside class="panel card status-card dashboard-main-card">
                         <div class="panel-header">
                             <h2 data-i18n="dashboard.title">Dashboard</h2>
+                            <span class="status-label" data-i18n="status.install_status">Install status</span>
+                            <span class="status-value" id="install-status">{{ install_status }}</span>
                         </div>
-                        <div class="status-info">
-                            <div class="status-primary">
-                                <span class="status-dot {% if status and (status == 'running' or status == 'online') %}status-dot-online{% else %}status-dot-offline{% endif %}" id="server-status-dot"></span>
-                                <div>
-                                    <span class="status-label" data-i18n="status.server_status">Server status</span>
-                                    <span class="status-value badge {% if status and (status == 'running' or status == 'online') %}badge-online{% else %}badge-offline{% endif %}" id="server-status">{{ status }}</span>
+                        <div class="server-hero">
+                            <div class="server-hero-left">
+                                <div class="server-hero-title">
+                                    <span class="status-dot {% if status and (status == 'running' or status == 'online') %}status-dot-online{% else %}status-dot-offline{% endif %}" id="server-status-dot"></span>
+                                    <div class="server-hero-title-text">
+                                        <span class="hero-subtitle" data-i18n="branding.hero_subtitle">Factorio Server</span>
+                                        <h2 class="server-name" id="server-name">{{ config.server_name or 'Factorio Server' }}</h2>
+                                    </div>
+                                </div>
+                                <div class="server-hero-status-line">
+                                    <span class="status-label" data-i18n="status.server_status">Status</span>
+                                    {% set status_labels = {
+                                        'not_installed': 'Não instalado',
+                                        'running': 'Online',
+                                        'online': 'Online',
+                                        'stopped': 'Offline',
+                                        'offline': 'Offline',
+                                        'starting': 'Inicializando',
+                                        'stopping': 'Parando'
+                                    } %}
+                                    <span class="status-value badge {% if status and (status == 'running' or status == 'online') %}badge-online{% else %}badge-offline{% endif %}" id="server-status">{{ status_labels.get((status or '')|string|lower, 'Estado desconhecido') }}</span>
+                                </div>
+                                <div class="server-hero-meta">
+                                    <div class="hero-meta-item">
+                                        <span class="metric-label" data-i18n="metric.version">Version</span>
+                                        <span class="metric-value" id="metric-version">--</span>
+                                    </div>
+                                    <div class="hero-meta-item">
+                                        <span class="metric-label" data-i18n="metric.uptime">Uptime</span>
+                                        <span class="metric-value" id="metric-uptime">--</span>
+                                    </div>
+                                    <div class="hero-meta-item">
+                                        <span class="metric-label" data-i18n="metric.saves">Saves</span>
+                                        <span class="metric-value" id="metric-saves-count">--</span>
+                                    </div>
+                                    <div class="hero-meta-item">
+                                        <span class="metric-label" data-i18n="metric.players">Players</span>
+                                        <span class="metric-value" id="metric-players">--</span>
+                                    </div>
+                                    <div class="hero-meta-item">
+                                        <span class="metric-label" data-i18n="metric.mods">Mods</span>
+                                        <span class="metric-value" id="metric-mods">--</span>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="status-secondary">
-                                <span class="status-label" data-i18n="status.install_status">Install status</span>
-                                <p class="status-value" id="install-status">{{ install_status }}</p>
-                            </div>
-                        </div>
-                        <div class="active-save" id="active-save-card">
-                            <div class="active-save-header">
-                                <span class="status-label" data-i18n="status.active_save">Active save</span>
-                                <span class="badge badge-active" id="active-save-badge" data-i18n="status.active">ACTIVE</span>
-                            </div>
-                            <p class="active-save-name" id="active-save-name">--</p>
-                            <div class="active-save-meta">
-                                <span id="active-save-size">--</span>
-                                <span class="active-save-sep">•</span>
-                                <span id="active-save-modified">--</span>
-                            </div>
-                        </div>
-                        <div class="rcon-status-card" id="rcon-status-card">
-                            <span class="status-label" data-i18n="rcon.connection">RCON</span>
-                            <span class="badge badge-offline" id="rcon-status-badge">🔴 <span data-i18n="rcon.disconnected">Disconnected</span></span>
-                        </div>
-                        <div class="metrics-grid">
-                            <div class="metric-card">
-                                <span class="metric-label" data-i18n="metric.cpu">CPU</span>
-                                <span class="metric-value" id="metric-cpu">0%</span>
-                                <div class="metric-progress">
-                                    <div class="metric-progress-fill" id="metric-cpu-bar"></div>
+                            <div class="server-hero-center">
+                                <div class="panel card active-save" id="active-save-card">
+                                    <div class="active-save-header">
+                                        <span class="status-label" data-i18n="status.active_save">Active save</span>
+                                        <span class="badge badge-active" id="active-save-badge" data-i18n="status.active">ACTIVE</span>
+                                    </div>
+                                    <p class="active-save-name" id="active-save-name">--</p>
+                                    <div class="active-save-meta">
+                                        <span id="active-save-size">--</span>
+                                        <span class="active-save-sep">•</span>
+                                        <span id="active-save-modified">--</span>
+                                    </div>
+                                </div>
+                                <div class="panel card rcon-status-card" id="rcon-status-card">
+                                    <span class="status-label" data-i18n="rcon.connection">RCON</span>
+                                    <span class="badge badge-offline" id="rcon-status-badge">🔴 <span data-i18n="rcon.disconnected">Disconnected</span></span>
+                                    <span class="rcon-status-detail" id="rcon-status-detail">{{ rcon_settings.host }}:{{ rcon_settings.port }}</span>
                                 </div>
                             </div>
-                            <div class="metric-card">
-                                <span class="metric-label" data-i18n="metric.ram">RAM</span>
-                                <span class="metric-value" id="metric-ram">0 MB</span>
-                                <span class="metric-detail" id="metric-ram-detail">de 0 MB</span>
-                                <div class="metric-progress">
-                                    <div class="metric-progress-fill" id="metric-ram-bar"></div>
+                            <div class="action-group">
+                                <form action="/install" method="post" id="action-install" class="hero-action-form">
+                                    <button type="submit" data-i18n="action.install">Install server</button>
+                                </form>
+                                <form action="/control/start" method="post" id="action-start" class="hero-action-form">
+                                    <button type="submit" data-i18n="action.start">Start</button>
+                                </form>
+                                <form action="/control/restart" method="post" id="action-restart" class="hero-action-form">
+                                    <button type="submit" data-i18n="action.restart">Restart</button>
+                                </form>
+                                <form action="/control/stop" method="post" id="action-stop" class="hero-action-form">
+                                    <button type="submit" data-i18n="action.stop">Stop</button>
+                                </form>
+                                <div class="hero-loading" id="hero-loading" aria-hidden="true">
+                                    <span class="hero-loading-dot"></span>
+                                    <span class="hero-loading-dot"></span>
+                                    <span class="hero-loading-dot"></span>
                                 </div>
                             </div>
-                            <div class="metric-card">
-                                <span class="metric-label" data-i18n="metric.uptime">Uptime</span>
-                                <span class="metric-value" id="metric-uptime">0s</span>
-                            </div>
-                            <div class="metric-card">
-                                <span class="metric-label" data-i18n="metric.disk">Disk</span>
-                                <span class="metric-value" id="metric-disk">0 MB</span>
-                                <span class="metric-detail" id="metric-disk-detail">de 0 MB</span>
-                                <div class="metric-progress">
-                                    <div class="metric-progress-fill" id="metric-disk-bar"></div>
-                                </div>
-                            </div>
-                            <div class="metric-card">
-                                <span class="metric-label" data-i18n="metric.version">Version</span>
-                                <span class="metric-value" id="metric-version">--</span>
-                            </div>
-                            <div class="metric-card">
-                                <span class="metric-label" data-i18n="metric.saves">Saves</span>
-                                <span class="metric-value" id="metric-saves-count">--</span>
-                            </div>
-                        </div>
-                        <div class="action-group">
-                            <form action="/control/start" method="post">
-                                <button type="submit" data-i18n="action.start">Start</button>
-                            </form>
-                            <form action="/control/stop" method="post">
-                                <button type="submit" data-i18n="action.stop">Stop</button>
-                            </form>
-                            <form action="/control/restart" method="post">
-                                <button type="submit" data-i18n="action.restart">Restart</button>
-                            </form>
                         </div>
                     </aside>
+
+                    <section class="dashboard-row dashboard-row-detail">
+                        <div class="panel card log-card log-card-compact">
+                            <div class="panel-header">
+                                <h2 data-i18n="logs.title">Logs</h2>
+                                <form action="/logs/clear" method="post" class="header-action">
+                                    <button type="submit" class="text-button" data-i18n="logs.clear">Clear</button>
+                                </form>
+                            </div>
+                            <pre id="logs-output">{{ logs }}</pre>
+                        </div>
+                    </section>
                 </div>
             </div>
 
