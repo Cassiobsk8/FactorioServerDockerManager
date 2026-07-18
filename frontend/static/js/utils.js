@@ -11,12 +11,6 @@
             return escapeHtml(str);
         }
 
-        function formatComment(comment) {
-            if (Array.isArray(comment)) return comment.map((c) => escapeHtml(c)).join('\n');
-            if (typeof comment === 'string') return escapeHtml(comment);
-            return '';
-        }
-
         function formatMB(mb) {
             const value = Number(mb) || 0;
             if (value >= 1024) return `${(value / 1024).toFixed(1)} GB`;

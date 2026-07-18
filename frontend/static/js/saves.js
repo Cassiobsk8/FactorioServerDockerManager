@@ -69,7 +69,7 @@
                 });
                 if (!res.ok) {
                     const err = await res.json().catch(() => ({}));
-                    alert(err.error || t('error.create_world_failed'));
+                    alert(t('error.create_world_failed'));
                     return;
                 }
                 nameInput.value = '';
@@ -89,7 +89,7 @@
                 });
                 if (!res.ok) {
                     const err = await res.json().catch(() => ({}));
-                    alert(err.error || t('error.select_save_failed'));
+                    alert(t('error.select_save_failed'));
                     return;
                 }
                 loadSaves();
@@ -104,7 +104,7 @@
                 const res = await fetch(`/api/saves/${encodeURIComponent(filename)}`, { method: 'DELETE' });
                 if (!res.ok) {
                     const err = await res.json().catch(() => ({}));
-                    alert(err.error || t('error.delete_save_failed'));
+                    alert(t('error.delete_save_failed'));
                     return;
                 }
                 loadSaves();
@@ -124,7 +124,7 @@
                 });
                 if (!res.ok) {
                     const err = await res.json().catch(() => ({}));
-                    alert(err.error || t('error.rename_save_failed'));
+                    alert(t('error.rename_save_failed'));
                     return;
                 }
                 loadSaves();

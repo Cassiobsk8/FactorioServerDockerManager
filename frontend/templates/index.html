@@ -221,7 +221,7 @@
                                     <td class="save-date">--</td>
                                     <td class="save-size">--</td>
                                     <td>
-                                        <span class="badge {% if filename == active_save %}badge-active{% else %}badge-inactive{% endif %}">
+                                        <span class="badge {% if filename == active_save %}badge-active{% else %}badge-inactive{% endif %}" data-i18n="{% if filename == active_save %}status.active{% else %}status.inactive{% endif %}">
                                             {% if filename == active_save %}ATIVO{% else %}INATIVO{% endif %}
                                         </span>
                                     </td>
@@ -296,13 +296,13 @@
                         <div class="config-detail">
                             <p><strong data-i18n="config.installed">Installed</strong>: {{ status != 'not_installed' }}</p>
                         </div>
-                        <form id="install-form">
+                        <form id="install-form" class="stacked-form">
                             <label>
                                 <span data-i18n="config.archive_url">Archive URL (optional)</span>
-                                <input type="text" name="archive_path" id="archive-path"
-                                    placeholder="Use o download oficial do Factorio Linux" />
+                                    <input type="text" name="archive_path" id="archive-path"
+                                        data-i18n-placeholder="config.archive_url_placeholder" />
                             </label>
-                            <button type="button" class="btn-install" id="install-button" style="margin-bottom: 20px;" data-i18n="config.install_button">Install server</button>
+                            <button type="button" class="btn-install" id="install-button" data-i18n="config.install_button">Install server</button>
                         </form>
                         <form action="/install/clear" method="post"
                             onsubmit="return confirm(t('config.confirm_delete_install'));">
@@ -352,8 +352,8 @@
                                 <label>
                                     {{ field.comment or field.key }}
                                     <select name="settings.{{ field.path }}">
-                                        <option value="true" {% if field.value %}selected{% endif %}>true</option>
-                                        <option value="false" {% if not field.value %}selected{% endif %}>false</option>
+                                        <option value="true" data-i18n="settings.value_true" {% if field.value %}selected{% endif %}>true</option>
+                                        <option value="false" data-i18n="settings.value_false" {% if not field.value %}selected{% endif %}>false</option>
                                     </select>
                                 </label>
                                 {% elif field.type == 'json' %}

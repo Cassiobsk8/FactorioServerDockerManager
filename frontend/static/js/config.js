@@ -166,8 +166,8 @@
             }
             if (field.type === 'boolean') {
                 return `<select name="${name}">
-                    <option value="true" ${field.value ? 'selected' : ''}>true</option>
-                    <option value="false" ${!field.value ? 'selected' : ''}>false</option>
+                    <option value="true" ${field.value ? 'selected' : ''} data-i18n="settings.value_true">true</option>
+                    <option value="false" ${!field.value ? 'selected' : ''} data-i18n="settings.value_false">false</option>
                 </select>`;
             }
             if (field.type === 'integer' || field.type === 'number') {
@@ -198,7 +198,6 @@
         function renderField(field) {
             if (field.type === 'object') {
                 if (field.key === 'visibility') {
-                    const meta = SETTINGS_META[field.path] || {};
                     return `<div class="field-row">
                         <div class="field-label">${escapeHtml(fieldLabel(field))} ${tooltipHtml(field)}</div>
                         <div class="visibility-box">

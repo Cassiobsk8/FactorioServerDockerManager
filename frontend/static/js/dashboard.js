@@ -1,5 +1,4 @@
         const logsOutput = document.getElementById('logs-output');
-        let logsInterval;
         let logsAutoScroll = true;
 
         function formatInstallStatus(status) {
@@ -219,7 +218,7 @@
 
         if (logsOutput) {
             fetchLogs();
-            logsInterval = setInterval(fetchLogs, 2000);
+            setInterval(fetchLogs, 2000);
         }
 
         renderHeroActions();

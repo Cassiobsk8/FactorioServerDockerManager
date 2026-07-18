@@ -97,7 +97,7 @@
             if (msg.includes('auth')) return t('rcon.error.auth_failed');
             if (msg.includes('timed out') || msg.includes('timeout')) return t('rcon.error.timeout');
             if (msg.includes('refused') || msg.includes('connect') || msg.includes('offline')) return t('rcon.error.server_offline');
-            return err || t('rcon.error.server_offline');
+            return t('rcon.error.technical');
         }
 
         async function rconCommand(command) {
@@ -242,11 +242,10 @@
                     });
                     if (!res.ok) {
                         const err = await res.json().catch(() => ({}));
-                        alert(err.error || t('error.create_world_exception'));
-                        return;
+                        appendConsole(friendlyRconError(err.error), 'error');
                     }
                 } catch (err) {
-                    alert(t('error.create_world_exception'));
+                    appendConsole(friendlyRconError(err.message), 'error');
                 }
             });
         }
