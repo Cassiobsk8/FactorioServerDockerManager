@@ -1,4 +1,4 @@
-APP_VERSION = "2.7.0"
-RELEASE_NAME = "Frontend Polish"
+APP_VERSION = "2.8.0"
+RELEASE_NAME = "Information Architecture Refactor"
 BUILD_DATE = "2026-07-18"
-STATUS = "Stable"
+STATUS = "Development"

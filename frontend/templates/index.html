@@ -28,16 +28,29 @@
             </div>
 
             <nav class="tabs" aria-label="Main navigation">
-                <button class="tab-button active" data-tab="status" data-i18n="menu.status">Status</button>
+                <button class="tab-button active" data-tab="dashboard" data-i18n="menu.dashboard">Dashboard</button>
                 <button class="tab-button" data-tab="saves" data-i18n="menu.saves">Saves</button>
-                <button class="tab-button" data-tab="config" data-i18n="menu.config">Configuração</button>
                 <button class="tab-button" data-tab="console" data-i18n="menu.console">Console</button>
-                <button class="tab-button" data-tab="about" data-i18n="menu.about">Sobre</button>
+                <button class="tab-button" data-tab="server-settings" data-i18n="menu.server_settings">Server Settings</button>
+                <button class="tab-button" data-tab="about" data-i18n="menu.about">About</button>
             </nav>
+
+            <div class="sidebar-preferences">
+                <div class="sidebar-preferences-title" data-i18n="preferences.title">Preferences</div>
+                <div class="sidebar-preference">
+                    <label class="sidebar-preference-label" for="sidebar-language-select" data-i18n="settings.language">Interface Language</label>
+                    <select id="sidebar-language-select" name="language">
+                        <option value="en" data-i18n="settings.language.en">English</option>
+                        <option value="pt_BR" data-i18n="settings.language.pt_BR">Português Brasil</option>
+                        <option value="es" data-i18n="settings.language.es">Español</option>
+                        <option value="zh_CN" data-i18n="settings.language.zh_CN">简体中文</option>
+                    </select>
+                </div>
+            </div>
         </aside>
 
         <section class="content">
-            <div class="tab-panel active" id="status-panel">
+            <div class="tab-panel active" id="dashboard-panel">
                 <div class="dashboard-grid">
                     <section class="dashboard-row dashboard-row-metrics">
                         <div class="panel card metric-card">
@@ -287,143 +300,122 @@
                     </section>
                 </div>
             </div>
-            <div class="tab-panel" id="config-panel">
-                <div class="panel-grid config-grid">
-                    <section class="panel card config-card">
-                        <div class="panel-header">
-                            <h2 data-i18n="settings.language">Idioma da Interface</h2>
-                        </div>
-                        <form id="language-form" class="stacked-form">
-                            <label>
-                                <select name="language" id="language-select">
-                                    <option value="en" data-i18n="settings.language.en">English</option>
-                                    <option value="pt_BR" data-i18n="settings.language.pt_BR">Português Brasil</option>
-                                    <option value="es" data-i18n="settings.language.es">Español</option>
-                                    <option value="zh_CN" data-i18n="settings.language.zh_CN">简体中文</option>
-                                </select>
-                            </label>
-                            <button type="submit" data-i18n="config.save_changes">Salvar alterações</button>
-                        </form>
-                    </section>
+            <div class="tab-panel" id="server-settings-panel">
+                <div class="settings-groups">
 
-                    <section class="panel card config-card">
-                        <div class="panel-header">
-                            <h2 data-i18n="rcon.settings_title">RCON Settings</h2>
-                            <button type="button" class="text-button" id="rcon-test-button" data-i18n="rcon.test_connection">Test Connection</button>
-                        </div>
-                        <form id="rcon-settings-form" class="stacked-form">
-                            <label>
-                                <span data-i18n="rcon.host">RCON Host</span>
-                                <input type="text" name="rcon_host" id="rcon-host" value="{{ rcon_settings.host }}" />
-                            </label>
-                            <label>
-                                <span data-i18n="rcon.port">RCON Port</span>
-                                <input type="number" name="rcon_port" id="rcon-port" value="{{ rcon_settings.port }}" />
-                            </label>
-                            <label>
-                                <span data-i18n="rcon.password">RCON Password</span>
-                                <input type="password" name="rcon_password" id="rcon-password" value="{{ rcon_settings.password or '' }}" placeholder="••••••••" />
-                            </label>
-                            <label>
-                                <span data-i18n="rcon.timeout">Timeout (seconds)</span>
-                                <input type="number" name="rcon_timeout" id="rcon-timeout" value="{{ rcon_settings.timeout }}" />
-                            </label>
-                            <p class="rcon-test-result" id="rcon-test-result"></p>
-                            <button type="submit" data-i18n="rcon.save_settings">Save RCON Settings</button>
-                        </form>
-                    </section>
-
-                    <section class="panel card config-card">
-                        <div class="panel-header">
-                            <h2 data-i18n="config.server_title">Servidor</h2>
-                        </div>
-                        <div class="config-detail">
-                            <p><strong data-i18n="config.installed">Installed</strong>: {{ status != 'not_installed' }}</p>
-                        </div>
-                        <form id="install-form" class="stacked-form">
-                            <label>
-                                <span data-i18n="config.archive_url">Archive URL (optional)</span>
-                                    <input type="text" name="archive_path" id="archive-path"
-                                        data-i18n-placeholder="config.archive_url_placeholder" />
-                            </label>
-                            <button type="button" class="btn-install" id="install-button" data-i18n="config.install_button">Install server</button>
-                        </form>
-                        <form action="/install/clear" method="post"
-                            onsubmit="return confirm(t('config.confirm_delete_install'));">
-                            <button type="submit" class="danger-button" data-i18n="config.delete_install">Delete installed server</button>
-                        </form>
-                    </section>
-
-                    <section class="panel card config-card">
-                        <div class="panel-header">
-                            <h2 data-i18n="config.general_title">Configuration</h2>
-                        </div>
-                        <form action="/config" method="post" class="stacked-form">
-                            <label>
-                                <span data-i18n="config.server_name">Server name</span>
-                                <input type="text" name="server_name" value="{{ config.server_name }}" />
-                            </label>
-                            <label>
-                                <span data-i18n="config.server_password">Server password</span>
-                                <input type="password" name="server_password" value="{{ config.server_password }}" />
-                            </label>
-                            <button type="submit" data-i18n="config.save_changes">Save changes</button>
-                        </form>
-                    </section>
-
-                    <section class="panel card config-card settings-card">
-                        <div class="panel-header">
-                            <h2 data-i18n="config.server_settings_title">server-settings.json</h2>
-                            <button type="button" class="text-button" id="toggle-all-sections" data-i18n="config.expand_all">Expand all</button>
-                        </div>
-                        <p class="settings-description" data-i18n-html="config.settings_description">Fields loaded from <code>config/server-settings.json</code>.
-                            Hover over the <span class="tooltip-inline" data-tip="Help tip">ⓘ</span> to see the description of each option.</p>
-                        <form id="server-settings-form" action="/config" method="post" class="stacked-form">
-                            <div id="server-settings-container">
-                                {% macro render_settings(fields) %}
-                                {% for field in fields %}
-                                {% if field.type == 'object' %}
-                                <details class="settings-section" open>
-                                    <summary>
-                                        <strong>{{ field.key }}</strong>
-                                        {% if field.comment %}
-                                        <span class="field-comment">{{ field.comment }}</span>
+                    <details class="settings-group" open>
+                        <summary>
+                            <span class="summary-icon">▼</span>
+                            <span data-i18n="settings.group.world">World</span>
+                        </summary>
+                        <div class="settings-group-body">
+                            <section class="panel card config-card settings-card">
+                                <div class="panel-header">
+                                    <h2 data-i18n="config.server_settings_title">server-settings.json</h2>
+                                    <button type="button" class="text-button" id="toggle-all-sections" data-i18n="config.expand_all">Expand all</button>
+                                </div>
+                                <p class="settings-description" data-i18n-html="config.settings_description">Fields loaded from <code>config/server-settings.json</code>.
+                                    Hover over the <span class="tooltip-inline" data-tip="Help tip">ⓘ</span> to see the description of each option.</p>
+                                <form id="server-settings-form" action="/config" method="post" class="stacked-form">
+                                    <div id="server-settings-container">
+                                        {% macro render_settings(fields) %}
+                                        {% for field in fields %}
+                                        {% if field.type == 'object' %}
+                                        <details class="settings-section" open>
+                                            <summary>
+                                                <strong>{{ field.key }}</strong>
+                                                {% if field.comment %}
+                                                <span class="field-comment">{{ field.comment }}</span>
+                                                {% endif %}
+                                            </summary>
+                                            {{ render_settings(field.children) }}
+                                        </details>
+                                        {% elif field.type == 'boolean' %}
+                                        <label>
+                                            {{ field.comment or field.key }}
+                                            <select name="settings.{{ field.path }}">
+                                                <option value="true" data-i18n="settings.value_true" {% if field.value %}selected{% endif %}>true</option>
+                                                <option value="false" data-i18n="settings.value_false" {% if not field.value %}selected{% endif %}>false</option>
+                                            </select>
+                                        </label>
+                                        {% elif field.type == 'json' %}
+                                        <label>
+                                            {{ field.comment or field.key }}
+                                            <textarea name="settings.{{ field.path }}" rows="6">{{ field.value }}</textarea>
+                                        </label>
+                                        {% else %}
+                                        <label>
+                                            {{ field.comment or field.key }}
+                                            <input type="text" name="settings.{{ field.path }}" value="{{ field.value }}" />
+                                        </label>
                                         {% endif %}
-                                    </summary>
-                                    {{ render_settings(field.children) }}
-                                </details>
-                                {% elif field.type == 'boolean' %}
-                                <label>
-                                    {{ field.comment or field.key }}
-                                    <select name="settings.{{ field.path }}">
-                                        <option value="true" data-i18n="settings.value_true" {% if field.value %}selected{% endif %}>true</option>
-                                        <option value="false" data-i18n="settings.value_false" {% if not field.value %}selected{% endif %}>false</option>
-                                    </select>
-                                </label>
-                                {% elif field.type == 'json' %}
-                                <label>
-                                    {{ field.comment or field.key }}
-                                    <textarea name="settings.{{ field.path }}" rows="6">{{ field.value }}</textarea>
-                                </label>
-                                {% else %}
-                                <label>
-                                    {{ field.comment or field.key }}
-                                    <input type="text" name="settings.{{ field.path }}" value="{{ field.value }}" />
-                                </label>
-                                {% endif %}
-                                {% endfor %}
-                                {% endmacro %}
+                                        {% endfor %}
+                                        {% endmacro %}
 
-                                {% if server_settings_fields %}
-                                {{ render_settings(server_settings_fields) }}
-                                {% else %}
-                                <p data-i18n="config.no_settings">No server configuration found.</p>
-                                {% endif %}
-                            </div>
+                                        {% if server_settings_fields %}
+                                        {{ render_settings(server_settings_fields) }}
+                                        {% else %}
+                                        <p data-i18n="config.no_settings">No server configuration found.</p>
+                                        {% endif %}
+                                    </div>
 
-                            <button type="submit" data-i18n="config.save_server_settings">Save server settings</button>
-                        </form>
-                    </section>
+                                    <button type="submit" data-i18n="config.save_server_settings">Save server settings</button>
+                                </form>
+                            </section>
+
+                            <section class="panel card config-card placeholder-card">
+                                <div class="panel-header">
+                                    <h2 data-i18n="config.map_settings_title">map-settings.json</h2>
+                                </div>
+                                <p class="placeholder-description" data-i18n="config.placeholder_coming_soon">Coming soon.</p>
+                            </section>
+                        </div>
+                    </details>
+
+                    <details class="settings-group">
+                        <summary>
+                            <span class="summary-icon">▶</span>
+                            <span data-i18n="settings.group.access_control">Access Control</span>
+                        </summary>
+                        <div class="settings-group-body">
+                            <section class="panel card config-card placeholder-card">
+                                <div class="panel-header">
+                                    <h2 data-i18n="config.admins_title">Admins</h2>
+                                </div>
+                                <p class="placeholder-description" data-i18n="config.placeholder_coming_soon">Coming soon.</p>
+                            </section>
+
+                            <section class="panel card config-card placeholder-card">
+                                <div class="panel-header">
+                                    <h2 data-i18n="config.whitelist_title">Whitelist</h2>
+                                </div>
+                                <p class="placeholder-description" data-i18n="config.placeholder_coming_soon">Coming soon.</p>
+                            </section>
+
+                            <section class="panel card config-card placeholder-card">
+                                <div class="panel-header">
+                                    <h2 data-i18n="config.banlist_title">Banlist</h2>
+                                </div>
+                                <p class="placeholder-description" data-i18n="config.placeholder_coming_soon">Coming soon.</p>
+                            </section>
+                        </div>
+                    </details>
+
+                    <details class="settings-group">
+                        <summary>
+                            <span class="summary-icon">▶</span>
+                            <span data-i18n="settings.group.advanced">Advanced</span>
+                        </summary>
+                        <div class="settings-group-body">
+                            <section class="panel card config-card placeholder-card">
+                                <div class="panel-header">
+                                    <h2 data-i18n="config.server_id_title">Server ID</h2>
+                                </div>
+                                <p class="placeholder-description" data-i18n="config.placeholder_coming_soon">Coming soon.</p>
+                            </section>
+                        </div>
+                    </details>
+
                 </div>
             </div>
 
@@ -471,6 +463,33 @@
                             <li class="players-empty" data-i18n="rcon.no_players">No players online</li>
                         </ul>
                     </aside>
+
+                    <section class="panel card config-card">
+                        <div class="panel-header">
+                            <h2 data-i18n="rcon.settings_title">RCON Settings</h2>
+                            <button type="button" class="text-button" id="rcon-test-button" data-i18n="rcon.test_connection">Test Connection</button>
+                        </div>
+                        <form id="rcon-settings-form" class="stacked-form">
+                            <label>
+                                <span data-i18n="rcon.host">RCON Host</span>
+                                <input type="text" name="rcon_host" id="rcon-host" value="{{ rcon_settings.host }}" />
+                            </label>
+                            <label>
+                                <span data-i18n="rcon.port">RCON Port</span>
+                                <input type="number" name="rcon_port" id="rcon-port" value="{{ rcon_settings.port }}" />
+                            </label>
+                            <label>
+                                <span data-i18n="rcon.password">RCON Password</span>
+                                <input type="password" name="rcon_password" id="rcon-password" value="{{ rcon_settings.password or '' }}" placeholder="••••••••" />
+                            </label>
+                            <label>
+                                <span data-i18n="rcon.timeout">Timeout (seconds)</span>
+                                <input type="number" name="rcon_timeout" id="rcon-timeout" value="{{ rcon_settings.timeout }}" />
+                            </label>
+                            <p class="rcon-test-result" id="rcon-test-result"></p>
+                            <button type="submit" data-i18n="rcon.save_settings">Save RCON Settings</button>
+                        </form>
+                    </section>
                 </div>
             </div>
 

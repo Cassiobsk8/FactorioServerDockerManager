@@ -20,21 +20,6 @@
             }
         }
 
-        async function saveLanguageForm() {
-            const select = document.getElementById('language-select');
-            if (!select) return;
-            const lang = select.value;
-            try {
-                await fetch('/api/settings', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ language: lang }),
-                });
-            } catch (e) {
-                // ignore
-            }
-        }
-
         async function saveServerSettingsForm(e) {
             if (e) e.preventDefault();
             const form = document.getElementById('server-settings-form');
@@ -317,14 +302,6 @@
                     toggleAll.textContent = anyClosed ? t('config.collapse_all') : t('config.expand_all');
                 };
             }
-        }
-
-        const languageForm = document.getElementById('language-form');
-        if (languageForm) {
-            languageForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                saveLanguageForm();
-            });
         }
 
         const serverSettingsForm = document.getElementById('server-settings-form');

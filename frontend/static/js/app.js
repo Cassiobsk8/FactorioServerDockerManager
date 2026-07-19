@@ -16,7 +16,7 @@
 
                 button.classList.add('active');
                 document.getElementById(`${button.dataset.tab}-panel`).classList.add('active');
-                if (button.dataset.tab === 'config') {
+                if (button.dataset.tab === 'server-settings') {
                     fetchAndRenderSettings();
                 }
                 if (button.dataset.tab === 'console') {

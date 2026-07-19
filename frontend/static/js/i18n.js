@@ -87,6 +87,8 @@
             translatePage();
             try { loadSaves(); } catch (e) { /* ignore */ }
             try { fetchAndRenderSettings(); } catch (e) { /* ignore */ }
+            const sidebarSelect = document.getElementById('sidebar-language-select');
+            if (sidebarSelect) sidebarSelect.value = lang;
         }
 
         async function changeLanguage(lang) {
@@ -106,12 +108,15 @@
             fallbackTranslations = await fetchTranslations('en');
             const saved = await loadSettings();
             const lang = saved || detectBrowserLanguage();
-            const select = document.getElementById('language-select');
-            if (select) {
-                select.value = lang;
-                select.addEventListener('change', (e) => {
-                    changeLanguage(e.target.value);
-                });
-            }
             await applyLanguage(lang);
+            initSidebarPreferences();
+        }
+
+        function initSidebarPreferences() {
+            const sidebarSelect = document.getElementById('sidebar-language-select');
+            if (!sidebarSelect) return;
+            sidebarSelect.value = currentLang;
+            sidebarSelect.addEventListener('change', (e) => {
+                changeLanguage(e.target.value);
+            });
         }
