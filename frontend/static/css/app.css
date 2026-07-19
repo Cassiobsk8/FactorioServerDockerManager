@@ -535,6 +535,25 @@ select {
     padding: var(--spacing-lg);
 }
 
+.settings-module-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    min-height: 15rem;
+}
+
+.settings-module-card.is-placeholder {
+    opacity: 0.75;
+}
+
+.settings-module-card.is-loading {
+    opacity: 0.7;
+}
+
+.settings-module-card.is-disabled {
+    opacity: 0.6;
+}
+
 .log-card {
     display: flex;
     flex-direction: column;
@@ -841,25 +860,11 @@ textarea {
     align-items: start;
 }
 
-.placeholder-card {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-md);
-    opacity: 0.75;
-}
-
 .placeholder-description {
     margin: 0;
     color: var(--subtext);
     font-size: var(--font-sm);
     font-style: italic;
-}
-
-.access-control-card {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-md);
-    min-height: 15rem;
 }
 
 .access-control-count {

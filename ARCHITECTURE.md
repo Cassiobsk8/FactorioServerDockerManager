@@ -61,6 +61,28 @@ Grouped, collapsible configuration:
 - **Access Control** — Admins, Whitelist, Banlist
 - **Advanced** — Server ID
 
+#### Settings Module Card
+
+All modules inside Server Settings must use the `.settings-module-card` CSS
+component. This component centralizes:
+
+- padding, margin and min-height
+- border, border-radius and background (via `.card`)
+- flex layout with consistent gap
+- state styling: loading, empty, error, success, disabled
+
+Current modules using `.settings-module-card`:
+
+- `server-settings.json`
+- `map-settings.json`
+- Admins
+- Whitelist
+- Banlist
+- Server ID
+
+Future modules must add the `.settings-module-card` class to their root
+`<section>` element.
+
 ### About
 
 **Responsibility:** Application information.
