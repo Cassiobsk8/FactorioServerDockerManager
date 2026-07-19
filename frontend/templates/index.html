@@ -378,25 +378,74 @@
                             <span data-i18n="settings.group.access_control">Access Control</span>
                         </summary>
                         <div class="settings-group-body">
-                            <section class="panel card config-card placeholder-card">
+                            <section class="panel card config-card access-control-card" data-list="admins">
                                 <div class="panel-header">
                                     <h2 data-i18n="config.admins_title">Admins</h2>
+                                    <span class="access-control-count badge" id="admins-count">0</span>
                                 </div>
-                                <p class="placeholder-description" data-i18n="config.placeholder_coming_soon">Coming soon.</p>
+                                <div class="access-control-status">
+                                    <span class="access-control-state" id="admins-state"></span>
+                                </div>
+                                <div class="access-control-loading" id="admins-loading" aria-hidden="true">
+                                    <span class="access-control-loading-dot"></span>
+                                    <span class="access-control-loading-dot"></span>
+                                    <span class="access-control-loading-dot"></span>
+                                </div>
+                                <ul class="access-control-list" id="admins-list"></ul>
+                                <div class="access-control-add">
+                                    <input type="text" class="access-control-input" id="admins-input" data-i18n-placeholder="access_control.name_placeholder" />
+                                    <button type="button" class="text-button access-control-save" id="admins-save" data-i18n="access_control.save">Save</button>
+                                    <button type="button" class="text-button access-control-cancel" id="admins-cancel" data-i18n="access_control.cancel">Cancel</button>
+                                </div>
+                                <p class="access-control-error" id="admins-error" hidden></p>
                             </section>
 
-                            <section class="panel card config-card placeholder-card">
+                            <section class="panel card config-card access-control-card" data-list="whitelist">
                                 <div class="panel-header">
                                     <h2 data-i18n="config.whitelist_title">Whitelist</h2>
+                                    <span class="access-control-count badge" id="whitelist-count">0</span>
                                 </div>
-                                <p class="placeholder-description" data-i18n="config.placeholder_coming_soon">Coming soon.</p>
+                                <div class="access-control-status">
+                                    <span class="access-control-state" id="whitelist-state"></span>
+                                </div>
+                                <div class="access-control-loading" id="whitelist-loading" aria-hidden="true">
+                                    <span class="access-control-loading-dot"></span>
+                                    <span class="access-control-loading-dot"></span>
+                                    <span class="access-control-loading-dot"></span>
+                                </div>
+                                <div class="access-control-whitelist-toggle" id="whitelist-toggle" style="display:none;">
+                                    <button type="button" class="text-button access-control-enable" id="whitelist-enable" data-i18n="access_control.whitelist_enable">Enable</button>
+                                </div>
+                                <ul class="access-control-list" id="whitelist-list"></ul>
+                                <div class="access-control-add" id="whitelist-add" style="display:none;">
+                                    <input type="text" class="access-control-input" id="whitelist-input" data-i18n-placeholder="access_control.name_placeholder" />
+                                    <button type="button" class="text-button access-control-save" id="whitelist-save" data-i18n="access_control.save">Save</button>
+                                    <button type="button" class="text-button access-control-disable" id="whitelist-disable" data-i18n="access_control.whitelist_disable">Disable</button>
+                                    <button type="button" class="text-button access-control-cancel" id="whitelist-cancel" data-i18n="access_control.cancel">Cancel</button>
+                                </div>
+                                <p class="access-control-error" id="whitelist-error" hidden></p>
                             </section>
 
-                            <section class="panel card config-card placeholder-card">
+                            <section class="panel card config-card access-control-card" data-list="banlist">
                                 <div class="panel-header">
                                     <h2 data-i18n="config.banlist_title">Banlist</h2>
+                                    <span class="access-control-count badge" id="banlist-count">0</span>
                                 </div>
-                                <p class="placeholder-description" data-i18n="config.placeholder_coming_soon">Coming soon.</p>
+                                <div class="access-control-status">
+                                    <span class="access-control-state" id="banlist-state"></span>
+                                </div>
+                                <div class="access-control-loading" id="banlist-loading" aria-hidden="true">
+                                    <span class="access-control-loading-dot"></span>
+                                    <span class="access-control-loading-dot"></span>
+                                    <span class="access-control-loading-dot"></span>
+                                </div>
+                                <ul class="access-control-list" id="banlist-list"></ul>
+                                <div class="access-control-add">
+                                    <input type="text" class="access-control-input" id="banlist-input" data-i18n-placeholder="access_control.name_placeholder" />
+                                    <button type="button" class="text-button access-control-save" id="banlist-save" data-i18n="access_control.save">Save</button>
+                                    <button type="button" class="text-button access-control-cancel" id="banlist-cancel" data-i18n="access_control.cancel">Cancel</button>
+                                </div>
+                                <p class="access-control-error" id="banlist-error" hidden></p>
                             </section>
                         </div>
                     </details>
@@ -640,6 +689,7 @@
     <script src="{{ url_for('static', filename='js/saves.js') }}"></script>
     <script src="{{ url_for('static', filename='js/config.js') }}"></script>
     <script src="{{ url_for('static', filename='js/rcon.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/access_control.js') }}"></script>
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 

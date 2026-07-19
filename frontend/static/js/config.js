@@ -6,11 +6,9 @@
                 const res = await fetch('/server-settings');
                 if (!res.ok) return;
                 const data = await res.json();
-                console.debug('fetch /server-settings ->', data);
                 const fields = data.fields || [];
                 if (!fields.length) {
-                    const info = data.file_info || {};
-                    container.innerHTML = `<p>${t('config.no_settings')} arquivo_exists=${info.exists} size=${info.size}</p>`;
+                    container.innerHTML = `<p>${t('config.no_settings')}</p>`;
                     return;
                 }
                 container.innerHTML = renderSettingsFields(fields);
@@ -37,62 +35,62 @@
         }
 
         const SETTINGS_META = {
-            name: { label: t('settings.name'), category: t('settings.cat_general'), open: true },
-            description: { label: t('settings.description'), category: t('settings.cat_general'), open: true },
-            tags: { label: t('settings.tags'), category: t('settings.cat_general'), open: true, type: 'tags' },
-            game_password: { label: t('settings.game_password'), category: t('settings.cat_general'), open: true, type: 'password' },
+            name: { labelKey: 'settings.name', categoryKey: 'settings.cat_general', open: true },
+            description: { labelKey: 'settings.description', categoryKey: 'settings.cat_general', open: true },
+            tags: { labelKey: 'settings.tags', categoryKey: 'settings.cat_general', open: true, type: 'tags' },
+            game_password: { labelKey: 'settings.game_password', categoryKey: 'settings.cat_general', open: true, type: 'password' },
 
-            visibility: { label: t('settings.visibility'), category: t('settings.cat_network'), open: true, type: 'visibility' },
-            'visibility.public': { label: t('settings.visibility_public'), category: t('settings.cat_network') },
-            'visibility.lan': { label: t('settings.visibility_lan'), category: t('settings.cat_network') },
-            require_user_verification: { label: t('settings.require_user_verification'), category: t('settings.cat_network'), open: true },
+            visibility: { labelKey: 'settings.visibility', categoryKey: 'settings.cat_network', open: true, type: 'visibility' },
+            'visibility.public': { labelKey: 'settings.visibility_public', categoryKey: 'settings.cat_network' },
+            'visibility.lan': { labelKey: 'settings.visibility_lan', categoryKey: 'settings.cat_network' },
+            require_user_verification: { labelKey: 'settings.require_user_verification', categoryKey: 'settings.cat_network', open: true },
 
-            username: { label: t('settings.username'), category: t('settings.cat_advanced'), type: 'password', hint: t('settings.username_hint') },
-            password: { label: t('settings.password'), category: t('settings.cat_advanced'), type: 'password', hint: t('settings.password_hint') },
-            token: { label: t('settings.token'), category: t('settings.cat_advanced'), type: 'password', hint: t('settings.token_hint') },
+            username: { labelKey: 'settings.username', categoryKey: 'settings.cat_advanced', type: 'password', hintKey: 'settings.username_hint' },
+            password: { labelKey: 'settings.password', categoryKey: 'settings.cat_advanced', type: 'password', hintKey: 'settings.password_hint' },
+            token: { labelKey: 'settings.token', categoryKey: 'settings.cat_advanced', type: 'password', hintKey: 'settings.token_hint' },
 
             max_players: {
-                label: t('settings.max_players'), category: t('settings.cat_players'), open: true, min: 0, step: 1,
-                hint: t('settings.max_players_hint'),
+                labelKey: 'settings.max_players', categoryKey: 'settings.cat_players', open: true, min: 0, step: 1,
+                hintKey: 'settings.max_players_hint',
             },
             ignore_player_limit_for_returning_players: {
-                label: t('settings.ignore_player_limit'), category: t('settings.cat_players'), open: true,
+                labelKey: 'settings.ignore_player_limit', categoryKey: 'settings.cat_players', open: true,
             },
             allow_commands: {
-                label: t('settings.allow_commands'), category: t('settings.cat_players'), open: true, type: 'select',
+                labelKey: 'settings.allow_commands', categoryKey: 'settings.cat_players', open: true, type: 'select',
                 options: ['true', 'false', 'admins-only'],
-                hint: t('settings.allow_commands_hint'),
+                hintKey: 'settings.allow_commands_hint',
             },
             afk_autokick_interval: {
-                label: t('settings.afk_autokick_interval'), category: t('settings.cat_players'), open: true, min: 0, step: 1,
-                hint: t('settings.afk_autokick_hint'),
+                labelKey: 'settings.afk_autokick_interval', categoryKey: 'settings.cat_players', open: true, min: 0, step: 1,
+                hintKey: 'settings.afk_autokick_hint',
             },
 
             autosave_interval: {
-                label: t('settings.autosave_interval'), category: t('settings.cat_autosave'), open: true, min: 0, step: 1,
-                hint: t('settings.autosave_interval_hint'),
+                labelKey: 'settings.autosave_interval', categoryKey: 'settings.cat_autosave', open: true, min: 0, step: 1,
+                hintKey: 'settings.autosave_interval_hint',
             },
             autosave_slots: {
-                label: t('settings.autosave_slots'), category: t('settings.cat_autosave'), open: true, min: 1, step: 1,
-                hint: t('settings.autosave_slots_hint'),
+                labelKey: 'settings.autosave_slots', categoryKey: 'settings.cat_autosave', open: true, min: 1, step: 1,
+                hintKey: 'settings.autosave_slots_hint',
             },
-            autosave_only_on_server: { label: t('settings.autosave_only_on_server'), category: t('settings.cat_autosave'), open: true },
-            auto_pause: { label: t('settings.auto_pause'), category: t('settings.cat_autosave'), open: true },
-            auto_pause_when_players_connect: { label: t('settings.auto_pause_when_connect'), category: t('settings.cat_autosave'), open: true },
-            only_admins_can_pause_the_game: { label: t('settings.only_admins_pause'), category: t('settings.cat_autosave'), open: true },
-            non_blocking_saving: { label: t('settings.non_blocking_saving'), category: t('settings.cat_autosave'), open: true },
+            autosave_only_on_server: { labelKey: 'settings.autosave_only_on_server', categoryKey: 'settings.cat_autosave', open: true },
+            auto_pause: { labelKey: 'settings.auto_pause', categoryKey: 'settings.cat_autosave', open: true },
+            auto_pause_when_players_connect: { labelKey: 'settings.auto_pause_when_connect', categoryKey: 'settings.cat_autosave', open: true },
+            only_admins_can_pause_the_game: { labelKey: 'settings.only_admins_pause', categoryKey: 'settings.cat_autosave', open: true },
+            non_blocking_saving: { labelKey: 'settings.non_blocking_saving', categoryKey: 'settings.cat_autosave', open: true },
 
             max_upload_in_kilobytes_per_second: {
-                label: t('settings.max_upload_kbps'), category: t('settings.cat_upload'), open: true, min: 0, step: 1,
-                hint: t('settings.max_upload_kbps_hint'),
+                labelKey: 'settings.max_upload_kbps', categoryKey: 'settings.cat_upload', open: true, min: 0, step: 1,
+                hintKey: 'settings.max_upload_kbps_hint',
             },
             max_upload_slots: {
-                label: t('settings.max_upload_slots'), category: t('settings.cat_upload'), open: true, min: 0, step: 1,
-                hint: t('settings.max_upload_slots_hint'),
+                labelKey: 'settings.max_upload_slots', categoryKey: 'settings.cat_upload', open: true, min: 0, step: 1,
+                hintKey: 'settings.max_upload_slots_hint',
             },
             minimum_latency_in_ticks: {
-                label: t('settings.min_latency_ticks'), category: t('settings.cat_upload'), open: true, min: 0, step: 1,
-                hint: t('settings.min_latency_ticks_hint'),
+                labelKey: 'settings.min_latency_ticks', categoryKey: 'settings.cat_upload', open: true, min: 0, step: 1,
+                hintKey: 'settings.min_latency_ticks_hint',
             },
         };
 
@@ -105,12 +103,14 @@
 
         function fieldLabel(field) {
             const meta = SETTINGS_META[field.path];
+            if (meta && meta.labelKey) return t(meta.labelKey);
             if (meta && meta.label) return meta.label;
             return field.key;
         }
 
         function fieldCategory(field) {
             const meta = SETTINGS_META[field.path];
+            if (meta && meta.categoryKey) return t(meta.categoryKey);
             if (meta && meta.category) return meta.category;
             if (ADVANCED_PATHS.includes(field.path)) return t('settings.cat_advanced');
             if (field.type === 'object' && field.key === 'visibility') return t('settings.cat_network');
@@ -120,7 +120,8 @@
         function tooltipHtml(field) {
             const meta = SETTINGS_META[field.path];
             let tip = '';
-            if (meta && meta.hint) tip = meta.hint;
+            if (meta && meta.hintKey) tip = t(meta.hintKey);
+            else if (meta && meta.hint) tip = meta.hint;
             else if (field.comment) tip = Array.isArray(field.comment) ? field.comment.join(' ') : field.comment;
             if (!tip) return '';
             return `<span class="field-tooltip" tabindex="0" role="button" aria-label="Ajuda">ⓘ<span class="tooltip-pop">${escapeHtml(tip)}</span></span>`;

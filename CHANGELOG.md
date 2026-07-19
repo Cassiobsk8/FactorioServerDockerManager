@@ -1,5 +1,102 @@
 # Changelog
 
+## 2.8.1 - Access Control Freeze
+
+Status: Module Frozen (Tarefa 5/5)
+
+Sprint 2.8.1 / Tarefa 5/5 - Access Control Freeze
+
+### Validation
+
+- Backend: `access_control_service` covers read/write for admins, whitelist, banlist with dedupe, trim, sort and file cleanup.
+- API: `GET /api/access-control`, `POST /api/access-control/<list_key>`, `DELETE /api/access-control/<list_key>` validated.
+- Frontend: Access Control cards render state, count, records, empty state, loading state, errors and add/remove interactions.
+- Internationalization: all 4 locales (en, pt_BR, es, zh_CN) include `access_control.*` and `confirm.remove_access` keys.
+- Responsiveness: `settings-group-body` collapses to 1 column at 980px; access control cards inherit the grid behavior.
+- Design System: cards use centralized tokens (`--spacing-*`, `--radius-*`, `--border`, `--text`, `--subtext`, `--accent`, `--success`, `--color-danger-light`, `--badge-offline-*`).
+- Tests: 15 access-control tests pass (service + CRUD).
+
+### Freeze
+
+Access Control module is stable and ready for production use.
+
+Sprint 2.8.1 / Tarefa 4/5 - Access Control UX Polish
+
+### Added
+
+- Loading state: animated 3-dot indicator per card during initial load and add/remove operations; inputs and buttons disabled while loading.
+- Removal confirmation: `confirm()` dialog before deleting an entry, with friendly message including list title and player name.
+- Friendly error messages: backend errors (duplicate, not found, empty) mapped to localized user-facing messages.
+- i18n keys: `access_control.error.duplicate`, `access_control.error.not_found`, `confirm.remove_access` (en/pt_BR/es/zh_CN).
+- Empty state copy refined to friendly tone ("No entries yet" / "Nenhuma entrada ainda").
+
+### Changed
+
+- No functional changes; only UX/UI polish on top of existing CRUD foundation.
+
+## 2.8.1 - Access Control Foundation
+
+Sprint 2.8.1 / Tarefa 3/5 - Access Control CRUD
+
+### Added
+
+- Backend write layer in `access_control_service`:
+  - `add_to_list(key, name)` — trims, rejects empty, rejects duplicates, auto-sorts, persists (creates file if missing)
+  - `remove_from_list(key, name)` — removes entry, deletes file when last entry removed
+  - Serialization keeps correct shape per list (adminlist `{"admins":[...]}`, whitelist/banlist arrays)
+- API endpoints: `POST /api/access-control/<list_key>` (add) and `DELETE /api/access-control/<list_key>` (remove)
+- Frontend CRUD in Access Control cards:
+  - Per-item remove (×) button
+  - Add row with input + Save + Cancel (Enter adds, Escape cancels)
+  - Error messages for empty/duplicate/failed operations
+- i18n keys: `access_control.name_placeholder`, `access_control.save`, `access_control.cancel`, `access_control.remove`, `access_control.error.empty`, `access_control.error.failed` (en/pt_BR/es/zh_CN)
+- CSS for add row, input, save/cancel buttons and remove button
+- Backend tests for the CRUD layer
+
+### Validation
+
+- No duplicates (rejected both in backend and frontend context)
+- Extra spaces trimmed automatically
+- Records auto-sorted on write
+- Internationalized (all 4 locales)
+
+Sprint 2.8.1 / Tarefa 2/5 - Read Access Lists
+
+### Added
+
+- Access Control cards now display the list contents (names) for Admins, Whitelist and Banlist
+- Read-only list rendering with empty state ("No entries") when a valid file has zero records
+- i18n key `access_control.empty` (en/pt_BR/es/zh_CN)
+- CSS for `.access-control-list`, `.access-control-item`, `.access-control-empty`
+
+### Notes
+
+- Still read-only: lists are displayed but not editable (editing planned for a later sprint).
+- Names are rendered as text content (no HTML injection).
+
+Sprint 2.8.1 / Tarefa 1/5 - Access Control Foundation
+
+### Added
+
+- Read-only backend layer for Access Control lists (`access_control_service`):
+  - Locates, reads and validates `server-adminlist.json`, `server-whitelist.json`, `server-banlist.json`
+  - Returns record count, file existence, validity and error messages
+  - Accepts both legacy (array) and object (`admins`/`bans`) Factorio formats
+- API endpoint `GET /api/access-control` returning admins/whitelist/banlist status
+- Frontend Access Control cards (Admins, Whitelist, Banlist) in Server Settings:
+  - Real cards replacing placeholders
+  - Read-only: show record count, file state (loaded / not found / invalid) and error messages
+  - Auto-refresh every 5s via `access_control.js`
+- i18n keys `access_control.state.ok|missing|invalid` (en/pt_BR/es/zh_CN)
+- Config paths `ADMINLIST_PATH`, `WHITELIST_PATH`, `BANLIST_PATH` in `backend/config.py`
+- Tests for the access control service
+
+### Notes
+
+- Read-only by design: no file is edited or written, no save action.
+- Missing files are a valid state (not an error); only malformed JSON or wrong shape is flagged invalid.
+- Editing capabilities are planned for a later Access Control sprint.
+
 ## 2.8.0 - Information Architecture Refactor
 
 Status: Architecture Frozen (Tarefa 6/6)
