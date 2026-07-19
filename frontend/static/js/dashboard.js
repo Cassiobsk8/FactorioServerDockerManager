@@ -235,3 +235,60 @@
                 logsAutoScrollBtn.classList.toggle('active', logsAutoScroll);
             });
         }
+
+        const serverNameEl = document.getElementById('server-name');
+        const serverNameEditBtn = document.getElementById('server-name-edit');
+        const serverNameInput = document.getElementById('server-name-input');
+        const serverNameSaveBtn = document.getElementById('server-name-save');
+        const serverNameCancelBtn = document.getElementById('server-name-cancel');
+        const serverNameEditRow = document.getElementById('server-name-edit-row');
+
+        function openServerNameEdit() {
+            if (!serverNameEl || !serverNameEditRow || !serverNameInput) return;
+            serverNameEditRow.style.display = 'flex';
+            serverNameInput.value = serverNameEl.textContent.trim();
+            serverNameInput.focus();
+        }
+
+        function closeServerNameEdit() {
+            if (!serverNameEditRow) return;
+            serverNameEditRow.style.display = 'none';
+        }
+
+        async function saveServerName() {
+            if (!serverNameInput) return;
+            const name = serverNameInput.value.trim();
+            if (!name) return;
+            try {
+                const res = await fetch('/api/server-name', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ server_name: name }),
+                });
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    console.error(err);
+                    return;
+                }
+                if (serverNameEl) serverNameEl.textContent = name;
+                closeServerNameEdit();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        if (serverNameEditBtn) {
+            serverNameEditBtn.addEventListener('click', openServerNameEdit);
+        }
+        if (serverNameSaveBtn) {
+            serverNameSaveBtn.addEventListener('click', saveServerName);
+        }
+        if (serverNameCancelBtn) {
+            serverNameCancelBtn.addEventListener('click', closeServerNameEdit);
+        }
+        if (serverNameInput) {
+            serverNameInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') saveServerName();
+                if (e.key === 'Escape') closeServerNameEdit();
+            });
+        }

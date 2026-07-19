@@ -1,4 +1,4 @@
-APP_VERSION = "2.6.1"
-RELEASE_NAME = "Frontend Polish Preview"
-BUILD_DATE = "2026-07-17"
-STATUS = "Development"
+APP_VERSION = "2.7.0"
+RELEASE_NAME = "Frontend Polish"
+BUILD_DATE = "2026-07-18"
+STATUS = "Stable"

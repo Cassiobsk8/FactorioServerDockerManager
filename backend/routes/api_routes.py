@@ -13,7 +13,9 @@ from backend.services.factorio_service import (
     FactorioService,
     get_install_progress,
     get_logs,
+    load_server_config,
     load_server_settings,
+    save_server_config,
     log_error,
 )
 from backend.services.metrics_service import get_factorio_version, get_process_metrics
@@ -176,6 +178,16 @@ def api_translations(lang: str):
     except Exception as exc:
         logger.exception("Failed to load translations for %s", lang)
         return jsonify({}), 500
+
+
+@api_bp.route("/api/server-name", methods=["POST"])
+def api_server_name():
+    data = request.get_json(silent=True) or {}
+    name = (data.get("server_name") or "").strip()
+    if not name:
+        return jsonify({"error": "server_name required"}), 400
+    updated = save_server_config(values={"server_name": name})
+    return jsonify({"server_name": updated.get("server_name", name)})
 
 
 @api_bp.route("/api/settings", methods=["GET"])

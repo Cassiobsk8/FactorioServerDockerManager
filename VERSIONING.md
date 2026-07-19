@@ -21,6 +21,7 @@ All other parts of the project import from this file. Never hardcode version num
 
 | Version | Release Name | Status | Build Date |
 | --- | --- | --- | --- |
+| 2.7.0 | Frontend Polish | Stable | 2026-07-18 |
 | 2.6.1 | Frontend Polish Preview | Development | 2026-07-17 |
 | 2.6.0 | Frontend Foundation | Stable | 2026-07-17 |
 | 2.5.0 | RCON Edition | Stable | 2026-07-17 |

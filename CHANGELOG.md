@@ -1,5 +1,41 @@
 # Changelog
 
+## 2.7.0 - Frontend Polish
+
+### Added
+
+- Rich Saves Table with status badges, metadata and action menu
+- Saves Toolbar with search and sort placeholders
+- Quick Server Rename inline editing on Dashboard Hero Card
+- `/api/server-name` endpoint for server name persistence
+- New i18n keys for saves, status states and server name editing
+
+### Changed
+
+- Saves table layout redesigned with modern card styling
+- Action buttons consolidated into dropdown menu (Select, Rename, Download, Duplicate, Delete)
+- Partial DOM updates for saves list during polling (performance improvement)
+- RCON status card restructured to match Active Save card layout
+- Log panel now occupies full remaining viewport height with internal scroll
+- Status translations now use `status.state.*` keys instead of raw values
+- Design System tokens enforced across saves table spacing and typography
+
+### Fixed
+
+- Save action menu hitbox now responds to clicks on the entire button area
+- Save action menu remains open during automatic polling
+- Download action no longer navigates to `/download-save/undefined`
+- Server status translation fallback displaying `status.state.not_installed`
+- Save row alignment consistency across active/inactive saves
+- CSS dead code and unused variables removed
+- JavaScript dead code removed (`formatComment`, `logsInterval`, unused `meta` variable)
+- i18n cleanup: removed unused keys, added missing translations
+- config.js brace balance fixed
+
+### Security
+
+- Removed exposure of internal backend error messages in frontend alerts
+
 ## 2.6.1 - Frontend Polish Preview
 
 ### Changed
