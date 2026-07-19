@@ -39,14 +39,24 @@ def get_runtime_state() -> Dict[str, Any]:
     }
 
 
-def mark_pending(key: str) -> Dict[str, Any]:
+def mark_pending(key: str, label: Optional[str] = None) -> Dict[str, Any]:
     state = _read_state()
     pending = state.setdefault("pending", {})
     pending[key] = {
         "changed_at": datetime.now(timezone.utc).isoformat(),
+        "label": label or key,
     }
     _write_state(state)
     logger.info("Marked %s as pending restart", key)
+    return get_runtime_state()
+
+
+def remove_pending(key: str) -> Dict[str, Any]:
+    state = _read_state()
+    pending = state.get("pending", {})
+    pending.pop(key, None)
+    _write_state(state)
+    logger.info("Removed %s from pending restart", key)
     return get_runtime_state()
 
 

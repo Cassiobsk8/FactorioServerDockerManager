@@ -252,7 +252,7 @@ def enable_whitelist() -> dict:
     if not WHITELIST_PATH.exists():
         WHITELIST_PATH.write_text("[]", encoding="utf-8")
         logger.info("Enabled whitelist by creating %s", WHITELIST_PATH)
-    mark_pending("whitelist")
+    mark_pending("whitelist", "Whitelist")
     return _status_to_dict(get_whitelist_status())
 
 
@@ -260,7 +260,7 @@ def disable_whitelist() -> dict:
     if WHITELIST_PATH.exists():
         WHITELIST_PATH.unlink()
         logger.info("Disabled whitelist by removing %s", WHITELIST_PATH)
-    mark_pending("whitelist")
+    mark_pending("whitelist", "Whitelist")
     return _status_to_dict(get_whitelist_status())
 
 

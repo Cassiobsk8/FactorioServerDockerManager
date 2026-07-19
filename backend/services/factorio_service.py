@@ -37,7 +37,7 @@ from backend.config import (
 )
 from backend.services.save_service import load_active_save
 from backend.services.settings_service import load_app_settings
-from backend.services.startup_builder import RuntimeStartupBuilder
+from backend.services.startup_builder import RuntimeStartupBuilder, StartupConfiguration
 
 logger = logging.getLogger("fsm.factorio")
 
@@ -735,27 +735,36 @@ def _factorio_command(install_dir: Optional[Path] = None) -> List[str]:
     rcon_host = app_settings.get("rcon_host", "127.0.0.1")
     rcon_port = app_settings.get("rcon_port", "27015")
     rcon_password = app_settings.get("rcon_password", "")
+    server_port = app_settings.get("server_port", "")
+    bind = app_settings.get("bind", "")
+    rcon_bind = app_settings.get("rcon_bind", rcon_host)
+    server_id_raw = app_settings.get("server_id", "")
+    server_id = Path(server_id_raw) if server_id_raw else None
+    use_authserver_bans = app_settings.get("use_authserver_bans", "false").lower() == "true"
+    factorio_username = app_settings.get("factorio_username", "")
+    factorio_token = app_settings.get("factorio_service_token", "")
 
     logger.info("RCON Host: %s", rcon_host)
     logger.info("RCON Port: %s", rcon_port)
     logger.info("RCON Enabled: %s", bool(rcon_password))
 
-    builder = RuntimeStartupBuilder(
+    config = StartupConfiguration(
         factorio_bin=factorio_bin,
         active_save=active_save,
         rcon_port=rcon_port,
         rcon_password=rcon_password,
-    )
-
-    if SERVER_SETTINGS_PATH.exists():
-        builder.with_server_settings(SERVER_SETTINGS_PATH)
-
-    builder.with_access_lists(
+        port=server_port or None,
+        bind=bind or None,
+        rcon_bind=rcon_bind or None,
+        server_id=server_id,
+        use_authserver_bans=use_authserver_bans,
+        server_settings=SERVER_SETTINGS_PATH if SERVER_SETTINGS_PATH.exists() else None,
         adminlist=ADMINLIST_PATH if ADMINLIST_PATH.exists() else None,
         banlist=BANLIST_PATH if BANLIST_PATH.exists() else None,
         whitelist=WHITELIST_PATH if WHITELIST_PATH.exists() else None,
     )
 
+    builder = RuntimeStartupBuilder(config)
     return builder.build()
 
 

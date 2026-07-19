@@ -19,10 +19,14 @@ from backend.services.factorio_service import (
     log_error,
     _factorio_command as _factorio_command_impl,
 )
+from backend.services.factorio_services_service import (
+    get_factorio_services_status,
+    save_factorio_services,
+)
 from backend.services.metrics_service import get_factorio_version, get_process_metrics
 from backend.services.save_service import load_active_save, get_save_info
 from backend.services.settings_service import load_app_settings, save_app_settings
-from backend.services.runtime_state_service import get_runtime_state, clear_pending
+from backend.services.runtime_state_service import get_runtime_state, clear_pending, mark_pending, remove_pending
 from backend.services.startup_validation_service import validate_startup
 from backend.version import APP_VERSION, RELEASE_NAME, BUILD_DATE
 from flask import Blueprint, jsonify, request
@@ -47,10 +51,12 @@ def api_status():
     metrics = get_process_metrics(pid)
     install_progress = get_install_progress()
     runtime_state = get_runtime_state()
+    factorio_services = get_factorio_services_status()
     return jsonify(
         {
             "status": factorio_service.get_status(),
             "runtime_state": runtime_state,
+            "factorio_account": factorio_services,
             "server": {
                 "install_status": (
                     "installing"
@@ -137,6 +143,15 @@ def api_runtime_state_clear():
         return jsonify({"error": str(exc)}), 500
 
 
+@api_bp.route("/api/runtime-state/<key>", methods=["DELETE"])
+def api_runtime_state_remove(key):
+    try:
+        return jsonify(remove_pending(key))
+    except Exception as exc:
+        logger.exception("Failed to remove pending change %s", key)
+        return jsonify({"error": str(exc)}), 500
+
+
 @api_bp.route("/api/startup-preview")
 def api_startup_preview():
     try:
@@ -148,6 +163,31 @@ def api_startup_preview():
         return jsonify({"command": masked})
     except Exception as exc:
         logger.exception("Startup preview failed")
+        return jsonify({"error": str(exc)}), 500
+
+
+@api_bp.route("/api/factorio-services", methods=["GET"])
+def api_factorio_services_get():
+    try:
+        return jsonify(get_factorio_services_status())
+    except Exception as exc:
+        logger.exception("Failed to load factorio services")
+        return jsonify({"error": str(exc)}), 500
+
+
+@api_bp.route("/api/factorio-services", methods=["POST"])
+def api_factorio_services_save():
+    data = request.get_json(silent=True) or {}
+    username = (data.get("username") or "").strip()
+    token = (data.get("token") or "").strip()
+    if not username or not token:
+        return jsonify({"error": "username and token are required"}), 400
+    try:
+        result = save_factorio_services(username, token)
+        mark_pending("factorio_services", "Factorio Account")
+        return jsonify(result)
+    except Exception as exc:
+        logger.exception("Failed to save factorio services")
         return jsonify({"error": str(exc)}), 500
 
 

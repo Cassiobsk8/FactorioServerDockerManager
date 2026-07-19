@@ -20,6 +20,7 @@ SERVER_LOG_PATH = LOG_DIR / "server.log"
 MODS_DIR = BASE_DIR / "data" / "mods"
 BACKUPS_DIR = BASE_DIR / "data" / "backups"
 APP_SETTINGS_PATH = BASE_DIR / "data" / "settings.json"
+PLAYER_DATA_PATH = BASE_DIR / "factorio" / "player-data.json"
 
 DEFAULT_CONFIG: dict[str, str] = {
     "server_name": "factorio",
@@ -32,6 +33,13 @@ DEFAULT_APP_SETTINGS: dict[str, str] = {
     "rcon_port": "27015",
     "rcon_password": "",
     "rcon_timeout": "5",
+    "server_port": "",
+    "bind": "",
+    "rcon_bind": "",
+    "server_id": "",
+    "use_authserver_bans": "false",
+    "factorio_username": "",
+    "factorio_service_token": "",
 }
 
 DEFAULT_INSTALL_ARCHIVE = os.getenv("FACTORIO_SERVER_ARCHIVE", "")

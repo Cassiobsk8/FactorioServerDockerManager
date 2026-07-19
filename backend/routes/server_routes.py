@@ -38,7 +38,7 @@ from backend.services.factorio_service import (
 )
 from backend.services.save_service import list_save_files, get_active_save
 from backend.services.settings_service import load_app_settings
-from backend.services.runtime_state_service import clear_pending
+from backend.services.runtime_state_service import clear_pending, mark_pending
 from backend.version import APP_VERSION, RELEASE_NAME, BUILD_DATE
 from flask import Blueprint, jsonify, redirect, render_template, request
 
@@ -197,6 +197,7 @@ def update_config():
     current_settings = load_server_settings()
     updated_settings = update_server_settings_from_form(request.form, current_settings)
     save_server_settings(updated_settings)
+    mark_pending("server_settings", "Server Settings")
 
     return redirect("/")
 

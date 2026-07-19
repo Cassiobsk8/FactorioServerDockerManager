@@ -1,12 +1,32 @@
 from __future__ import annotations
 
 import logging
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional
+from typing import Callable, List, Optional
 
 logger = logging.getLogger("fsm.startup")
 
-CommandBuilder = Callable[["StartupBuilder"], None]
+CommandBuilder = Callable[["RuntimeStartupBuilder"], None]
+
+
+@dataclass
+class StartupConfiguration:
+    """Centralized configuration for Factorio server startup."""
+
+    factorio_bin: Path
+    active_save: str
+    rcon_port: str
+    rcon_password: str
+    port: Optional[str] = None
+    bind: Optional[str] = None
+    rcon_bind: Optional[str] = None
+    server_id: Optional[Path] = None
+    use_authserver_bans: bool = False
+    server_settings: Optional[Path] = None
+    adminlist: Optional[Path] = None
+    banlist: Optional[Path] = None
+    whitelist: Optional[Path] = None
 
 
 class StartupBuilder:
@@ -34,76 +54,65 @@ class RuntimeStartupBuilder(StartupBuilder):
     """Concrete builder for Factorio runtime startup arguments.
 
     Usage:
-        builder = RuntimeStartupBuilder(
+        config = StartupConfiguration(
             factorio_bin=Path("/factorio/bin/x64/factorio"),
             active_save="MundoTeste.zip",
             rcon_port="27015",
             rcon_password="secret",
+            port="34197",
+            bind="0.0.0.0",
+            rcon_bind="127.0.0.1",
+            server_id=Path("/factorio/config/server-id.json"),
+            use_authserver_bans=True,
         )
-        builder.with_server_settings(Path("/factorio/config/server-settings.json"))
-        builder.with_access_lists(adminlist=Path("..."), banlist=Path("..."), whitelist=Path("..."))
-        builder.with_extensions(...)
+        builder = RuntimeStartupBuilder(config)
         cmd = builder.build()
     """
 
-    def __init__(
-        self,
-        factorio_bin: Path,
-        active_save: str,
-        rcon_port: str,
-        rcon_password: str,
-    ) -> None:
+    def __init__(self, config: Optional[StartupConfiguration] = None, **kwargs) -> None:
         super().__init__()
-        self._factorio_bin = factorio_bin
-        self._active_save = active_save
-        self._rcon_port = rcon_port
-        self._rcon_password = rcon_password
-        self._server_settings: Optional[Path] = None
-        self._adminlist: Optional[Path] = None
-        self._banlist: Optional[Path] = None
-        self._whitelist: Optional[Path] = None
-
-    def with_server_settings(self, path: Path) -> "RuntimeStartupBuilder":
-        self._server_settings = path
-        return self
-
-    def with_access_lists(
-        self,
-        adminlist: Optional[Path] = None,
-        banlist: Optional[Path] = None,
-        whitelist: Optional[Path] = None,
-    ) -> "RuntimeStartupBuilder":
-        self._adminlist = adminlist
-        self._banlist = banlist
-        self._whitelist = whitelist
-        return self
-
-    def with_extensions(self, *builders: CommandBuilder) -> "RuntimeStartupBuilder":
-        for builder in builders:
-            self.extend(builder)
-        return self
+        if config is not None:
+            self._config = config
+        else:
+            self._config = StartupConfiguration(**kwargs)
 
     def build(self) -> List[str]:
         self._args.clear()
-        self._args.append(str(self._factorio_bin))
-        self._args.append(f"--start-server={self._active_save}")
+        config = self._config
 
-        if self._rcon_password:
-            self._args.extend([f"--rcon-port={self._rcon_port}", f"--rcon-password={self._rcon_password}"])
+        self._args.append(str(config.factorio_bin))
+        self._args.append(f"--start-server={config.active_save}")
+
+        if config.port:
+            self._args.append(f"--port={config.port}")
+
+        if config.bind:
+            self._args.append(f"--bind={config.bind}")
+
+        if config.rcon_password:
+            self._args.extend([f"--rcon-port={config.rcon_port}", f"--rcon-password={config.rcon_password}"])
+            if config.rcon_bind:
+                self._args.append(f"--rcon-bind={config.rcon_bind}")
         else:
             logger.warning("RCON disabled: password not configured")
 
-        if self._server_settings and self._server_settings.exists():
-            self._args.extend([f"--server-settings={self._server_settings}"])
+        if config.server_id and config.server_id.exists():
+            self._args.append(f"--server-id={config.server_id}")
 
-        if self._adminlist and self._adminlist.exists():
-            self._args.extend([f"--server-adminlist={self._adminlist}"])
+        if config.use_authserver_bans:
+            self._args.append("--use-authserver-bans")
 
-        if self._banlist and self._banlist.exists():
-            self._args.extend([f"--server-banlist={self._banlist}"])
+        if config.server_settings and config.server_settings.exists():
+            self._args.extend([f"--server-settings={config.server_settings}"])
 
-        if self._whitelist and self._whitelist.exists():
-            self._args.extend([f"--server-whitelist={self._whitelist}", "--use-server-whitelist"])
+        if config.adminlist and config.adminlist.exists():
+            self._args.extend([f"--server-adminlist={config.adminlist}"])
+
+        if config.banlist and config.banlist.exists():
+            self._args.extend([f"--server-banlist={config.banlist}"])
+
+        if config.whitelist and config.whitelist.exists():
+            self._args.extend([f"--server-whitelist={config.whitelist}", "--use-server-whitelist"])
 
         for extension in self._extensions:
             extension(self)

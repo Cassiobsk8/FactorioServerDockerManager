@@ -90,6 +90,17 @@
                     runtimeAppliedBadge.style.display = hasPending ? 'none' : '';
                 }
 
+                if (hasPending && runtime.pending) {
+                    renderPendingChanges(runtime.pending);
+                }
+
+                const factorioBadge = document.getElementById('factorio-account-badge');
+                if (factorioBadge && data.factorio_account) {
+                    const fs = data.factorio_account;
+                    factorioBadge.textContent = t(`factorio_account.status.${fs.status}`);
+                    factorioBadge.className = `badge badge-factorio ${fs.status}`;
+                }
+
                 renderHeroActions();
             } catch (err) {
                 // ignore errors during polling
@@ -330,10 +341,11 @@
             restartForm.addEventListener('submit', validateStartup);
         }
 
-        const startupPreview = document.getElementById('startup-preview');
+        const startupPreviewModal = document.getElementById('startup-preview-modal');
         const startupPreviewCommand = document.getElementById('startup-preview-command');
         const startupPreviewShow = document.getElementById('startup-preview-show');
-        const startupPreviewToggle = document.getElementById('startup-preview-toggle');
+        const startupPreviewClose = document.getElementById('startup-preview-close');
+        const startupPreviewCopy = document.getElementById('startup-preview-copy');
 
         async function loadStartupPreview() {
             try {
@@ -349,21 +361,190 @@
         }
 
         function showStartupPreview() {
-            if (!startupPreview || !startupPreviewShow) return;
-            startupPreview.style.display = '';
-            startupPreviewShow.style.display = 'none';
+            if (!startupPreviewModal) return;
+            startupPreviewModal.style.display = 'flex';
             loadStartupPreview();
         }
 
         function hideStartupPreview() {
-            if (!startupPreview || !startupPreviewShow) return;
-            startupPreview.style.display = 'none';
-            startupPreviewShow.style.display = '';
+            if (!startupPreviewModal) return;
+            startupPreviewModal.style.display = 'none';
+        }
+
+        async function copyStartupPreview() {
+            if (!startupPreviewCommand) return;
+            try {
+                await navigator.clipboard.writeText(startupPreviewCommand.textContent);
+                if (startupPreviewCopy) {
+                    const original = startupPreviewCopy.textContent;
+                    startupPreviewCopy.textContent = t('startup_preview.copied');
+                    setTimeout(() => {
+                        startupPreviewCopy.textContent = original;
+                    }, 1500);
+                }
+            } catch (err) {
+                // ignore clipboard errors
+            }
         }
 
         if (startupPreviewShow) {
             startupPreviewShow.addEventListener('click', showStartupPreview);
         }
-        if (startupPreviewToggle) {
-            startupPreviewToggle.addEventListener('click', hideStartupPreview);
+        if (startupPreviewClose) {
+            startupPreviewClose.addEventListener('click', hideStartupPreview);
         }
+        if (startupPreviewCopy) {
+            startupPreviewCopy.addEventListener('click', copyStartupPreview);
+        }
+        if (startupPreviewModal) {
+            startupPreviewModal.addEventListener('click', (e) => {
+                if (e.target === startupPreviewModal) {
+                    hideStartupPreview();
+                }
+            });
+        }
+
+        const factorioForm = document.getElementById('factorio-account-form');
+        const factorioUsername = document.getElementById('factorio-username');
+        const factorioToken = document.getElementById('factorio-token');
+        const factorioToggleToken = document.getElementById('factorio-account-toggle-token');
+        const factorioStatusBadge = document.getElementById('factorio-account-status');
+
+        if (factorioToggleToken && factorioToken) {
+            factorioToggleToken.addEventListener('click', () => {
+                const isPassword = factorioToken.type === 'password';
+                factorioToken.type = isPassword ? 'text' : 'password';
+                factorioToggleToken.textContent = t(isPassword ? 'factorio_account.hide_token' : 'factorio_account.show_token');
+            });
+        }
+
+        async function loadFactorioServices() {
+            try {
+                const res = await fetch('/api/factorio-services');
+                if (!res.ok) return;
+                const data = await res.json();
+                if (factorioUsername) factorioUsername.value = data.username || '';
+                if (factorioToken) factorioToken.value = '';
+                if (factorioStatusBadge) {
+                    factorioStatusBadge.textContent = t(`factorio_account.status.${data.status}`);
+                    factorioStatusBadge.className = `badge badge-factorio ${data.status}`;
+                }
+            } catch (err) {
+                // ignore
+            }
+        }
+
+        if (factorioForm) {
+            factorioForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (!factorioUsername || !factorioToken) return;
+                const username = factorioUsername.value.trim();
+                const token = factorioToken.value.trim();
+                if (!username || !token) {
+                    alert(t('factorio_account.status.not_configured'));
+                    return;
+                }
+                try {
+                    const res = await fetch('/api/factorio-services', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username, token }),
+                    });
+                    if (!res.ok) {
+                        const data = await res.json().catch(() => ({}));
+                        alert(data.error || t('access_control.error.failed'));
+                        return;
+                    }
+                    factorioToken.value = '';
+                    await loadFactorioServices();
+                } catch (err) {
+                    alert(t('access_control.error.failed'));
+                }
+            });
+        }
+
+        loadFactorioServices();
+
+        const pendingChangesPopover = document.getElementById('pending-changes-popover');
+        const pendingChangesList = document.getElementById('pending-changes-list');
+        const pendingChangesClear = document.getElementById('pending-changes-clear');
+        const runtimeRestartBadge = document.getElementById('runtime-state-badge-restart');
+
+        function renderPendingChanges(pending) {
+            if (!pendingChangesList) return;
+            pendingChangesList.innerHTML = '';
+            const entries = Object.entries(pending);
+            if (!entries.length) {
+                pendingChangesList.innerHTML = '<li>No pending changes</li>';
+                return;
+            }
+            entries.forEach(([key, info]) => {
+                const li = document.createElement('li');
+                const name = document.createElement('span');
+                name.textContent = info.label || key;
+                li.appendChild(name);
+
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className = 'pending-change-remove';
+                removeBtn.textContent = '×';
+                removeBtn.addEventListener('click', async () => {
+                    try {
+                        await fetch(`/api/runtime-state/${encodeURIComponent(key)}`, { method: 'DELETE' });
+                        const stateRes = await fetch('/api/runtime-state');
+                        if (stateRes.ok) {
+                            const state = await stateRes.json();
+                            renderPendingChanges(state.pending);
+                            if (runtimeRestartBadge) {
+                                runtimeRestartBadge.style.display = state.has_pending ? '' : 'none';
+                            }
+                        }
+                    } catch (err) {
+                        // ignore
+                    }
+                });
+                li.appendChild(removeBtn);
+                pendingChangesList.appendChild(li);
+            });
+        }
+
+        function togglePendingChangesPopover() {
+            if (!pendingChangesPopover) return;
+            const isVisible = pendingChangesPopover.style.display !== 'none';
+            pendingChangesPopover.style.display = isVisible ? 'none' : 'block';
+            if (!isVisible) {
+                fetch('/api/runtime-state')
+                    .then(res => res.ok ? res.json() : null)
+                    .then(data => {
+                        if (data && data.pending) {
+                            renderPendingChanges(data.pending);
+                        }
+                    })
+                    .catch(() => {});
+            }
+        }
+
+        if (runtimeRestartBadge) {
+            runtimeRestartBadge.addEventListener('click', (e) => {
+                e.stopPropagation();
+                togglePendingChangesPopover();
+            });
+        }
+
+        if (pendingChangesClear) {
+            pendingChangesClear.addEventListener('click', async () => {
+                try {
+                    await fetch('/api/runtime-state/clear', { method: 'POST' });
+                    if (pendingChangesPopover) pendingChangesPopover.style.display = 'none';
+                    if (runtimeRestartBadge) runtimeRestartBadge.style.display = 'none';
+                } catch (err) {
+                    // ignore
+                }
+            });
+        }
+
+        document.addEventListener('click', (e) => {
+            if (pendingChangesPopover && !pendingChangesPopover.contains(e.target) && e.target !== runtimeRestartBadge) {
+                pendingChangesPopover.style.display = 'none';
+            }
+        });

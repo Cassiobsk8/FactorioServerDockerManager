@@ -106,8 +106,15 @@
                                 <div class="server-hero-status-line">
                                     <span class="status-label" data-i18n="status.server_status">Status</span>
                                     <span class="status-value badge {% if status and (status == 'running' or status == 'online') %}badge-online{% else %}badge-offline{% endif %}" id="server-status" data-raw-status="{{ status or 'unknown' }}">{{ status }}</span>
-                                    <span class="status-value badge badge-runtime-restart" id="runtime-state-badge-restart" style="display:none;" data-i18n="status.runtime.restart_required">Restart Required</span>
+                                    <span class="status-value badge badge-runtime-restart" id="runtime-state-badge-restart" style="display:none; cursor:pointer;" data-i18n="status.runtime.restart_required">Restart Required</span>
                                     <span class="status-value badge badge-runtime-applied" id="runtime-state-badge-applied" style="display:none;" data-i18n="status.runtime.applied">Applied</span>
+                                    <div class="pending-changes-popover" id="pending-changes-popover" style="display:none;">
+                                        <div class="popover-header">
+                                            <span data-i18n="runtime.pending_changes">Pending Changes</span>
+                                            <button type="button" class="text-button" id="pending-changes-clear" data-i18n="runtime.clear_all">Clear All</button>
+                                        </div>
+                                        <ul class="pending-changes-list" id="pending-changes-list"></ul>
+                                    </div>
                                 </div>
                                 <div class="server-hero-meta">
                                     <div class="hero-meta-item">
@@ -151,9 +158,10 @@
                                         <span class="badge badge-offline" id="rcon-status-badge">🔴 <span data-i18n="rcon.disconnected">Disconnected</span></span>
                                     </div>
                                     <p class="rcon-status-name" id="rcon-status-detail">{{ rcon_settings.host }}:{{ rcon_settings.port }}</p>
-                                    <div class="rcon-status-meta">
-                                    </div>
+                                <div class="rcon-status-meta">
                                 </div>
+                                <span class="badge badge-factorio" id="factorio-account-badge" data-i18n="factorio_account.status.not_configured">Authentication Required</span>
+                            </div>
                             </div>
                             <div class="action-group">
                                 <form action="/install" method="post" id="action-install" class="hero-action-form">
@@ -172,15 +180,6 @@
                                     <span class="hero-loading-dot"></span>
                                     <span class="hero-loading-dot"></span>
                                     <span class="hero-loading-dot"></span>
-                                </div>
-                            </div>
-                            <div class="startup-preview" id="startup-preview" style="display:none;">
-                                <div class="panel card">
-                                    <div class="panel-header">
-                                        <h2 data-i18n="startup_preview.title">Startup Preview</h2>
-                                        <button type="button" class="text-button" id="startup-preview-toggle" data-i18n="startup_preview.hide">Hide startup command</button>
-                                    </div>
-                                    <pre class="startup-preview-command" id="startup-preview-command"></pre>
                                 </div>
                             </div>
                             <button type="button" class="text-button startup-preview-toggle" id="startup-preview-show" data-i18n="startup_preview.show">Show startup command</button>
@@ -466,6 +465,35 @@
                     <details class="settings-group">
                         <summary>
                             <span class="summary-icon">▶</span>
+                            <span data-i18n="settings.group.factorio_account">Factorio Account</span>
+                        </summary>
+                        <div class="settings-group-body">
+                            <section class="panel card config-card settings-module-card" id="factorio-account-card">
+                                <div class="panel-header">
+                                    <h2 data-i18n="factorio_account.title">Factorio Account</h2>
+                                    <span class="badge" id="factorio-account-status">--</span>
+                                </div>
+                                <form id="factorio-account-form" class="stacked-form">
+                                    <label>
+                                        <span data-i18n="factorio_account.username">Username</span>
+                                        <input type="text" id="factorio-username" data-i18n-placeholder="factorio_account.username_placeholder" />
+                                    </label>
+                                    <label>
+                                        <span data-i18n="factorio_account.token">Service Token</span>
+                                        <div class="factorio-token-row">
+                                            <input type="password" id="factorio-token" data-i18n-placeholder="factorio_account.token_placeholder" />
+                                            <button type="button" class="text-button" id="factorio-account-toggle-token" data-i18n="factorio_account.show_token">Show</button>
+                                        </div>
+                                    </label>
+                                    <button type="submit" data-i18n="factorio_account.save">Save</button>
+                                </form>
+                            </section>
+                        </div>
+                    </details>
+
+                    <details class="settings-group">
+                        <summary>
+                            <span class="summary-icon">▶</span>
                             <span data-i18n="settings.group.advanced">Advanced</span>
                         </summary>
                         <div class="settings-group-body">
@@ -692,7 +720,21 @@
             <p class="progress-meta" id="install-progress-meta" data-i18n="modal.waiting">Waiting to start...</p>
         </div>
     </div>
+
+    <div class="modal-overlay" id="startup-preview-modal" style="display:none;">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 data-i18n="startup_preview.modal_title">Startup Command Preview</h3>
+                <button class="text-button" id="startup-preview-close" type="button" data-i18n="modal.close">Close</button>
+            </div>
+            <p class="startup-preview-subtitle" data-i18n="startup_preview.subtitle">Command generated by Runtime Startup Builder</p>
+            <pre class="startup-preview-command" id="startup-preview-command"></pre>
+            <div class="startup-preview-actions">
+                <button type="button" class="text-button" id="startup-preview-copy" data-i18n="startup_preview.copy">Copy to Clipboard</button>
+            </div>
         </div>
+    </div>
+    </div>
     </div>
 
     
