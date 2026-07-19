@@ -6,6 +6,7 @@ from pathlib import Path
 import pytest
 
 from backend.services import access_control_service as ac
+from backend.services import runtime_state_service as rs
 
 
 @pytest.fixture
@@ -18,6 +19,13 @@ def list_paths(tmp_path, monkeypatch):
     for name, path in paths.items():
         monkeypatch.setattr(ac, name, path)
     return paths
+
+
+@pytest.fixture
+def runtime_state_path(tmp_path, monkeypatch):
+    path = tmp_path / "runtime_state.json"
+    monkeypatch.setattr(rs, "RUNTIME_STATE_PATH", path)
+    return path
 
 
 def test_add_creates_adminlist_file(list_paths):
@@ -115,3 +123,21 @@ def test_disable_whitelist_idempotent(list_paths):
     assert result["exists"] is False
     assert result["count"] == 0
     assert not list_paths["WHITELIST_PATH"].exists()
+
+
+def test_enable_whitelist_marks_pending(list_paths, runtime_state_path):
+    ac.enable_whitelist()
+    assert rs.is_pending("whitelist") is True
+
+
+def test_disable_whitelist_marks_pending(list_paths, runtime_state_path):
+    list_paths["WHITELIST_PATH"].write_text("[]")
+    ac.disable_whitelist()
+    assert rs.is_pending("whitelist") is True
+
+
+def test_enable_whitelist_pending_is_idempotent(list_paths, runtime_state_path):
+    ac.enable_whitelist()
+    ac.enable_whitelist()
+    state = rs.get_runtime_state()
+    assert state["pending_keys"] == ["whitelist"]

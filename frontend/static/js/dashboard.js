@@ -58,6 +58,8 @@
         async function fetchStatus() {
             const serverStatus = document.getElementById('server-status');
             const installStatus = document.getElementById('install-status');
+            const runtimeRestartBadge = document.getElementById('runtime-state-badge-restart');
+            const runtimeAppliedBadge = document.getElementById('runtime-state-badge-applied');
             if (!serverStatus || !installStatus) {
                 return;
             }
@@ -78,6 +80,16 @@
                     statusDot.className = `status-dot ${isOnline ? 'status-dot-online' : 'status-dot-offline'}`;
                 }
                 installStatus.textContent = formatInstallStatus(data.install_status) || installStatus.textContent;
+
+                const runtime = data.runtime_state || {};
+                const hasPending = Boolean(runtime.has_pending);
+                if (runtimeRestartBadge) {
+                    runtimeRestartBadge.style.display = hasPending ? '' : 'none';
+                }
+                if (runtimeAppliedBadge) {
+                    runtimeAppliedBadge.style.display = hasPending ? 'none' : '';
+                }
+
                 renderHeroActions();
             } catch (err) {
                 // ignore errors during polling
@@ -291,4 +303,67 @@
                 if (e.key === 'Enter') saveServerName();
                 if (e.key === 'Escape') closeServerNameEdit();
             });
+        }
+
+        async function validateStartup(e) {
+            try {
+                const res = await fetch('/api/validate-startup', { method: 'POST' });
+                if (!res.ok) return;
+                const data = await res.json();
+                if (!data.valid && data.errors && data.errors.length) {
+                    const messages = data.errors.map((err) => err.message).join('\n');
+                    alert(messages);
+                    if (e) e.preventDefault();
+                }
+            } catch (err) {
+                // ignore validation errors
+            }
+        }
+
+        const startForm = document.getElementById('action-start');
+        if (startForm) {
+            startForm.addEventListener('submit', validateStartup);
+        }
+
+        const restartForm = document.getElementById('action-restart');
+        if (restartForm) {
+            restartForm.addEventListener('submit', validateStartup);
+        }
+
+        const startupPreview = document.getElementById('startup-preview');
+        const startupPreviewCommand = document.getElementById('startup-preview-command');
+        const startupPreviewShow = document.getElementById('startup-preview-show');
+        const startupPreviewToggle = document.getElementById('startup-preview-toggle');
+
+        async function loadStartupPreview() {
+            try {
+                const res = await fetch('/api/startup-preview');
+                if (!res.ok) return;
+                const data = await res.json();
+                if (data.command && startupPreviewCommand) {
+                    startupPreviewCommand.textContent = data.command.join(' ');
+                }
+            } catch (err) {
+                // ignore preview errors
+            }
+        }
+
+        function showStartupPreview() {
+            if (!startupPreview || !startupPreviewShow) return;
+            startupPreview.style.display = '';
+            startupPreviewShow.style.display = 'none';
+            loadStartupPreview();
+        }
+
+        function hideStartupPreview() {
+            if (!startupPreview || !startupPreviewShow) return;
+            startupPreview.style.display = 'none';
+            startupPreviewShow.style.display = '';
+        }
+
+        if (startupPreviewShow) {
+            startupPreviewShow.addEventListener('click', showStartupPreview);
+        }
+        if (startupPreviewToggle) {
+            startupPreviewToggle.addEventListener('click', hideStartupPreview);
         }

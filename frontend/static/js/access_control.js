@@ -292,13 +292,42 @@
              whitelistDisableBtn.addEventListener("click", disableWhitelist);
          }
 
-         document.addEventListener("click", (e) => {
-             const removeBtn = e.target.closest(".access-control-remove");
-             if (removeBtn) {
-                 const { list, name } = removeBtn.dataset;
-                 if (list && name) removeAccessControlEntry(list, name);
-             }
-         });
+          document.addEventListener("click", (e) => {
+              const removeBtn = e.target.closest(".access-control-remove");
+              if (removeBtn) {
+                  const { list, name } = removeBtn.dataset;
+                  if (list && name) removeAccessControlEntry(list, name);
+              }
+          });
 
-         fetchAccessControl();
-         setInterval(fetchAccessControl, 5000);
+          fetchAccessControl();
+          setInterval(fetchAccessControl, 5000);
+
+          async function fetchRuntimeState() {
+              try {
+                  const res = await fetch("/api/runtime-state");
+                  if (!res.ok) return;
+                  const data = await res.json();
+                  updateWhitelistRuntimeBadge(data);
+              } catch (err) {
+                  // ignore
+              }
+          }
+
+          function updateWhitelistRuntimeBadge(runtime) {
+              const badge = document.getElementById("whitelist-runtime-badge");
+              if (!badge) return;
+              const hasPending = Boolean(runtime && runtime.has_pending && runtime.pending_keys && runtime.pending_keys.includes("whitelist"));
+              if (hasPending) {
+                  badge.textContent = t("status.runtime.restart_required");
+                  badge.style.display = "";
+                  badge.className = "access-control-runtime-badge";
+              } else {
+                  badge.textContent = t("status.runtime.applied");
+                  badge.style.display = "none";
+                  badge.className = "access-control-runtime-badge applied";
+              }
+          }
+
+          fetchRuntimeState();
+          setInterval(fetchRuntimeState, 5000);

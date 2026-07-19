@@ -106,6 +106,8 @@
                                 <div class="server-hero-status-line">
                                     <span class="status-label" data-i18n="status.server_status">Status</span>
                                     <span class="status-value badge {% if status and (status == 'running' or status == 'online') %}badge-online{% else %}badge-offline{% endif %}" id="server-status" data-raw-status="{{ status or 'unknown' }}">{{ status }}</span>
+                                    <span class="status-value badge badge-runtime-restart" id="runtime-state-badge-restart" style="display:none;" data-i18n="status.runtime.restart_required">Restart Required</span>
+                                    <span class="status-value badge badge-runtime-applied" id="runtime-state-badge-applied" style="display:none;" data-i18n="status.runtime.applied">Applied</span>
                                 </div>
                                 <div class="server-hero-meta">
                                     <div class="hero-meta-item">
@@ -172,6 +174,16 @@
                                     <span class="hero-loading-dot"></span>
                                 </div>
                             </div>
+                            <div class="startup-preview" id="startup-preview" style="display:none;">
+                                <div class="panel card">
+                                    <div class="panel-header">
+                                        <h2 data-i18n="startup_preview.title">Startup Preview</h2>
+                                        <button type="button" class="text-button" id="startup-preview-toggle" data-i18n="startup_preview.hide">Hide startup command</button>
+                                    </div>
+                                    <pre class="startup-preview-command" id="startup-preview-command"></pre>
+                                </div>
+                            </div>
+                            <button type="button" class="text-button startup-preview-toggle" id="startup-preview-show" data-i18n="startup_preview.show">Show startup command</button>
                         </div>
                     </aside>
 
@@ -407,6 +419,7 @@
                                 </div>
                                 <div class="access-control-status">
                                     <span class="access-control-state" id="whitelist-state"></span>
+                                    <span class="access-control-runtime-badge" id="whitelist-runtime-badge" style="display:none;"></span>
                                 </div>
                                 <div class="access-control-loading" id="whitelist-loading" aria-hidden="true">
                                     <span class="access-control-loading-dot"></span>

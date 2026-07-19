@@ -38,6 +38,7 @@ from backend.services.factorio_service import (
 )
 from backend.services.save_service import list_save_files, get_active_save
 from backend.services.settings_service import load_app_settings
+from backend.services.runtime_state_service import clear_pending
 from backend.version import APP_VERSION, RELEASE_NAME, BUILD_DATE
 from flask import Blueprint, jsonify, redirect, render_template, request
 
@@ -109,6 +110,7 @@ def control(action: str):
             factorio_service.stop_server()
         elif action == "restart":
             factorio_service.restart_server()
+            clear_pending()
     except Exception as exc:
         logger.exception("Action %s failed", action)
         log_error(f"Action {action} failed: {exc}")

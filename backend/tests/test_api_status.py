@@ -1,4 +1,5 @@
 from backend.app import app
+from backend.services.runtime_state_service import clear_pending
 
 
 def test_api_status_returns_json_payload():
@@ -8,6 +9,7 @@ def test_api_status_returns_json_payload():
     assert response.status_code == 200
     payload = response.get_json()
     assert "status" in payload
+    assert "runtime_state" in payload
     assert "server" in payload
 
     server = payload["server"]
@@ -38,3 +40,15 @@ def test_api_status_active_save_is_object_or_none():
         and "size" in active_save
         and "modified" in active_save
     )
+
+
+def test_api_status_includes_runtime_state_structure():
+    client = app.test_client()
+    response = client.get("/api/status")
+
+    assert response.status_code == 200
+    payload = response.get_json()
+    runtime = payload.get("runtime_state", {})
+    assert "pending" in runtime
+    assert "has_pending" in runtime
+    assert "pending_keys" in runtime

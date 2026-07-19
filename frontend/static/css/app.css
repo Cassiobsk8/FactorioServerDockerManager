@@ -428,6 +428,30 @@ select {
     }
 }
 
+.startup-preview {
+    margin-top: var(--spacing-lg);
+}
+
+.startup-preview-toggle {
+    margin-top: var(--spacing-sm);
+    color: var(--accent);
+}
+
+.startup-preview-command {
+    margin: 0;
+    padding: var(--spacing-md);
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
 .log-card .panel-header {
     margin-bottom: var(--spacing-md);
     padding-bottom: var(--spacing-md);
@@ -900,6 +924,22 @@ textarea {
 .access-control-state.state-disabled {
     color: var(--subtext);
     font-style: italic;
+}
+
+.access-control-runtime-badge {
+    font-size: var(--font-xs);
+    padding: 0.2rem var(--spacing-sm);
+    border-radius: 999px;
+    background: rgba(251, 191, 36, 0.18);
+    color: #fbbf24;
+    border: 1px solid rgba(251, 191, 36, 0.35);
+    white-space: nowrap;
+}
+
+.access-control-runtime-badge.applied {
+    background: var(--badge-muted-bg);
+    color: var(--subtext);
+    border: 1px solid var(--badge-muted-border);
 }
 
 .access-control-error {
@@ -2247,4 +2287,16 @@ pre {
     background: var(--badge-success-bg);
     color: var(--success);
     border: 1px solid var(--badge-success-border);
+}
+
+.badge-runtime-restart {
+    background: rgba(251, 191, 36, 0.18);
+    color: #fbbf24;
+    border: 1px solid rgba(251, 191, 36, 0.35);
+}
+
+.badge-runtime-applied {
+    background: var(--badge-muted-bg);
+    color: var(--subtext);
+    border: 1px solid var(--badge-muted-border);
 }

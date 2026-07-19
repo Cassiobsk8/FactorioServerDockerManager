@@ -17,10 +17,13 @@ from backend.services.factorio_service import (
     load_server_settings,
     save_server_config,
     log_error,
+    _factorio_command as _factorio_command_impl,
 )
 from backend.services.metrics_service import get_factorio_version, get_process_metrics
 from backend.services.save_service import load_active_save, get_save_info
 from backend.services.settings_service import load_app_settings, save_app_settings
+from backend.services.runtime_state_service import get_runtime_state, clear_pending
+from backend.services.startup_validation_service import validate_startup
 from backend.version import APP_VERSION, RELEASE_NAME, BUILD_DATE
 from flask import Blueprint, jsonify, request
 
@@ -43,9 +46,11 @@ def api_status():
 
     metrics = get_process_metrics(pid)
     install_progress = get_install_progress()
+    runtime_state = get_runtime_state()
     return jsonify(
         {
             "status": factorio_service.get_status(),
+            "runtime_state": runtime_state,
             "server": {
                 "install_status": (
                     "installing"
@@ -97,9 +102,52 @@ def api_stop():
 def api_restart():
     try:
         factorio_service.restart_server()
+        clear_pending()
         return jsonify({"status": "restarted"})
     except Exception as exc:
         logger.exception("API restart failed")
+        return jsonify({"error": str(exc)}), 500
+
+
+@api_bp.route("/api/validate-startup", methods=["POST"])
+def api_validate_startup():
+    try:
+        result = validate_startup()
+        return jsonify(result)
+    except Exception as exc:
+        logger.exception("Startup validation failed")
+        return jsonify({"error": str(exc)}), 500
+
+
+@api_bp.route("/api/runtime-state")
+def api_runtime_state():
+    try:
+        return jsonify(get_runtime_state())
+    except Exception as exc:
+        logger.exception("Failed to load runtime state")
+        return jsonify({"error": str(exc)}), 500
+
+
+@api_bp.route("/api/runtime-state/clear", methods=["POST"])
+def api_runtime_state_clear():
+    try:
+        return jsonify(clear_pending())
+    except Exception as exc:
+        logger.exception("Failed to clear runtime state")
+        return jsonify({"error": str(exc)}), 500
+
+
+@api_bp.route("/api/startup-preview")
+def api_startup_preview():
+    try:
+        cmd = _factorio_command_impl()
+        masked = [
+            part if not part.startswith("--rcon-password=") else "--rcon-password=******"
+            for part in cmd
+        ]
+        return jsonify({"command": masked})
+    except Exception as exc:
+        logger.exception("Startup preview failed")
         return jsonify({"error": str(exc)}), 500
 
 

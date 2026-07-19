@@ -31,9 +31,13 @@ from backend.config import (
     SERVER_SETTINGS_DIR,
     SERVER_SETTINGS_EXAMPLE_PATH,
     SERVER_SETTINGS_PATH,
+    ADMINLIST_PATH,
+    BANLIST_PATH,
+    WHITELIST_PATH,
 )
 from backend.services.save_service import load_active_save
 from backend.services.settings_service import load_app_settings
+from backend.services.startup_builder import RuntimeStartupBuilder
 
 logger = logging.getLogger("fsm.factorio")
 
@@ -736,20 +740,23 @@ def _factorio_command(install_dir: Optional[Path] = None) -> List[str]:
     logger.info("RCON Port: %s", rcon_port)
     logger.info("RCON Enabled: %s", bool(rcon_password))
 
-    cmd = [str(factorio_bin), f"--start-server={active_save}"]
+    builder = RuntimeStartupBuilder(
+        factorio_bin=factorio_bin,
+        active_save=active_save,
+        rcon_port=rcon_port,
+        rcon_password=rcon_password,
+    )
 
-    if rcon_password:
-        cmd.extend([f"--rcon-port={rcon_port}", f"--rcon-password={rcon_password}"])
-    else:
-        logger.warning("RCON disabled: password not configured")
+    if SERVER_SETTINGS_PATH.exists():
+        builder.with_server_settings(SERVER_SETTINGS_PATH)
 
-    masked_cmd = [
-        part if not part.startswith("--rcon-password=") else "--rcon-password=******"
-        for part in cmd
-    ]
-    logger.info("Starting factorio with args: %s", masked_cmd)
+    builder.with_access_lists(
+        adminlist=ADMINLIST_PATH if ADMINLIST_PATH.exists() else None,
+        banlist=BANLIST_PATH if BANLIST_PATH.exists() else None,
+        whitelist=WHITELIST_PATH if WHITELIST_PATH.exists() else None,
+    )
 
-    return cmd
+    return builder.build()
 
 
 def log_error(message: str) -> None:

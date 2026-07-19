@@ -42,6 +42,7 @@ from backend.services.factorio_service import (
     update_server_settings_from_form,
     build_server_settings_fields,
 )
+from backend.services.startup_builder import RuntimeStartupBuilder
 from backend.services.save_service import save_uploaded_file as _save_uploaded_file, get_save_directory as _get_save_directory, list_save_files as _list_save_files
 from backend.services.factorio_service import FactorioService
 
@@ -106,4 +107,5 @@ __all__ = [
     "_get_server_log_file",
     "_get_factorio_generated_log_file",
     "_extract_archive",
+    "RuntimeStartupBuilder",
 ]

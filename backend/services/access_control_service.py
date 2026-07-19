@@ -6,7 +6,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
-from backend.config import ADMINLIST_PATH, BANLIST_PATH, WHITELIST_PATH
+from backend.config import ADMINLIST_PATH, BANLIST_PATH, BASE_DIR, WHITELIST_PATH
+from backend.services.runtime_state_service import mark_pending
 
 logger = logging.getLogger("fsm.services.access_control")
 
@@ -251,6 +252,7 @@ def enable_whitelist() -> dict:
     if not WHITELIST_PATH.exists():
         WHITELIST_PATH.write_text("[]", encoding="utf-8")
         logger.info("Enabled whitelist by creating %s", WHITELIST_PATH)
+    mark_pending("whitelist")
     return _status_to_dict(get_whitelist_status())
 
 
@@ -258,6 +260,7 @@ def disable_whitelist() -> dict:
     if WHITELIST_PATH.exists():
         WHITELIST_PATH.unlink()
         logger.info("Disabled whitelist by removing %s", WHITELIST_PATH)
+    mark_pending("whitelist")
     return _status_to_dict(get_whitelist_status())
 
 
