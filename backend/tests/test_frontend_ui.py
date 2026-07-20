@@ -113,3 +113,95 @@ def test_factorio_account_css_exists():
     css = css_path.read_text(encoding="utf-8")
     assert ".factorio-token-row" in css
     assert ".badge-factorio" in css
+
+
+def test_world_builder_tab_exists():
+    html = _read_template()
+    assert 'data-tab="world-builder"' in html
+    assert 'id="world-builder-panel"' in html
+
+
+def test_world_builder_panel_has_split_layout():
+    html = _read_template()
+    assert 'class="world-builder-layout"' in html
+    assert 'class="panel card config-card world-builder-config"' in html
+    assert 'class="panel card config-card world-builder-preview-card"' in html
+
+
+def test_world_builder_form_fields_exist():
+    html = _read_template()
+    assert 'id="wb-world-name"' in html
+    assert 'id="wb-seed"' in html
+    assert 'id="wb-generate-seed"' in html
+    assert 'id="wb-planet"' in html
+    assert 'id="wb-update-preview"' in html
+    assert 'id="wb-create-world"' in html
+
+
+def test_world_builder_status_banner_exists():
+    html = _read_template()
+    assert 'id="wb-status-banner"' in html
+    assert 'data-i18n="world_builder.status.unavailable"' in html
+    assert 'data-i18n="world_builder.status.unavailable_detail"' in html
+
+
+def test_world_builder_preview_status_and_image():
+    html = _read_template()
+    assert 'id="wb-preview-status"' in html
+    assert 'id="wb-preview-image"' in html
+    assert 'id="wb-preview-container"' in html
+
+
+def test_world_builder_css_exists():
+    css_path = Path(__file__).resolve().parent.parent.parent / "frontend" / "static" / "css" / "app.css"
+    css = css_path.read_text(encoding="utf-8")
+    assert ".world-builder-layout" in css
+    assert ".world-builder-preview" in css
+    assert ".world-builder-preview-image" in css
+    assert ".world-builder-preview-card" in css
+    assert ".world-builder-status-banner" in css
+
+
+def test_world_builder_js_exists():
+    js_path = Path(__file__).resolve().parent.parent.parent / "frontend" / "static" / "js" / "world_builder.js"
+    assert js_path.exists()
+    js = js_path.read_text(encoding="utf-8")
+    assert "updatePreview" in js
+    assert "createWorld" in js
+    assert "markPreviewOutdated" in js
+    assert "generateRandomSeed" in js
+    assert "checkWorldBuilderStatus" in js
+    assert "/api/world-builder/preview" in js
+    assert "/api/world-builder/create" in js
+    assert "/api/world-builder/status" in js
+    assert "preview_url" in js
+
+
+def test_world_builder_i18n_keys_exist():
+    i18n_dir = Path(__file__).resolve().parent.parent.parent / "frontend" / "i18n"
+    required_keys = {
+        "menu.world_builder",
+        "world_builder.title",
+        "world_builder.configuration",
+        "world_builder.preview",
+        "world_builder.world_name",
+        "world_builder.seed",
+        "world_builder.generate_seed",
+        "world_builder.planet",
+        "world_builder.update_preview",
+        "world_builder.create_world",
+        "world_builder.preview.status.updated",
+        "world_builder.preview.status.outdated",
+        "world_builder.preview.status.generating",
+        "world_builder.preview.status.error",
+        "world_builder.preview.placeholder",
+        "world_builder.error.preview_failed",
+        "world_builder.error.create_failed",
+        "world_builder.error.create_exception",
+        "world_builder.status.unavailable",
+        "world_builder.status.unavailable_detail",
+    }
+    for lang in ["en.json", "pt_BR.json", "es.json", "zh_CN.json"]:
+        data = json.loads((i18n_dir / lang).read_text(encoding="utf-8"))
+        missing = required_keys - data.keys()
+        assert not missing, f"Missing keys in {lang}: {missing}"

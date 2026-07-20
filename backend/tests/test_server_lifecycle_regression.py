@@ -3,12 +3,15 @@ import subprocess
 import tarfile
 from pathlib import Path
 
+import pytest
+
 import backend.docker_manager as docker_manager
 from backend.services import log_manager, runtime_session
 from backend.services.factorio_service import (
     FactorioService,
     is_server_installed,
     _clear_pid,
+    validate_installation,
 )
 from backend.services.save_service import SAVE_DIR, ACTIVE_SAVE_PATH
 
@@ -308,16 +311,124 @@ def test_install_server_creates_installation(tmp_path, monkeypatch):
     monkeypatch.setattr("backend.services.factorio_service.INSTALL_DIR", install_dir)
 
     archive = tmp_path / "fake.tar.xz"
-    stage = tmp_path / "stage" / "bin" / "x64"
-    stage.mkdir(parents=True, exist_ok=True)
-    payload = stage / "factorio"
-    payload.write_text("#!/bin/sh\necho sim\n", encoding="utf-8")
+    stage = tmp_path / "stage"
+    bin_dir = stage / "bin" / "x64"
+    bin_dir.mkdir(parents=True, exist_ok=True)
+    (stage / "data").mkdir(parents=True, exist_ok=True)
+    (stage / "config").mkdir(parents=True, exist_ok=True)
+
+    payload = bin_dir / "factorio"
+    payload.write_text("#!/bin/sh\nif [ \"$1\" = \"--version\" ]; then echo 'Factorio headless 2.0.77'; exit 0; fi\necho sim\n", encoding="utf-8")
+    payload.chmod(0o755)
+
     with tarfile.open(archive, "w:xz") as tar:
         tar.add(payload, arcname="factorio/bin/x64/factorio")
+        tar.add(stage / "data", arcname="factorio/data")
+        tar.add(stage / "config", arcname="factorio/config")
 
     service = FactorioService()
     assert service.install_server(archive_path=str(archive)) == "installed"
     assert is_server_installed()
     assert (install_dir / "bin" / "x64" / "factorio").exists()
+    assert (install_dir / "data").exists()
+    assert (install_dir / "config").exists()
 
     log_manager.reset_log_manager()
+
+
+def test_validate_installation_accepts_valid_install(tmp_path, monkeypatch):
+    install_dir = tmp_path / "factorio"
+    monkeypatch.setattr(docker_manager, "INSTALL_DIR", install_dir)
+    monkeypatch.setattr("backend.services.factorio_service.INSTALL_DIR", install_dir)
+
+    bin_dir = install_dir / "bin" / "x64"
+    bin_dir.mkdir(parents=True, exist_ok=True)
+    factorio_bin = bin_dir / "factorio"
+    factorio_bin.write_text("#!/bin/sh\nif [ \"$1\" = \"--version\" ]; then echo 'Factorio headless 2.0.77'; exit 0; fi\n", encoding="utf-8")
+    factorio_bin.chmod(0o755)
+    (install_dir / "data").mkdir(parents=True, exist_ok=True)
+    (install_dir / "config").mkdir(parents=True, exist_ok=True)
+
+    result = validate_installation()
+    assert result["valid"] is True
+    assert "2.0.77" in result["version"]
+    assert result["binary"] == str(factorio_bin)
+    assert result["data_dir"] == str(install_dir / "data")
+    assert result["config_dir"] == str(install_dir / "config")
+
+
+def test_validate_installation_rejects_missing_binary(tmp_path, monkeypatch):
+    install_dir = tmp_path / "factorio"
+    monkeypatch.setattr(docker_manager, "INSTALL_DIR", install_dir)
+    monkeypatch.setattr("backend.services.factorio_service.INSTALL_DIR", install_dir)
+    (install_dir / "data").mkdir(parents=True, exist_ok=True)
+    (install_dir / "config").mkdir(parents=True, exist_ok=True)
+
+    with pytest.raises(RuntimeError, match="binary not found"):
+        validate_installation()
+
+
+def test_validate_installation_rejects_missing_data_dir(tmp_path, monkeypatch):
+    install_dir = tmp_path / "factorio"
+    monkeypatch.setattr(docker_manager, "INSTALL_DIR", install_dir)
+    monkeypatch.setattr("backend.services.factorio_service.INSTALL_DIR", install_dir)
+
+    bin_dir = install_dir / "bin" / "x64"
+    bin_dir.mkdir(parents=True, exist_ok=True)
+    factorio_bin = bin_dir / "factorio"
+    factorio_bin.write_text("#!/bin/sh\nif [ \"$1\" = \"--version\" ]; then echo 'Factorio headless 2.0.77'; exit 0; fi\n", encoding="utf-8")
+    factorio_bin.chmod(0o755)
+    (install_dir / "config").mkdir(parents=True, exist_ok=True)
+
+    with pytest.raises(RuntimeError, match="data/ directory not found"):
+        validate_installation()
+
+
+def test_validate_installation_rejects_missing_config_dir(tmp_path, monkeypatch):
+    install_dir = tmp_path / "factorio"
+    monkeypatch.setattr(docker_manager, "INSTALL_DIR", install_dir)
+    monkeypatch.setattr("backend.services.factorio_service.INSTALL_DIR", install_dir)
+
+    bin_dir = install_dir / "bin" / "x64"
+    bin_dir.mkdir(parents=True, exist_ok=True)
+    factorio_bin = bin_dir / "factorio"
+    factorio_bin.write_text("#!/bin/sh\nif [ \"$1\" = \"--version\" ]; then echo 'Factorio headless 2.0.77'; exit 0; fi\n", encoding="utf-8")
+    factorio_bin.chmod(0o755)
+    (install_dir / "data").mkdir(parents=True, exist_ok=True)
+
+    with pytest.raises(RuntimeError, match="config/ directory not found"):
+        validate_installation()
+
+
+def test_validate_installation_rejects_non_executable_binary(tmp_path, monkeypatch):
+    install_dir = tmp_path / "factorio"
+    monkeypatch.setattr(docker_manager, "INSTALL_DIR", install_dir)
+    monkeypatch.setattr("backend.services.factorio_service.INSTALL_DIR", install_dir)
+
+    bin_dir = install_dir / "bin" / "x64"
+    bin_dir.mkdir(parents=True, exist_ok=True)
+    factorio_bin = bin_dir / "factorio"
+    factorio_bin.write_text("#!/bin/sh\nif [ \"$1\" = \"--version\" ]; then echo 'Factorio headless 2.0.77'; exit 0; fi\n", encoding="utf-8")
+    factorio_bin.chmod(0o644)
+    (install_dir / "data").mkdir(parents=True, exist_ok=True)
+    (install_dir / "config").mkdir(parents=True, exist_ok=True)
+
+    with pytest.raises(RuntimeError, match="not executable"):
+        validate_installation()
+
+
+def test_validate_installation_rejects_version_failure(tmp_path, monkeypatch):
+    install_dir = tmp_path / "factorio"
+    monkeypatch.setattr(docker_manager, "INSTALL_DIR", install_dir)
+    monkeypatch.setattr("backend.services.factorio_service.INSTALL_DIR", install_dir)
+
+    bin_dir = install_dir / "bin" / "x64"
+    bin_dir.mkdir(parents=True, exist_ok=True)
+    factorio_bin = bin_dir / "factorio"
+    factorio_bin.write_text("#!/bin/sh\nexit 1\n", encoding="utf-8")
+    factorio_bin.chmod(0o755)
+    (install_dir / "data").mkdir(parents=True, exist_ok=True)
+    (install_dir / "config").mkdir(parents=True, exist_ok=True)
+
+    with pytest.raises(RuntimeError, match="--version failed"):
+        validate_installation()

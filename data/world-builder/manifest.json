@@ -1,0 +1,3684 @@
+{
+  "previews": [
+    {
+      "hash": "c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:31:14.583013+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-98/test_generate_preview_creates_0/previews/c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:31:14.729826+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-98/test_preview_generates_and_ret0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:31:53.144019+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-99/test_generate_preview_creates_0/previews/c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:31:53.254107+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-99/test_preview_generates_and_ret0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:31:53.262111+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-99/test_create_world_returns_201_0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:32:29.731140+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-100/test_generate_preview_creates_0/previews/c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44.png"
+    },
+    {
+      "hash": "dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:32:29.760589+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-100/test_create_world_creates_save0/previews/dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:32:29.779064+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-100/test_preview_generates_and_ret0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:32:29.783201+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-100/test_create_world_returns_201_0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:32:56.649993+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-101/test_generate_preview_creates_0/previews/c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44.png"
+    },
+    {
+      "hash": "dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:32:56.653722+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-101/test_create_world_creates_save0/previews/dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:32:56.665126+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-101/test_preview_generates_and_ret0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:32:56.670086+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-101/test_create_world_returns_201_0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:33:08.311698+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-102/test_preview_generates_and_ret0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:33:08.318048+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-102/test_create_world_returns_201_0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:33:08.333203+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-102/test_generate_preview_creates_0/previews/c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44.png"
+    },
+    {
+      "hash": "dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:33:08.337623+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-102/test_create_world_creates_save0/previews/dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0.png"
+    },
+    {
+      "hash": "c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:33:36.659720+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-103/test_generate_preview_creates_0/previews/c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44.png"
+    },
+    {
+      "hash": "dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:33:36.662960+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-103/test_create_world_creates_save0/previews/dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:33:36.672238+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-103/test_preview_generates_and_ret0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:33:36.676584+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-103/test_create_world_returns_201_0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:33:38.514591+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-104/test_preview_generates_and_ret0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:33:38.519307+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-104/test_create_world_returns_201_0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:33:38.532661+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-104/test_generate_preview_creates_0/previews/c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44.png"
+    },
+    {
+      "hash": "dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:33:38.536833+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-104/test_create_world_creates_save0/previews/dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:41:32.286288+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-105/test_preview_generates_and_ret0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:41:32.292799+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-105/test_create_world_returns_201_0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:41:32.307311+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-105/test_generate_preview_creates_0/previews/c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44.png"
+    },
+    {
+      "hash": "dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:41:32.312642+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-105/test_create_world_creates_save0/previews/dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:42:01.793458+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-106/test_preview_generates_and_ret0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:42:01.798673+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-106/test_create_world_returns_201_0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:42:01.812539+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-106/test_generate_preview_creates_0/previews/c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44.png"
+    },
+    {
+      "hash": "dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:42:01.817057+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-106/test_create_world_creates_save0/previews/dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0.png"
+    },
+    {
+      "hash": "c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:42:33.049421+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-107/test_generate_preview_creates_0/previews/c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44.png"
+    },
+    {
+      "hash": "dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:42:33.053069+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-107/test_create_world_creates_save0/previews/dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:42:33.064688+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-107/test_preview_generates_and_ret0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:42:33.069419+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-107/test_create_world_returns_201_0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:44:49.850949+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-108/test_preview_generates_and_ret0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:44:49.856092+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-108/test_create_world_returns_201_0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:44:49.870817+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-108/test_generate_preview_creates_0/previews/c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44.png"
+    },
+    {
+      "hash": "dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:44:49.875787+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-108/test_create_world_creates_save0/previews/dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:46:42.916993+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-109/test_preview_generates_and_ret0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:46:42.921868+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-109/test_create_world_returns_201_0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:46:42.935913+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-109/test_generate_preview_creates_0/previews/c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44.png"
+    },
+    {
+      "hash": "dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:46:42.940327+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-109/test_create_world_creates_save0/previews/dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0.png"
+    },
+    {
+      "hash": "c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:52:21.270102+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-110/test_generate_preview_creates_0/previews/c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44.png"
+    },
+    {
+      "hash": "dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:52:21.273934+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-110/test_create_world_creates_save0/previews/dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:52:21.284005+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-110/test_preview_generates_and_ret0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:52:21.289437+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-110/test_create_world_returns_201_0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:52:31.457142+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-111/test_preview_generates_and_ret0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:52:31.462276+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-111/test_create_world_returns_201_0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:52:31.477374+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-111/test_generate_preview_creates_0/previews/c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44.png"
+    },
+    {
+      "hash": "dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:52:31.482717+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-111/test_create_world_creates_save0/previews/dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:54:36.349869+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-112/test_preview_generates_and_ret0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:54:36.355976+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-112/test_create_world_returns_201_0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:54:36.371598+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-112/test_generate_preview_creates_0/previews/c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44.png"
+    },
+    {
+      "hash": "dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:54:36.375963+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-112/test_create_world_creates_save0/previews/dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0.png"
+    },
+    {
+      "hash": "c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:58:06.504625+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-113/test_generate_preview_creates_0/previews/c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44.png"
+    },
+    {
+      "hash": "dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:58:06.509266+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-113/test_create_world_creates_save0/previews/dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:58:06.520917+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-113/test_preview_generates_and_ret0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:58:06.525690+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-113/test_create_world_returns_201_0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:58:17.352017+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-114/test_preview_generates_and_ret0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:58:17.357050+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-114/test_create_world_returns_201_0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:58:17.370892+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-114/test_generate_preview_creates_0/previews/c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44.png"
+    },
+    {
+      "hash": "dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:58:17.375577+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-114/test_create_world_creates_save0/previews/dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:59:33.453367+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-115/test_preview_generates_and_ret0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:59:33.459701+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-115/test_create_world_returns_201_0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:59:33.473870+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-115/test_generate_preview_creates_0/previews/c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44.png"
+    },
+    {
+      "hash": "dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T00:59:33.478265+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-115/test_create_world_creates_save0/previews/dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0.png"
+    },
+    {
+      "hash": "c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:13:30.720614+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-116/test_generate_preview_creates_0/previews/c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44.png"
+    },
+    {
+      "hash": "dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:13:30.725096+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-116/test_create_world_creates_save0/previews/dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:13:30.738396+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-116/test_preview_generates_and_ret0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:13:30.743538+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-116/test_create_world_returns_201_0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:13:44.002450+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-117/test_preview_generates_and_ret0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:13:44.007963+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-117/test_create_world_returns_201_0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:13:44.028768+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-117/test_generate_preview_creates_0/previews/c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44.png"
+    },
+    {
+      "hash": "dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:13:44.033371+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-117/test_create_world_creates_save0/previews/dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:15:53.033661+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-118/test_preview_generates_and_ret0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:15:53.039071+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-118/test_create_world_returns_201_0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:15:53.060532+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-118/test_generate_preview_creates_0/previews/c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44.png"
+    },
+    {
+      "hash": "dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:15:53.065251+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-118/test_create_world_creates_save0/previews/dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0.png"
+    },
+    {
+      "hash": "c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:23:44.654047+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-119/test_generate_preview_creates_0/previews/c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44.png"
+    },
+    {
+      "hash": "dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:23:44.658765+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-119/test_create_world_creates_save0/previews/dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:23:44.674785+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-119/test_preview_generates_and_ret0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:23:44.681452+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-119/test_create_world_returns_201_0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:24:44.474367+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-122/test_preview_generates_and_ret0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:24:44.480364+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-122/test_create_world_returns_201_0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:24:44.502842+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-122/test_generate_preview_creates_0/previews/c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44.png"
+    },
+    {
+      "hash": "dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:24:44.509053+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-122/test_create_world_creates_save0/previews/dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:27:45.914117+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-123/test_preview_generates_and_ret0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:27:45.921352+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-123/test_create_world_returns_201_0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:27:45.945496+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-123/test_generate_preview_creates_0/previews/c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44.png"
+    },
+    {
+      "hash": "dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:27:45.950555+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-123/test_create_world_creates_save0/previews/dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0.png"
+    },
+    {
+      "hash": "c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:31:02.925070+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-124/test_generate_preview_creates_0/previews/c3ade0582edac61323c49918b3eef127b3cffe32635d42832ad73aaaf904df44.png"
+    },
+    {
+      "hash": "dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:31:02.930192+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-124/test_create_world_creates_save0/previews/dec690803352fb73417bc22d94561e6547d250fac33f82945c9337322801c7c0.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:31:02.943872+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-124/test_preview_generates_and_ret0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:31:02.948820+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-124/test_create_world_returns_201_0/previews/e400ec0f39f6483fddd3469150ba0410bd98250b3338cee46cbd44937be7afeb.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:33:59.579764+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-126/test_generate_preview_creates_0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:33:59.584653+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-126/test_create_world_creates_save0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c",
+      "world_name": "TestWorld",
+      "seed": "12345",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:33:59.650031+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-126/test_generate_preview_uses_off0/previews/b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c.png"
+    },
+    {
+      "hash": "13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca",
+      "world_name": "TestWorld",
+      "seed": "42",
+      "random_seed": false,
+      "planet": "vulcanus",
+      "preset": "marathon",
+      "created_at": "2026-07-20T01:33:59.653140+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-126/test_generate_preview_with_cus0/previews/13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca.png"
+    },
+    {
+      "hash": "89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820",
+      "world_name": "NewWorld",
+      "seed": "999",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:33:59.668371+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-126/test_create_world_uses_officia0/previews/89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:33:59.704879+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-126/test_generate_preview_cleans_t0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:33:59.709368+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-126/test_create_world_cleans_tempd0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "",
+      "created_at": "2026-07-20T01:33:59.791515+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-126/test_generate_preview_does_not0/previews/72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:33:59.806642+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-126/test_preview_generates_and_ret0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:33:59.811985+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-126/test_create_world_returns_201_0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:34:53.011322+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-127/test_generate_preview_creates_0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:34:53.015884+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-127/test_create_world_creates_save0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c",
+      "world_name": "TestWorld",
+      "seed": "12345",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:34:53.025673+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-127/test_generate_preview_uses_off0/previews/b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c.png"
+    },
+    {
+      "hash": "13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca",
+      "world_name": "TestWorld",
+      "seed": "42",
+      "random_seed": false,
+      "planet": "vulcanus",
+      "preset": "marathon",
+      "created_at": "2026-07-20T01:34:53.029874+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-127/test_generate_preview_with_cus0/previews/13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca.png"
+    },
+    {
+      "hash": "89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820",
+      "world_name": "NewWorld",
+      "seed": "999",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:34:53.033597+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-127/test_create_world_uses_officia0/previews/89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:34:53.071702+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-127/test_generate_preview_cleans_t0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:34:53.076554+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-127/test_create_world_cleans_tempd0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "",
+      "created_at": "2026-07-20T01:34:53.098543+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-127/test_generate_preview_does_not0/previews/72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:34:53.116258+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-127/test_preview_generates_and_ret0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:34:53.121906+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-127/test_create_world_returns_201_0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:35:19.283831+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-128/test_generate_preview_creates_0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:35:19.288870+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-128/test_create_world_creates_save0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c",
+      "world_name": "TestWorld",
+      "seed": "12345",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:35:19.297818+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-128/test_generate_preview_uses_off0/previews/b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c.png"
+    },
+    {
+      "hash": "13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca",
+      "world_name": "TestWorld",
+      "seed": "42",
+      "random_seed": false,
+      "planet": "vulcanus",
+      "preset": "marathon",
+      "created_at": "2026-07-20T01:35:19.301234+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-128/test_generate_preview_with_cus0/previews/13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca.png"
+    },
+    {
+      "hash": "89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820",
+      "world_name": "NewWorld",
+      "seed": "999",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:35:19.304277+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-128/test_create_world_uses_officia0/previews/89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:35:19.314498+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-128/test_generate_preview_cleans_t0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:35:19.319162+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-128/test_create_world_cleans_tempd0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "",
+      "created_at": "2026-07-20T01:35:19.329789+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-128/test_generate_preview_does_not0/previews/72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:35:19.343361+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-128/test_preview_generates_and_ret0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:35:19.348990+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-128/test_create_world_returns_201_0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:35:27.078003+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-129/test_preview_generates_and_ret0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:35:27.083959+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-129/test_create_world_returns_201_0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:35:27.106009+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-129/test_generate_preview_creates_0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:35:27.111722+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-129/test_create_world_creates_save0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c",
+      "world_name": "TestWorld",
+      "seed": "12345",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:35:27.124054+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-129/test_generate_preview_uses_off0/previews/b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c.png"
+    },
+    {
+      "hash": "13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca",
+      "world_name": "TestWorld",
+      "seed": "42",
+      "random_seed": false,
+      "planet": "vulcanus",
+      "preset": "marathon",
+      "created_at": "2026-07-20T01:35:27.128551+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-129/test_generate_preview_with_cus0/previews/13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca.png"
+    },
+    {
+      "hash": "89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820",
+      "world_name": "NewWorld",
+      "seed": "999",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:35:27.132219+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-129/test_create_world_uses_officia0/previews/89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:35:27.145021+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-129/test_generate_preview_cleans_t0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:35:27.150667+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-129/test_create_world_cleans_tempd0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "",
+      "created_at": "2026-07-20T01:35:27.166518+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-129/test_generate_preview_does_not0/previews/72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:37:21.628205+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-130/test_preview_generates_and_ret0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:37:21.634222+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-130/test_create_world_returns_201_0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:37:21.656390+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-130/test_generate_preview_creates_0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:37:21.662383+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-130/test_create_world_creates_save0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c",
+      "world_name": "TestWorld",
+      "seed": "12345",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:37:21.674220+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-130/test_generate_preview_uses_off0/previews/b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c.png"
+    },
+    {
+      "hash": "13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca",
+      "world_name": "TestWorld",
+      "seed": "42",
+      "random_seed": false,
+      "planet": "vulcanus",
+      "preset": "marathon",
+      "created_at": "2026-07-20T01:37:21.677763+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-130/test_generate_preview_with_cus0/previews/13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca.png"
+    },
+    {
+      "hash": "89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820",
+      "world_name": "NewWorld",
+      "seed": "999",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:37:21.681171+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-130/test_create_world_uses_officia0/previews/89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:37:21.693344+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-130/test_generate_preview_cleans_t0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:37:21.699022+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-130/test_create_world_cleans_tempd0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "",
+      "created_at": "2026-07-20T01:37:21.717085+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-130/test_generate_preview_does_not0/previews/72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:42:40.621985+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-131/test_generate_preview_creates_0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:42:40.627434+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-131/test_create_world_creates_save0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c",
+      "world_name": "TestWorld",
+      "seed": "12345",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:42:40.636783+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-131/test_generate_preview_uses_off0/previews/b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c.png"
+    },
+    {
+      "hash": "13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca",
+      "world_name": "TestWorld",
+      "seed": "42",
+      "random_seed": false,
+      "planet": "vulcanus",
+      "preset": "marathon",
+      "created_at": "2026-07-20T01:42:40.640123+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-131/test_generate_preview_with_cus0/previews/13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca.png"
+    },
+    {
+      "hash": "89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820",
+      "world_name": "NewWorld",
+      "seed": "999",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:42:40.643726+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-131/test_create_world_uses_officia0/previews/89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:42:40.654066+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-131/test_generate_preview_cleans_t0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:42:40.659025+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-131/test_create_world_cleans_tempd0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "",
+      "created_at": "2026-07-20T01:42:40.670914+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-131/test_generate_preview_does_not0/previews/72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:42:40.686156+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-131/test_preview_generates_and_ret0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:42:40.692269+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-131/test_create_world_returns_201_0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:43:26.466772+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-132/test_generate_preview_creates_0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:43:26.471728+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-132/test_create_world_creates_save0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c",
+      "world_name": "TestWorld",
+      "seed": "12345",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:43:26.480626+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-132/test_generate_preview_uses_off0/previews/b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c.png"
+    },
+    {
+      "hash": "13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca",
+      "world_name": "TestWorld",
+      "seed": "42",
+      "random_seed": false,
+      "planet": "vulcanus",
+      "preset": "marathon",
+      "created_at": "2026-07-20T01:43:26.484430+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-132/test_generate_preview_with_cus0/previews/13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca.png"
+    },
+    {
+      "hash": "89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820",
+      "world_name": "NewWorld",
+      "seed": "999",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:43:26.488334+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-132/test_create_world_uses_officia0/previews/89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:43:26.504061+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-132/test_generate_preview_cleans_t0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:43:26.509698+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-132/test_create_world_cleans_tempd0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "",
+      "created_at": "2026-07-20T01:43:26.521544+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-132/test_generate_preview_does_not0/previews/72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:43:26.536442+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-132/test_preview_generates_and_ret0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:43:26.542588+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-132/test_create_world_returns_201_0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:43:35.856040+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-133/test_preview_generates_and_ret0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:43:35.863256+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-133/test_create_world_returns_201_0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:43:35.887151+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-133/test_generate_preview_creates_0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:43:35.893798+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-133/test_create_world_creates_save0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c",
+      "world_name": "TestWorld",
+      "seed": "12345",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:43:35.905980+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-133/test_generate_preview_uses_off0/previews/b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c.png"
+    },
+    {
+      "hash": "13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca",
+      "world_name": "TestWorld",
+      "seed": "42",
+      "random_seed": false,
+      "planet": "vulcanus",
+      "preset": "marathon",
+      "created_at": "2026-07-20T01:43:35.909958+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-133/test_generate_preview_with_cus0/previews/13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca.png"
+    },
+    {
+      "hash": "89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820",
+      "world_name": "NewWorld",
+      "seed": "999",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:43:35.913945+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-133/test_create_world_uses_officia0/previews/89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:43:35.932391+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-133/test_generate_preview_cleans_t0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:43:35.939706+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-133/test_create_world_cleans_tempd0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "",
+      "created_at": "2026-07-20T01:43:35.955550+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-133/test_generate_preview_does_not0/previews/72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:53:46.724917+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-134/test_generate_preview_creates_0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:53:46.730718+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-134/test_create_world_creates_save0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c",
+      "world_name": "TestWorld",
+      "seed": "12345",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:53:46.740710+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-134/test_generate_preview_uses_off0/previews/b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c.png"
+    },
+    {
+      "hash": "13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca",
+      "world_name": "TestWorld",
+      "seed": "42",
+      "random_seed": false,
+      "planet": "vulcanus",
+      "preset": "marathon",
+      "created_at": "2026-07-20T01:53:46.744189+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-134/test_generate_preview_with_cus0/previews/13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca.png"
+    },
+    {
+      "hash": "89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820",
+      "world_name": "NewWorld",
+      "seed": "999",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:53:46.747522+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-134/test_create_world_uses_officia0/previews/89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:53:46.765359+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-134/test_generate_preview_cleans_t0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:53:46.770496+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-134/test_create_world_cleans_tempd0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "",
+      "created_at": "2026-07-20T01:53:46.781356+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-134/test_generate_preview_does_not0/previews/72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:53:46.796389+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-134/test_preview_generates_and_ret0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:53:46.802446+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-134/test_create_world_returns_201_0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:54:01.309364+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-135/test_generate_preview_creates_0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:54:01.314169+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-135/test_create_world_creates_save0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c",
+      "world_name": "TestWorld",
+      "seed": "12345",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:54:01.324375+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-135/test_generate_preview_uses_off0/previews/b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c.png"
+    },
+    {
+      "hash": "13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca",
+      "world_name": "TestWorld",
+      "seed": "42",
+      "random_seed": false,
+      "planet": "vulcanus",
+      "preset": "marathon",
+      "created_at": "2026-07-20T01:54:01.328127+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-135/test_generate_preview_with_cus0/previews/13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca.png"
+    },
+    {
+      "hash": "89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820",
+      "world_name": "NewWorld",
+      "seed": "999",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:54:01.332282+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-135/test_create_world_uses_officia0/previews/89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:54:01.348400+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-135/test_generate_preview_cleans_t0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:54:01.354803+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-135/test_create_world_cleans_tempd0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "",
+      "created_at": "2026-07-20T01:54:01.367428+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-135/test_generate_preview_does_not0/previews/72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:54:01.382346+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-135/test_preview_generates_and_ret0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:54:01.388286+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-135/test_create_world_returns_201_0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:54:10.310664+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-136/test_preview_generates_and_ret0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:54:10.318647+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-136/test_create_world_returns_201_0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:54:10.362767+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-136/test_generate_preview_creates_0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:54:10.370375+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-136/test_create_world_creates_save0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c",
+      "world_name": "TestWorld",
+      "seed": "12345",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:54:10.388155+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-136/test_generate_preview_uses_off0/previews/b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c.png"
+    },
+    {
+      "hash": "13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca",
+      "world_name": "TestWorld",
+      "seed": "42",
+      "random_seed": false,
+      "planet": "vulcanus",
+      "preset": "marathon",
+      "created_at": "2026-07-20T01:54:10.393595+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-136/test_generate_preview_with_cus0/previews/13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca.png"
+    },
+    {
+      "hash": "89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820",
+      "world_name": "NewWorld",
+      "seed": "999",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:54:10.400071+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-136/test_create_world_uses_officia0/previews/89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:54:10.422877+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-136/test_generate_preview_cleans_t0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:54:10.429394+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-136/test_create_world_cleans_tempd0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "",
+      "created_at": "2026-07-20T01:54:10.445276+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-136/test_generate_preview_does_not0/previews/72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:54:50.870654+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-138/test_generate_preview_creates_0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:54:50.875936+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-138/test_create_world_creates_save0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c",
+      "world_name": "TestWorld",
+      "seed": "12345",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:54:50.885607+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-138/test_generate_preview_uses_off0/previews/b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c.png"
+    },
+    {
+      "hash": "13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca",
+      "world_name": "TestWorld",
+      "seed": "42",
+      "random_seed": false,
+      "planet": "vulcanus",
+      "preset": "marathon",
+      "created_at": "2026-07-20T01:54:50.889457+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-138/test_generate_preview_with_cus0/previews/13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca.png"
+    },
+    {
+      "hash": "89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820",
+      "world_name": "NewWorld",
+      "seed": "999",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:54:50.893028+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-138/test_create_world_uses_officia0/previews/89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:54:50.909051+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-138/test_generate_preview_cleans_t0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:54:50.915410+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-138/test_create_world_cleans_tempd0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "",
+      "created_at": "2026-07-20T01:54:50.928447+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-138/test_generate_preview_does_not0/previews/72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:54:50.943622+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-138/test_preview_generates_and_ret0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:54:50.949799+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-138/test_create_world_returns_201_0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:55:36.195055+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-139/test_generate_preview_creates_0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:55:36.201135+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-139/test_create_world_creates_save0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c",
+      "world_name": "TestWorld",
+      "seed": "12345",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:55:36.211738+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-139/test_generate_preview_uses_off0/previews/b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c.png"
+    },
+    {
+      "hash": "13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca",
+      "world_name": "TestWorld",
+      "seed": "42",
+      "random_seed": false,
+      "planet": "vulcanus",
+      "preset": "marathon",
+      "created_at": "2026-07-20T01:55:36.215782+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-139/test_generate_preview_with_cus0/previews/13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca.png"
+    },
+    {
+      "hash": "89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820",
+      "world_name": "NewWorld",
+      "seed": "999",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:55:36.220513+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-139/test_create_world_uses_officia0/previews/89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:55:36.239800+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-139/test_generate_preview_cleans_t0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:55:36.246242+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-139/test_create_world_cleans_tempd0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "",
+      "created_at": "2026-07-20T01:55:36.259039+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-139/test_generate_preview_does_not0/previews/72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:55:36.275722+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-139/test_preview_generates_and_ret0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:55:36.282423+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-139/test_create_world_returns_201_0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:56:24.972805+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-140/test_generate_preview_creates_0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:56:24.977881+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-140/test_create_world_creates_save0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c",
+      "world_name": "TestWorld",
+      "seed": "12345",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:56:24.987280+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-140/test_generate_preview_uses_off0/previews/b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c.png"
+    },
+    {
+      "hash": "13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca",
+      "world_name": "TestWorld",
+      "seed": "42",
+      "random_seed": false,
+      "planet": "vulcanus",
+      "preset": "marathon",
+      "created_at": "2026-07-20T01:56:24.991924+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-140/test_generate_preview_with_cus0/previews/13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca.png"
+    },
+    {
+      "hash": "89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820",
+      "world_name": "NewWorld",
+      "seed": "999",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:56:24.996168+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-140/test_create_world_uses_officia0/previews/89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:56:25.012176+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-140/test_generate_preview_cleans_t0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:56:25.017508+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-140/test_create_world_cleans_tempd0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "",
+      "created_at": "2026-07-20T01:56:25.028575+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-140/test_generate_preview_does_not0/previews/72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:56:25.043938+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-140/test_preview_generates_and_ret0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:56:25.050616+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-140/test_create_world_returns_201_0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:56:39.312580+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-141/test_preview_generates_and_ret0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:56:39.320446+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-141/test_create_world_returns_201_0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:56:39.351372+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-141/test_generate_preview_creates_0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:56:39.360293+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-141/test_create_world_creates_save0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c",
+      "world_name": "TestWorld",
+      "seed": "12345",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:56:39.373606+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-141/test_generate_preview_uses_off0/previews/b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c.png"
+    },
+    {
+      "hash": "13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca",
+      "world_name": "TestWorld",
+      "seed": "42",
+      "random_seed": false,
+      "planet": "vulcanus",
+      "preset": "marathon",
+      "created_at": "2026-07-20T01:56:39.377883+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-141/test_generate_preview_with_cus0/previews/13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca.png"
+    },
+    {
+      "hash": "89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820",
+      "world_name": "NewWorld",
+      "seed": "999",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:56:39.382040+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-141/test_create_world_uses_officia0/previews/89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:56:39.401948+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-141/test_generate_preview_cleans_t0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:56:39.408159+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-141/test_create_world_cleans_tempd0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "",
+      "created_at": "2026-07-20T01:56:39.423347+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-141/test_generate_preview_does_not0/previews/72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:57:24.228758+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-142/test_generate_preview_creates_0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:57:24.234156+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-142/test_create_world_creates_save0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c",
+      "world_name": "TestWorld",
+      "seed": "12345",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:57:24.245515+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-142/test_generate_preview_uses_off0/previews/b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c.png"
+    },
+    {
+      "hash": "13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca",
+      "world_name": "TestWorld",
+      "seed": "42",
+      "random_seed": false,
+      "planet": "vulcanus",
+      "preset": "marathon",
+      "created_at": "2026-07-20T01:57:24.249875+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-142/test_generate_preview_with_cus0/previews/13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca.png"
+    },
+    {
+      "hash": "89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820",
+      "world_name": "NewWorld",
+      "seed": "999",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:57:24.254642+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-142/test_create_world_uses_officia0/previews/89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:57:24.272075+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-142/test_generate_preview_cleans_t0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:57:24.277679+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-142/test_create_world_cleans_tempd0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "",
+      "created_at": "2026-07-20T01:57:24.290437+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-142/test_generate_preview_does_not0/previews/72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:57:24.306464+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-142/test_preview_generates_and_ret0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:57:24.313823+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-142/test_create_world_returns_201_0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:57:33.538302+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-143/test_generate_preview_creates_0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:57:33.545465+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-143/test_create_world_creates_save0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c",
+      "world_name": "TestWorld",
+      "seed": "12345",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:57:33.556946+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-143/test_generate_preview_uses_off0/previews/b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c.png"
+    },
+    {
+      "hash": "13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca",
+      "world_name": "TestWorld",
+      "seed": "42",
+      "random_seed": false,
+      "planet": "vulcanus",
+      "preset": "marathon",
+      "created_at": "2026-07-20T01:57:33.561904+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-143/test_generate_preview_with_cus0/previews/13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca.png"
+    },
+    {
+      "hash": "89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820",
+      "world_name": "NewWorld",
+      "seed": "999",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:57:33.566169+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-143/test_create_world_uses_officia0/previews/89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:57:33.584638+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-143/test_generate_preview_cleans_t0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:57:33.591428+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-143/test_create_world_cleans_tempd0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "",
+      "created_at": "2026-07-20T01:57:33.604395+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-143/test_generate_preview_does_not0/previews/72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:57:33.621136+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-143/test_preview_generates_and_ret0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:57:33.628956+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-143/test_create_world_returns_201_0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:58:06.075564+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-144/test_generate_preview_creates_0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:58:06.081907+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-144/test_create_world_creates_save0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c",
+      "world_name": "TestWorld",
+      "seed": "12345",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:58:06.095261+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-144/test_generate_preview_uses_off0/previews/b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c.png"
+    },
+    {
+      "hash": "13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca",
+      "world_name": "TestWorld",
+      "seed": "42",
+      "random_seed": false,
+      "planet": "vulcanus",
+      "preset": "marathon",
+      "created_at": "2026-07-20T01:58:06.100039+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-144/test_generate_preview_with_cus0/previews/13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca.png"
+    },
+    {
+      "hash": "89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820",
+      "world_name": "NewWorld",
+      "seed": "999",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:58:06.104928+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-144/test_create_world_uses_officia0/previews/89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:58:06.121271+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-144/test_generate_preview_cleans_t0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:58:06.127107+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-144/test_create_world_cleans_tempd0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "",
+      "created_at": "2026-07-20T01:58:06.141426+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-144/test_generate_preview_does_not0/previews/72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:58:06.158186+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-144/test_preview_generates_and_ret0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:58:06.167174+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-144/test_create_world_returns_201_0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:58:17.476738+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-145/test_preview_generates_and_ret0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:58:17.484258+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-145/test_create_world_returns_201_0/previews/bbe256969675b25a3847f80fdb3d9252024256b2cb24db65f68ab1b7496e9dd3.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:58:17.517276+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-145/test_generate_preview_creates_0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:58:17.525095+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-145/test_create_world_creates_save0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c",
+      "world_name": "TestWorld",
+      "seed": "12345",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:58:17.538389+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-145/test_generate_preview_uses_off0/previews/b8b0a1d6b698c171a72f172649afb046c8aef7e6ef06065d407a1cd346ef690c.png"
+    },
+    {
+      "hash": "13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca",
+      "world_name": "TestWorld",
+      "seed": "42",
+      "random_seed": false,
+      "planet": "vulcanus",
+      "preset": "marathon",
+      "created_at": "2026-07-20T01:58:17.543365+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-145/test_generate_preview_with_cus0/previews/13015536114ddec8992a4017f72191d03bcc2bc7d12df95e6a23ef33eb347cca.png"
+    },
+    {
+      "hash": "89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820",
+      "world_name": "NewWorld",
+      "seed": "999",
+      "random_seed": false,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:58:17.548012+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-145/test_create_world_uses_officia0/previews/89cc53f89f4d37a710a72ab13da951fd242d6329593efe786e9066d2cf983820.png"
+    },
+    {
+      "hash": "386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:58:17.567204+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-145/test_generate_preview_cleans_t0/previews/386e3ef77226a8e73911abf0857062cfe8efb46ff6bab942349e45247a107a93.png"
+    },
+    {
+      "hash": "53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "normal",
+      "created_at": "2026-07-20T01:58:17.574136+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-145/test_create_world_cleans_tempd0/previews/53d435d1c7583bcf12e5a67779ed9d3fcc7a3639d141e1092759a52f354be5c8.png"
+    },
+    {
+      "hash": "72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "preset": "",
+      "created_at": "2026-07-20T01:58:17.590837+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-145/test_generate_preview_does_not0/previews/72479d4114cc7e4cf0eee72a6dec56edf2ca21fbd6871ef1f37ad3ac3209ee37.png"
+    },
+    {
+      "hash": "2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:15:03.159015+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-146/test_generate_preview_creates_0/previews/2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65.png"
+    },
+    {
+      "hash": "df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:15:03.165539+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-146/test_create_world_creates_save0/previews/df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746.png"
+    },
+    {
+      "hash": "5e286e4dec64c3eeca30315bdb80e84b102834e78dbf90b348796faaeedbc1f5",
+      "world_name": "TestWorld",
+      "seed": "12345",
+      "random_seed": false,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:15:03.176081+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-146/test_generate_preview_uses_off0/previews/5e286e4dec64c3eeca30315bdb80e84b102834e78dbf90b348796faaeedbc1f5.png"
+    },
+    {
+      "hash": "f26c8d1b56645061de4974e1d7f36fe34ec6a022b913fef3628c5b51b95948fa",
+      "world_name": "TestWorld",
+      "seed": "42",
+      "random_seed": false,
+      "planet": "vulcanus",
+      "created_at": "2026-07-20T02:15:03.180617+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-146/test_generate_preview_with_cus0/previews/f26c8d1b56645061de4974e1d7f36fe34ec6a022b913fef3628c5b51b95948fa.png"
+    },
+    {
+      "hash": "1cfdcf9af6cae25533a1afc86cf7eab4f367bcd5eb350d387d41f33d69e4f2b4",
+      "world_name": "NewWorld",
+      "seed": "999",
+      "random_seed": false,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:15:03.185083+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-146/test_create_world_uses_officia0/previews/1cfdcf9af6cae25533a1afc86cf7eab4f367bcd5eb350d387d41f33d69e4f2b4.png"
+    },
+    {
+      "hash": "2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:15:03.200840+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-146/test_generate_preview_cleans_t0/previews/2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65.png"
+    },
+    {
+      "hash": "df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:15:03.207061+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-146/test_create_world_cleans_tempd0/previews/df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746.png"
+    },
+    {
+      "hash": "d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:15:03.231343+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-146/test_preview_generates_and_ret0/previews/d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96.png"
+    },
+    {
+      "hash": "d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:15:03.238096+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-146/test_create_world_returns_201_0/previews/d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96.png"
+    },
+    {
+      "hash": "d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:15:27.390550+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-147/test_preview_generates_and_ret0/previews/d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96.png"
+    },
+    {
+      "hash": "d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:15:27.398450+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-147/test_create_world_returns_201_0/previews/d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96.png"
+    },
+    {
+      "hash": "2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:15:27.422429+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-147/test_generate_preview_creates_0/previews/2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65.png"
+    },
+    {
+      "hash": "df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:15:27.428503+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-147/test_create_world_creates_save0/previews/df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746.png"
+    },
+    {
+      "hash": "5e286e4dec64c3eeca30315bdb80e84b102834e78dbf90b348796faaeedbc1f5",
+      "world_name": "TestWorld",
+      "seed": "12345",
+      "random_seed": false,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:15:27.440709+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-147/test_generate_preview_uses_off0/previews/5e286e4dec64c3eeca30315bdb80e84b102834e78dbf90b348796faaeedbc1f5.png"
+    },
+    {
+      "hash": "f26c8d1b56645061de4974e1d7f36fe34ec6a022b913fef3628c5b51b95948fa",
+      "world_name": "TestWorld",
+      "seed": "42",
+      "random_seed": false,
+      "planet": "vulcanus",
+      "created_at": "2026-07-20T02:15:27.445294+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-147/test_generate_preview_with_cus0/previews/f26c8d1b56645061de4974e1d7f36fe34ec6a022b913fef3628c5b51b95948fa.png"
+    },
+    {
+      "hash": "1cfdcf9af6cae25533a1afc86cf7eab4f367bcd5eb350d387d41f33d69e4f2b4",
+      "world_name": "NewWorld",
+      "seed": "999",
+      "random_seed": false,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:15:27.450331+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-147/test_create_world_uses_officia0/previews/1cfdcf9af6cae25533a1afc86cf7eab4f367bcd5eb350d387d41f33d69e4f2b4.png"
+    },
+    {
+      "hash": "2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:15:27.470026+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-147/test_generate_preview_cleans_t0/previews/2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65.png"
+    },
+    {
+      "hash": "df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:15:27.476958+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-147/test_create_world_cleans_tempd0/previews/df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746.png"
+    },
+    {
+      "hash": "d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:25:24.440434+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-148/test_preview_generates_and_ret0/previews/d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96.png"
+    },
+    {
+      "hash": "d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:25:24.447184+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-148/test_create_world_returns_201_0/previews/d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96.png"
+    },
+    {
+      "hash": "2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:25:24.467032+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-148/test_generate_preview_creates_0/previews/2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65.png"
+    },
+    {
+      "hash": "df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:25:24.473086+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-148/test_create_world_creates_save0/previews/df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746.png"
+    },
+    {
+      "hash": "5e286e4dec64c3eeca30315bdb80e84b102834e78dbf90b348796faaeedbc1f5",
+      "world_name": "TestWorld",
+      "seed": "12345",
+      "random_seed": false,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:25:24.485489+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-148/test_generate_preview_uses_off0/previews/5e286e4dec64c3eeca30315bdb80e84b102834e78dbf90b348796faaeedbc1f5.png"
+    },
+    {
+      "hash": "f26c8d1b56645061de4974e1d7f36fe34ec6a022b913fef3628c5b51b95948fa",
+      "world_name": "TestWorld",
+      "seed": "42",
+      "random_seed": false,
+      "planet": "vulcanus",
+      "created_at": "2026-07-20T02:25:24.490321+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-148/test_generate_preview_with_cus0/previews/f26c8d1b56645061de4974e1d7f36fe34ec6a022b913fef3628c5b51b95948fa.png"
+    },
+    {
+      "hash": "1cfdcf9af6cae25533a1afc86cf7eab4f367bcd5eb350d387d41f33d69e4f2b4",
+      "world_name": "NewWorld",
+      "seed": "999",
+      "random_seed": false,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:25:24.494830+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-148/test_create_world_uses_officia0/previews/1cfdcf9af6cae25533a1afc86cf7eab4f367bcd5eb350d387d41f33d69e4f2b4.png"
+    },
+    {
+      "hash": "2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:25:24.512232+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-148/test_generate_preview_cleans_t0/previews/2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65.png"
+    },
+    {
+      "hash": "df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:25:24.518722+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-148/test_create_world_cleans_tempd0/previews/df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746.png"
+    },
+    {
+      "hash": "2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:32:02.157463+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-149/test_generate_preview_creates_0/previews/2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65.png"
+    },
+    {
+      "hash": "df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:32:02.163554+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-149/test_create_world_creates_save0/previews/df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746.png"
+    },
+    {
+      "hash": "5e286e4dec64c3eeca30315bdb80e84b102834e78dbf90b348796faaeedbc1f5",
+      "world_name": "TestWorld",
+      "seed": "12345",
+      "random_seed": false,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:32:02.175519+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-149/test_generate_preview_uses_off0/previews/5e286e4dec64c3eeca30315bdb80e84b102834e78dbf90b348796faaeedbc1f5.png"
+    },
+    {
+      "hash": "f26c8d1b56645061de4974e1d7f36fe34ec6a022b913fef3628c5b51b95948fa",
+      "world_name": "TestWorld",
+      "seed": "42",
+      "random_seed": false,
+      "planet": "vulcanus",
+      "created_at": "2026-07-20T02:32:02.181030+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-149/test_generate_preview_with_cus0/previews/f26c8d1b56645061de4974e1d7f36fe34ec6a022b913fef3628c5b51b95948fa.png"
+    },
+    {
+      "hash": "1cfdcf9af6cae25533a1afc86cf7eab4f367bcd5eb350d387d41f33d69e4f2b4",
+      "world_name": "NewWorld",
+      "seed": "999",
+      "random_seed": false,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:32:02.185951+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-149/test_create_world_uses_officia0/previews/1cfdcf9af6cae25533a1afc86cf7eab4f367bcd5eb350d387d41f33d69e4f2b4.png"
+    },
+    {
+      "hash": "2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:32:02.204131+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-149/test_generate_preview_cleans_t0/previews/2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65.png"
+    },
+    {
+      "hash": "df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:32:02.211587+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-149/test_create_world_cleans_tempd0/previews/df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746.png"
+    },
+    {
+      "hash": "d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:32:09.927154+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-150/test_preview_generates_and_ret0/previews/d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96.png"
+    },
+    {
+      "hash": "d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:32:09.935091+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-150/test_create_world_returns_201_0/previews/d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96.png"
+    },
+    {
+      "hash": "2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:32:09.957708+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-150/test_generate_preview_creates_0/previews/2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65.png"
+    },
+    {
+      "hash": "df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:32:09.964326+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-150/test_create_world_creates_save0/previews/df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746.png"
+    },
+    {
+      "hash": "5e286e4dec64c3eeca30315bdb80e84b102834e78dbf90b348796faaeedbc1f5",
+      "world_name": "TestWorld",
+      "seed": "12345",
+      "random_seed": false,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:32:09.978721+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-150/test_generate_preview_uses_off0/previews/5e286e4dec64c3eeca30315bdb80e84b102834e78dbf90b348796faaeedbc1f5.png"
+    },
+    {
+      "hash": "f26c8d1b56645061de4974e1d7f36fe34ec6a022b913fef3628c5b51b95948fa",
+      "world_name": "TestWorld",
+      "seed": "42",
+      "random_seed": false,
+      "planet": "vulcanus",
+      "created_at": "2026-07-20T02:32:09.984593+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-150/test_generate_preview_with_cus0/previews/f26c8d1b56645061de4974e1d7f36fe34ec6a022b913fef3628c5b51b95948fa.png"
+    },
+    {
+      "hash": "1cfdcf9af6cae25533a1afc86cf7eab4f367bcd5eb350d387d41f33d69e4f2b4",
+      "world_name": "NewWorld",
+      "seed": "999",
+      "random_seed": false,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:32:09.990135+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-150/test_create_world_uses_officia0/previews/1cfdcf9af6cae25533a1afc86cf7eab4f367bcd5eb350d387d41f33d69e4f2b4.png"
+    },
+    {
+      "hash": "2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:32:10.010323+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-150/test_generate_preview_cleans_t0/previews/2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65.png"
+    },
+    {
+      "hash": "df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:32:10.017397+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-150/test_create_world_cleans_tempd0/previews/df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746.png"
+    },
+    {
+      "hash": "2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:42:44.396201+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-151/test_generate_preview_creates_0/previews/2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65.png"
+    },
+    {
+      "hash": "df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:42:44.402335+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-151/test_create_world_creates_save0/previews/df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746.png"
+    },
+    {
+      "hash": "5e286e4dec64c3eeca30315bdb80e84b102834e78dbf90b348796faaeedbc1f5",
+      "world_name": "TestWorld",
+      "seed": "12345",
+      "random_seed": false,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:42:44.413118+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-151/test_generate_preview_uses_off0/previews/5e286e4dec64c3eeca30315bdb80e84b102834e78dbf90b348796faaeedbc1f5.png"
+    },
+    {
+      "hash": "f26c8d1b56645061de4974e1d7f36fe34ec6a022b913fef3628c5b51b95948fa",
+      "world_name": "TestWorld",
+      "seed": "42",
+      "random_seed": false,
+      "planet": "vulcanus",
+      "created_at": "2026-07-20T02:42:44.418562+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-151/test_generate_preview_with_cus0/previews/f26c8d1b56645061de4974e1d7f36fe34ec6a022b913fef3628c5b51b95948fa.png"
+    },
+    {
+      "hash": "1cfdcf9af6cae25533a1afc86cf7eab4f367bcd5eb350d387d41f33d69e4f2b4",
+      "world_name": "NewWorld",
+      "seed": "999",
+      "random_seed": false,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:42:44.424710+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-151/test_create_world_uses_officia0/previews/1cfdcf9af6cae25533a1afc86cf7eab4f367bcd5eb350d387d41f33d69e4f2b4.png"
+    },
+    {
+      "hash": "2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:42:44.446340+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-151/test_generate_preview_cleans_t0/previews/2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65.png"
+    },
+    {
+      "hash": "df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:42:44.454604+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-151/test_create_world_cleans_tempd0/previews/df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746.png"
+    },
+    {
+      "hash": "d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:42:44.485831+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-151/test_preview_generates_and_ret0/previews/d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96.png"
+    },
+    {
+      "hash": "d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:42:44.493419+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-151/test_create_world_returns_201_0/previews/d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96.png"
+    },
+    {
+      "hash": "2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:43:01.310509+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-152/test_generate_preview_creates_0/previews/2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65.png"
+    },
+    {
+      "hash": "df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:43:01.317185+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-152/test_create_world_creates_save0/previews/df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746.png"
+    },
+    {
+      "hash": "5e286e4dec64c3eeca30315bdb80e84b102834e78dbf90b348796faaeedbc1f5",
+      "world_name": "TestWorld",
+      "seed": "12345",
+      "random_seed": false,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:43:01.328616+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-152/test_generate_preview_uses_off0/previews/5e286e4dec64c3eeca30315bdb80e84b102834e78dbf90b348796faaeedbc1f5.png"
+    },
+    {
+      "hash": "f26c8d1b56645061de4974e1d7f36fe34ec6a022b913fef3628c5b51b95948fa",
+      "world_name": "TestWorld",
+      "seed": "42",
+      "random_seed": false,
+      "planet": "vulcanus",
+      "created_at": "2026-07-20T02:43:01.334418+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-152/test_generate_preview_with_cus0/previews/f26c8d1b56645061de4974e1d7f36fe34ec6a022b913fef3628c5b51b95948fa.png"
+    },
+    {
+      "hash": "1cfdcf9af6cae25533a1afc86cf7eab4f367bcd5eb350d387d41f33d69e4f2b4",
+      "world_name": "NewWorld",
+      "seed": "999",
+      "random_seed": false,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:43:01.340219+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-152/test_create_world_uses_officia0/previews/1cfdcf9af6cae25533a1afc86cf7eab4f367bcd5eb350d387d41f33d69e4f2b4.png"
+    },
+    {
+      "hash": "2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:43:01.358986+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-152/test_generate_preview_cleans_t0/previews/2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65.png"
+    },
+    {
+      "hash": "df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:43:01.366147+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-152/test_create_world_cleans_tempd0/previews/df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746.png"
+    },
+    {
+      "hash": "d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:43:01.397533+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-152/test_preview_generates_and_ret0/previews/d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96.png"
+    },
+    {
+      "hash": "d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:43:01.404640+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-152/test_create_world_returns_201_0/previews/d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96.png"
+    },
+    {
+      "hash": "d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:43:10.577694+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-153/test_preview_generates_and_ret0/previews/d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96.png"
+    },
+    {
+      "hash": "d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:43:10.584800+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-153/test_create_world_returns_201_0/previews/d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96.png"
+    },
+    {
+      "hash": "2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:43:10.606212+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-153/test_generate_preview_creates_0/previews/2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65.png"
+    },
+    {
+      "hash": "df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:43:10.612577+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-153/test_create_world_creates_save0/previews/df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746.png"
+    },
+    {
+      "hash": "5e286e4dec64c3eeca30315bdb80e84b102834e78dbf90b348796faaeedbc1f5",
+      "world_name": "TestWorld",
+      "seed": "12345",
+      "random_seed": false,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:43:10.625114+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-153/test_generate_preview_uses_off0/previews/5e286e4dec64c3eeca30315bdb80e84b102834e78dbf90b348796faaeedbc1f5.png"
+    },
+    {
+      "hash": "f26c8d1b56645061de4974e1d7f36fe34ec6a022b913fef3628c5b51b95948fa",
+      "world_name": "TestWorld",
+      "seed": "42",
+      "random_seed": false,
+      "planet": "vulcanus",
+      "created_at": "2026-07-20T02:43:10.630032+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-153/test_generate_preview_with_cus0/previews/f26c8d1b56645061de4974e1d7f36fe34ec6a022b913fef3628c5b51b95948fa.png"
+    },
+    {
+      "hash": "1cfdcf9af6cae25533a1afc86cf7eab4f367bcd5eb350d387d41f33d69e4f2b4",
+      "world_name": "NewWorld",
+      "seed": "999",
+      "random_seed": false,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:43:10.634803+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-153/test_create_world_uses_officia0/previews/1cfdcf9af6cae25533a1afc86cf7eab4f367bcd5eb350d387d41f33d69e4f2b4.png"
+    },
+    {
+      "hash": "2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:43:10.652662+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-153/test_generate_preview_cleans_t0/previews/2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65.png"
+    },
+    {
+      "hash": "df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:43:10.659461+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-153/test_create_world_cleans_tempd0/previews/df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746.png"
+    },
+    {
+      "hash": "d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:47:37.716012+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-154/test_preview_generates_and_ret0/previews/d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96.png"
+    },
+    {
+      "hash": "2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:47:37.726774+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-154/test_generate_preview_creates_0/previews/2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65.png"
+    },
+    {
+      "hash": "d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:50:02.338339+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-155/test_preview_generates_and_ret0/previews/d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96.png"
+    },
+    {
+      "hash": "d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:50:02.348126+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-155/test_create_world_returns_201_0/previews/d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96.png"
+    },
+    {
+      "hash": "2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:50:02.375159+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-155/test_generate_preview_creates_0/previews/2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65.png"
+    },
+    {
+      "hash": "df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:50:02.382106+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-155/test_create_world_creates_save0/previews/df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746.png"
+    },
+    {
+      "hash": "5e286e4dec64c3eeca30315bdb80e84b102834e78dbf90b348796faaeedbc1f5",
+      "world_name": "TestWorld",
+      "seed": "12345",
+      "random_seed": false,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:50:02.397939+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-155/test_generate_preview_uses_off0/previews/5e286e4dec64c3eeca30315bdb80e84b102834e78dbf90b348796faaeedbc1f5.png"
+    },
+    {
+      "hash": "f26c8d1b56645061de4974e1d7f36fe34ec6a022b913fef3628c5b51b95948fa",
+      "world_name": "TestWorld",
+      "seed": "42",
+      "random_seed": false,
+      "planet": "vulcanus",
+      "created_at": "2026-07-20T02:50:02.403823+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-155/test_generate_preview_with_cus0/previews/f26c8d1b56645061de4974e1d7f36fe34ec6a022b913fef3628c5b51b95948fa.png"
+    },
+    {
+      "hash": "1cfdcf9af6cae25533a1afc86cf7eab4f367bcd5eb350d387d41f33d69e4f2b4",
+      "world_name": "NewWorld",
+      "seed": "999",
+      "random_seed": false,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:50:02.409209+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-155/test_create_world_uses_officia0/previews/1cfdcf9af6cae25533a1afc86cf7eab4f367bcd5eb350d387d41f33d69e4f2b4.png"
+    },
+    {
+      "hash": "2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:50:02.427055+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-155/test_generate_preview_cleans_t0/previews/2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65.png"
+    },
+    {
+      "hash": "df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:50:02.434966+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-155/test_create_world_cleans_tempd0/previews/df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746.png"
+    },
+    {
+      "hash": "d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:50:13.054928+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-156/test_preview_generates_and_ret0/previews/d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96.png"
+    },
+    {
+      "hash": "d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96",
+      "world_name": "RouteWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:50:13.062055+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-156/test_create_world_returns_201_0/previews/d02dd58fc001bfbd1c2e6791bf863deb70403b90ba0c49af21a923f788cf8d96.png"
+    },
+    {
+      "hash": "2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:50:13.087889+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-156/test_generate_preview_creates_0/previews/2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65.png"
+    },
+    {
+      "hash": "df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:50:13.094789+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-156/test_create_world_creates_save0/previews/df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746.png"
+    },
+    {
+      "hash": "5e286e4dec64c3eeca30315bdb80e84b102834e78dbf90b348796faaeedbc1f5",
+      "world_name": "TestWorld",
+      "seed": "12345",
+      "random_seed": false,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:50:13.108751+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-156/test_generate_preview_uses_off0/previews/5e286e4dec64c3eeca30315bdb80e84b102834e78dbf90b348796faaeedbc1f5.png"
+    },
+    {
+      "hash": "f26c8d1b56645061de4974e1d7f36fe34ec6a022b913fef3628c5b51b95948fa",
+      "world_name": "TestWorld",
+      "seed": "42",
+      "random_seed": false,
+      "planet": "vulcanus",
+      "created_at": "2026-07-20T02:50:13.114261+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-156/test_generate_preview_with_cus0/previews/f26c8d1b56645061de4974e1d7f36fe34ec6a022b913fef3628c5b51b95948fa.png"
+    },
+    {
+      "hash": "1cfdcf9af6cae25533a1afc86cf7eab4f367bcd5eb350d387d41f33d69e4f2b4",
+      "world_name": "NewWorld",
+      "seed": "999",
+      "random_seed": false,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:50:13.119355+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-156/test_create_world_uses_officia0/previews/1cfdcf9af6cae25533a1afc86cf7eab4f367bcd5eb350d387d41f33d69e4f2b4.png"
+    },
+    {
+      "hash": "2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65",
+      "world_name": "TestWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:50:13.137670+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-156/test_generate_preview_cleans_t0/previews/2e3ba68378c466ca171c6fdfdb01f3e515c85205f1e94628222bb8b5b1913a65.png"
+    },
+    {
+      "hash": "df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746",
+      "world_name": "NewWorld",
+      "seed": null,
+      "random_seed": true,
+      "planet": "nauvis",
+      "created_at": "2026-07-20T02:50:13.146004+00:00",
+      "file_path": "/tmp/pytest-of-cassiokf/pytest-156/test_create_world_cleans_tempd0/previews/df8bc43cf46b35a8ea3d0618b3bae6b942268479b11113aa5d4801395e8ba746.png"
+    }
+  ]
+}

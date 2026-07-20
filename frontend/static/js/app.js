@@ -22,6 +22,14 @@
                 if (button.dataset.tab === 'console') {
                     fetchRconStatusOnce();
                 }
+                if (button.dataset.tab === 'world-builder') {
+                    if (typeof loadWorldBuilderOptions === 'function') {
+                        loadWorldBuilderOptions();
+                    }
+                    if (typeof checkWorldBuilderStatus === 'function') {
+                        checkWorldBuilderStatus();
+                    }
+                }
             });
         });
 

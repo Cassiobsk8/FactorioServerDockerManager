@@ -30,6 +30,7 @@
             <nav class="tabs" aria-label="Main navigation">
                 <button class="tab-button active" data-tab="dashboard" data-i18n="menu.dashboard">Dashboard</button>
                 <button class="tab-button" data-tab="saves" data-i18n="menu.saves">Saves</button>
+                <button class="tab-button" data-tab="world-builder" data-i18n="menu.world_builder">World Builder</button>
                 <button class="tab-button" data-tab="console" data-i18n="menu.console">Console</button>
                 <button class="tab-button" data-tab="server-settings" data-i18n="menu.server_settings">Server Settings</button>
                 <button class="tab-button" data-tab="about" data-i18n="menu.about">About</button>
@@ -308,6 +309,50 @@
                                     {% endfor %}
                                 </tbody>
                             </table>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            <div class="tab-panel" id="world-builder-panel">
+                <div class="world-builder-layout">
+                    <section class="panel card config-card world-builder-config">
+                        <div class="panel-header">
+                            <h2 data-i18n="world_builder.configuration">Configuration</h2>
+                        </div>
+                        <div class="world-builder-status-banner" id="wb-status-banner" style="display:none;">
+                            <span data-i18n="world_builder.status.unavailable">World Builder Preview indisponível.</span>
+                            <span data-i18n="world_builder.status.unavailable_detail">Instalação do Factorio não concluída.</span>
+                        </div>
+                        <form id="world-builder-form" class="stacked-form">
+                            <label>
+                                <span data-i18n="world_builder.world_name">World Name</span>
+                                <input type="text" id="wb-world-name" placeholder="meu_mundo" required />
+                            </label>
+                            <label>
+                                <span data-i18n="world_builder.seed">Seed</span>
+                                <div class="seed-row">
+                                    <input type="text" id="wb-seed" placeholder="123456789" />
+                                    <button type="button" class="text-button" id="wb-generate-seed" data-i18n="world_builder.generate_seed">🎲 Gerar</button>
+                                </div>
+                            </label>
+                            <label>
+                                <span data-i18n="world_builder.planet">Planet</span>
+                                <select id="wb-planet"></select>
+                            </label>
+                            <div class="action-group">
+                                <button type="button" class="secondary-button" id="wb-update-preview" data-i18n="world_builder.update_preview">Update Preview</button>
+                                <button type="button" class="danger-button" id="wb-create-world" data-i18n="world_builder.create_world">Create World</button>
+                            </div>
+                        </form>
+                    </section>
+                    <section class="panel card config-card world-builder-preview-card">
+                        <div class="panel-header">
+                            <h2 data-i18n="world_builder.preview">Preview</h2>
+                            <span class="badge badge-inactive" id="wb-preview-status" data-i18n="world_builder.preview.status.outdated">Preview outdated</span>
+                        </div>
+                        <div class="world-builder-preview" id="wb-preview-container">
+                            <p class="preview-placeholder" data-i18n="world_builder.preview.placeholder">No preview generated yet</p>
+                            <img id="wb-preview-image" class="world-builder-preview-image" style="display:none;" alt="World preview" />
                         </div>
                     </section>
                 </div>
@@ -745,6 +790,7 @@
     <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
     <script src="{{ url_for('static', filename='js/saves.js') }}"></script>
     <script src="{{ url_for('static', filename='js/config.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/world_builder.js') }}"></script>
     <script src="{{ url_for('static', filename='js/rcon.js') }}"></script>
     <script src="{{ url_for('static', filename='js/access_control.js') }}"></script>
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>

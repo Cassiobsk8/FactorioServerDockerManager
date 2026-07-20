@@ -152,6 +152,21 @@ class FactorioService:
         except Exception:
             logger.exception("Extraction failed")
             raise
+
+        try:
+            validate_installation()
+        except Exception:
+            logger.exception("Installation validation failed")
+            set_install_error("Installation validation failed")
+            raise
+
+        _set_install_progress(
+            status="complete",
+            stage="done",
+            message="Installation completed successfully.",
+            downloaded=0,
+            total=0,
+        )
         logger.info("Installation completed")
         return "installed"
 
@@ -289,13 +304,6 @@ def _extract_archive(archive_path: Path) -> None:
         total=0,
     )
     _normalize_install_directory()
-    _set_install_progress(
-        status="complete",
-        stage="done",
-        message="Installation completed successfully.",
-        downloaded=0,
-        total=0,
-    )
 
 
 def _normalize_install_directory() -> None:
@@ -339,6 +347,53 @@ def _normalize_install_directory() -> None:
 
 def is_server_installed() -> bool:
     return (INSTALL_DIR / "bin" / "x64" / "factorio").exists()
+
+
+def validate_installation(install_dir: Optional[Path] = None) -> Dict[str, Any]:
+    base = install_dir if install_dir is not None else INSTALL_DIR
+    factorio_bin = base / "bin" / "x64" / "factorio"
+    data_dir = base / "data"
+    config_dir = base / "config"
+
+    errors = []
+
+    if not factorio_bin.exists():
+        errors.append("Factorio binary not found at bin/x64/factorio")
+    elif not os.access(factorio_bin, os.X_OK):
+        errors.append("Factorio binary is not executable")
+
+    if not data_dir.exists() or not data_dir.is_dir():
+        errors.append("data/ directory not found")
+
+    if not config_dir.exists() or not config_dir.is_dir():
+        errors.append("config/ directory not found")
+
+    if errors:
+        raise RuntimeError("Invalid Factorio installation: " + "; ".join(errors))
+
+    try:
+        result = subprocess.run(
+            [str(factorio_bin), "--version"],
+            capture_output=True,
+            text=True,
+            timeout=30,
+            cwd=str(base),
+        )
+        if result.returncode != 0:
+            raise RuntimeError(
+                f"Factorio --version failed with code {result.returncode}: {result.stderr.strip()}"
+            )
+        version_output = result.stdout.strip()
+    except subprocess.TimeoutExpired as exc:
+        raise RuntimeError("Factorio --version timed out") from exc
+
+    return {
+        "valid": True,
+        "binary": str(factorio_bin),
+        "data_dir": str(data_dir),
+        "config_dir": str(config_dir),
+        "version": version_output,
+    }
 
 
 def _get_server_log_file() -> Path:

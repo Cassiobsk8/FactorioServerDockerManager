@@ -1,5 +1,219 @@
 # Changelog
 
+## 3.0.0 - World Builder V1
+
+Status: Epic World Builder V1 Completed
+
+### Added
+
+- World Builder feature (Epic World Builder V1)
+- Backend service `backend/services/world_builder_service.py` with `generate_preview()` and `create_world()`
+- Backend model `backend/services/world_config.py` (`WorldConfig` dataclass)
+- Backend blueprint `backend/routes/world_builder_routes.py` with routes:
+  - `GET /api/world-builder/options` — planets and presets
+  - `POST /api/world-builder/preview` — generate map preview via official Factorio binary
+  - `POST /api/world-builder/create` — create save from configuration
+  - `GET /api/world-builder/preview-image/<hash>` — serve generated preview PNG
+- Frontend module `frontend/static/js/world_builder.js` with `updatePreview`, `createWorld`, `markPreviewOutdated`
+- New SPA tab "World Builder" in sidebar navigation
+- Layout split: 30% configuration (left) / 70% preview (right)
+- Fields: World Name, Seed, Random Seed toggle, Planet select
+- Preview status badges: Updated / Outdated / Generating / Error
+- World Builder i18n keys across 4 locales (`en`, `pt_BR`, `es`, `zh_CN`)
+- CSS classes: `.world-builder-layout`, `.world-builder-preview`, `.world-builder-preview-image`, `.checkbox-row`
+
+### Changed
+
+- `backend/app.py` — registered `world_builder_routes` blueprint
+- `frontend/templates/index.html` — added World Builder tab and panel
+- `frontend/static/js/app.js` — tab switch handler refreshes World Builder options
+- `frontend/static/css/app.css` — added World Builder layout and preview styles
+- `backend/version.py` — bumped to 3.0.0
+
+### Validation
+
+- Backend: 281 passed
+- Frontend UI: 17 passed
+- World Builder service: 12 passed
+- World Builder routes: 8 passed
+- No regressions detected
+
+---
+
+## 3.0.0 - WB-HF-01 - Corrigir movimentação de arquivos entre filesystems
+
+Status: Hotfix Completed
+
+### Fixed
+
+- Movimentação de arquivos gerados pelo World Builder agora usa `shutil.move()` em vez de `Path.replace()`
+- Eliminado `OSError: [Errno 18] Invalid cross-device link` ao mover previews e saves entre `/tmp` e volume Docker
+
+### Architecture
+
+- Criado helper privado `_move_generated_file(source, destination)` em `backend/services/world_builder_service.py`
+- Helper cria diretórios de destino automaticamente, preserva o nome do arquivo e lança exceções padronizadas
+- Toda movimentação de previews e saves agora utiliza exclusivamente o helper
+
+### Validation
+
+- Backend: 21 passed
+- No regressions detected
+
+---
+
+## 3.0.0 - WB-HF-02 - Servir previews através de rota dedicada
+
+Status: Hotfix Completed
+
+### Fixed
+
+- Previews agora são servidos através de rota dedicada `/api/world-builder/preview-image/<hash>.png`
+- Eliminado HTTP 404 ao acessar previews, que antes retornavam `/static/world-builder/previews/<hash>.png` (fora do `static_folder`)
+
+### Architecture
+
+- Rota `GET /api/world-builder/preview-image/<preview_hash>` usa `send_from_directory()` com `PREVIEWS_DIR`
+- `generate_preview()` retorna URL da rota dedicada tanto para previews existentes quanto para recém-gerados
+- Previews são artefatos de tempo de execução e não fazem parte do `static_folder`
+
+### Validation
+
+- Backend: 320 passed
+- Frontend UI: 18 passed
+- No regressions detected
+
+---
+
+## 3.0.0 - WB-HF-04 - Normalizar hash do preview na rota de download
+
+Status: Hotfix Completed
+
+### Fixed
+
+- Corrigido HTTP 404 na rota `/api/world-builder/preview-image/<hash>` causado por duplicação da extensão `.png`
+- Rota agora aceita tanto `/api/world-builder/preview-image/<hash>` quanto `/api/world-builder/preview-image/<hash>.png`
+
+### Architecture
+
+- Rota normaliza `preview_hash` removendo sufixo `.png` antes de montar o caminho do arquivo
+- Compatibilidade mantida com clientes que utilizam qualquer um dos formatos
+
+### Validation
+
+- Backend: 321 passed
+- Frontend UI: 18 passed
+- No regressions detected
+
+---
+
+## 3.0.0 - World Builder V1.2 - Seed Generator Refinement
+
+Status: Refinement Completed
+
+### Changed
+
+- Replaced "Random Seed" checkbox with "🎲 Generate" button next to Seed field
+- Seed is now always editable; clicking "Generate" fills it with a random integer (0-999999999)
+- `random_seed` is inferred from the UI: `true` when Seed is empty, `false` when Seed has a value
+- No automatic preview generation on seed change; preview is marked as outdated instead
+- Added `.seed-row` CSS class for inline input + button layout
+- Updated i18n: added `world_builder.generate_seed`, removed `world_builder.random_seed`
+
+### Validation
+
+- Backend: 281 passed
+- Frontend UI: 17 passed
+- No regressions detected
+
+---
+
+## 3.0.0 - World Builder V1.3.1 - Installation Validation
+
+Status: Investigation + Fix Completed
+
+### Added
+
+- Automatic detection of real vs fake/placeholder Factorio binary
+- Backend validation: `validate_factorio_binary()` checks ELF magic bytes (`\x7fELF`)
+- New API endpoint: `GET /api/world-builder/status` returns installation validity
+- Frontend status banner shown when installation is invalid or incomplete
+- Preview, Create World, and Generate Seed buttons are disabled when installation is invalid
+
+### Changed
+
+- `backend/services/world_builder_service.py` — `generate_preview()` and `create_world()` now validate binary before execution
+- `backend/routes/world_builder_routes.py` — added `/api/world-builder/status` endpoint
+- `frontend/static/js/world_builder.js` — added `checkWorldBuilderStatus()`; disables UI on invalid installation
+- `frontend/templates/index.html` — added `#wb-status-banner`
+- `frontend/static/css/app.css` — added `.world-builder-status-banner`
+- `frontend/i18n/*.json` — added `world_builder.status.unavailable` and `world_builder.status.unavailable_detail`
+
+### Validation
+
+- Backend: 288 passed
+- Frontend UI: 23 passed
+- No regressions detected
+
+---
+
+## 3.0.0 - World Builder WB-V1.7 - Remoção do Uso de `--preset`
+
+Status: Refinement Completed
+
+### Removed
+
+- `preset` field from `WorldConfig` (`backend/services/world_config.py`)
+- Preset validation (`unsupported preset`) and dependency on `preset_catalog.py`
+- `backend/services/preset_catalog.py` module entirely
+- `--preset` argument from the Factorio command in both `generate_preview()` and `create_world()`
+- `presets` key from `GET /api/world-builder/options` response
+- Preset field from the interface (`frontend/templates/index.html`, `world_builder.js`)
+- `world_builder.preset` i18n key from all 4 locales (`en`, `pt_BR`, `es`, `zh_CN`)
+
+### Changed
+
+- World Builder now works directly over `map-gen-settings.json` using Factorio's default settings and the user-provided seed
+- Frontend no longer sends `preset` in `/api/world-builder/preview` or `/api/world-builder/create` requests
+
+### Architecture
+
+- Presets are no longer passed as command-line parameters to the Factorio executable
+- Future presets will be treated only as configuration templates loading values into the editor
+
+### Validation
+
+- Backend: 314 passed
+- Frontend UI: 23 passed
+- No regressions detected
+
+---
+
+Status: Hotfix Completed
+
+### Added
+
+- Full installation validation in `backend/services/factorio_service.py`:
+  - Checks `bin/x64/factorio` exists and is executable
+  - Checks `data/` directory exists
+  - Checks `config/` directory exists
+  - Runs `factorio --version` and validates return code
+- `validate_installation()` returns `{valid, binary, data_dir, config_dir, version}`
+- `install_server()` now calls `validate_installation()` AFTER extraction and BEFORE marking `status=complete`
+- On validation failure: writes `status=error` to `install_progress.json` and aborts installation
+
+### Changed
+
+- `backend/services/factorio_service.py` — `install_server()` validates installation before completion; `_extract_archive()` no longer marks complete
+- `backend/tests/test_server_lifecycle_regression.py` — updated install test to include `data/` and `config/` dirs and `--version`-capable fake binary; added 6 new validation tests
+
+### Validation
+
+- Backend: 294 passed
+- No regressions detected
+
+---
+
 ## 2.8.7 - LogViewer ReferenceError Fix (Hotfix H7.2B)
 
 Status: Resolved

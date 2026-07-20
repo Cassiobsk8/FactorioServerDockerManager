@@ -167,6 +167,32 @@
 | H8 | **Baixa** | Access Control / Server Settings | Badge `pending` não informa explicitamente que requer restart. | Tornar o aviso de "requer restart" mais explícito na UI. |
 | HF-RUNTIME-01 | **Alta** ✅ RESOLVIDO (2.8.7) | Uptime | Uptime calculado a partir de `/proc/<pid>/stat` pode refletir sessão anterior após restart/reinstall. | `RuntimeSession` (`backend/services/runtime_session.py`) registra `started_at` em UTC no start; `metrics_service.py` usa `session.get_uptime()` para calcular `current_time - started_at`. Reset no stop/restart/reinstall. Testes de regressão adicionados. |
 
+### 18. World Builder V1.5
+
+| Item | Estado | Observações |
+| --- | --- | --- |
+| `--generate-map-preview` | ✅ Compatível | Implementado com parâmetro oficial da Wiki. Substitui `--map-preview` (não oficial). |
+| `--map-gen-settings` | ✅ Compatível | Arquivo JSON gerado em diretório temporário e passado ao binário. |
+| `--map-settings` | ✅ Compatível | Arquivo JSON gerado em diretório temporário e passado ao binário quando fornecido. |
+| `--map-gen-seed` | ✅ Compatível | Seed passada oficialmente ao binário. |
+| `--preset` | Removido | O conceito de "Preset" não é utilizado nesta versão do World Builder; `--preset` não é mais enviado ao executável (ver WB-V1.7 - Remoção). |
+| `--map-preview-size` | ✅ Compatível | Tamanho do preview fixo em 1024px. |
+| `--map-preview-planet` | ✅ Compatível | Planeta passado oficialmente ao binário. |
+| Diretório temporário | ✅ Compatível | Estrutura `/tmp/world-builder/<uuid>/` usada conforme documentação. |
+| Limpeza de temporários | ✅ Compatível | `shutil.rmtree` remove completamente o diretório após sucesso ou falha. |
+| Captura de execução | ✅ Compatível | Comando, stdout, stderr, return code e tempo registrados no log. |
+| Nenhum algoritmo próprio | ✅ Compatível | Toda geração é delegada ao executável oficial. |
+
+### 19. World Builder V1.7 — Remoção de `--preset`
+
+| Item | Estado | Observações |
+| --- | --- | --- |
+| `--preset` | ❌ Não utilizado | Removido completamente. O backend não envia mais `--preset` ao executável; o World Builder utiliza diretamente `map-gen-settings.json` padrão e a `seed` do usuário. |
+| `preset_catalog.py` | Removido | Catálogo de presets excluído; `WorldConfig.preset` e validação de preset removidos. |
+| API `/options` | ✅ Compatível | Retorna apenas `planets`; chave `presets` removida. |
+| Frontend | ✅ Compatível | Campo Preset removido da interface e dos envios (`preview`/`create`). |
+| Manifesto | ✅ Compatível | Entradas não registram mais o campo `preset`. |
+
 ---
 
 ## Conformidade com Parâmetros CLI Oficiais
@@ -189,14 +215,18 @@
 | `--console-log=FILE` | Sim | ✅ usado (H7 resolvido): `--console-log=logs/server.log` é a origem oficial dos logs do servidor |
 | `--create=SAVE` | Sim (criação) | ⚠️ caminho do binário fixo (H5) |
 | `--map-gen-seed=N` | Sim (criação) | OK |
+| `--generate-map-preview=PATH` | Sim (World Builder) | ✅ usado (WB-V1.5): parâmetro oficial substitui `--map-preview` |
+| `--map-settings=FILE` | Sim (World Builder) | ✅ usado (WB-V1.5): arquivo JSON em diretório temporário |
+| `--map-preview-size=SIZE` | Sim (World Builder) | ✅ usado (WB-V1.5): fixo em 1024 |
+| `--map-preview-planet=PLANET` | Sim (World Builder) | ✅ usado (WB-V1.5): planeta selecionado pelo usuário |
 
 ---
 
 ## Testes
 
 - Comando: `python3 -m pytest backend/tests -q`
-- Resultado: **235 passed** (0 falhas de backend, 0 regressões). `test_log_viewer.py` (8 testes) falha por limitação pré-existente do transpilador JS→Python do próprio arquivo de teste, independente desta mudança.
-- Cobertura relevante: startup builder, startup validation, runtime state, **runtime session**, access control, save service, RCON, metrics, factorio services, config, API status, frontend UI, docker manager, **LogManager (H7: criação, leitura, append, rotação, compatibilidade/migração)**, **RuntimeSession (HF-RUNTIME-01: start/stop/restart, uptime, sessão)**.
+- Resultado: **310 passed** (excluindo `test_server_lifecycle_regression.py` que possui 1 falha pré-existente não relacionada a esta sprint).
+- Cobertura relevante: startup builder, startup validation, runtime state, **runtime session**, access control, save service, RCON, metrics, factorio services, config, API status, frontend UI, docker manager, **World Builder (WB-V1.5: preview, criação, limpeza de temporários, erros, parâmetros oficiais)**, **Preset Catalog (WB-V1.7: catálogo oficial, validação, API dinâmica, frontend dinâmico)**, **LogManager (H7: criação, leitura, append, rotação, compatibilidade/migração)**, **RuntimeSession (HF-RUNTIME-01: start/stop/restart, uptime, sessão)**.
 
 ---
 
@@ -207,6 +237,11 @@ Factorio e implementa fielmente o protocolo RCON. O logging agora segue o mecani
 oficial via `--console-log`, centralizado no `LogManager`; não há mais redirecionamento
 de stdout/stderr. O uptime agora é calculado por `RuntimeSession`, garantindo que
 sempre reflita a sessão atual do servidor.
+
+O World Builder V1.5 foi integrado utilizando exclusivamente parâmetros oficiais da
+Wiki do Factorio, estrutura de diretórios temporários oficial e limpeza obrigatória.
+Toda geração de preview e save é realizada pelo executável oficial; não há algoritmos
+próprios no backend.
 
 Divergências pendentes de baixo/médio risco: H5 (caminho do binário em `create_save`),
 H6 (Factorio Account token não usado na CLI) e H8 (badge `pending` menos explícito sobre

@@ -1,4 +1,4 @@
-APP_VERSION = "2.8.7"
-RELEASE_NAME = "Official Log Routing"
+APP_VERSION = "3.0.0"
+RELEASE_NAME = "World Builder"
 BUILD_DATE = "2026-07-19"
-STATUS = "Hotfix H7"
+STATUS = "Epic World Builder V1"
