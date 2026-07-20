@@ -26,6 +26,15 @@ class StartupValidationError:
         return {"code": self.code, "message": self.message}
 
 
+class StartupValidationWarning:
+    def __init__(self, code: str, message: str) -> None:
+        self.code = code
+        self.message = message
+
+    def to_dict(self) -> dict:
+        return {"code": self.code, "message": self.message}
+
+
 def _validate_active_save() -> Optional[StartupValidationError]:
     save = load_active_save()
     if save is None:
@@ -45,15 +54,16 @@ def _validate_server_settings() -> Optional[StartupValidationError]:
     return None
 
 
-def _validate_rcon_password() -> Optional[StartupValidationError]:
+def _warn_rcon_password() -> Optional[StartupValidationWarning]:
     from backend.services.settings_service import load_app_settings
 
     app_settings = load_app_settings()
     password = app_settings.get("rcon_password", "")
     if not password:
-        return StartupValidationError(
+        return StartupValidationWarning(
             "rcon_password_missing",
-            "RCON password is not configured. Set a password in Settings before starting the server.",
+            "RCON password is not configured. The server will start without RCON. "
+            "Set a password in Settings to enable remote console access.",
         )
     return None
 
@@ -144,19 +154,23 @@ def _validate_banlist() -> Optional[StartupValidationError]:
 
 def validate_startup() -> dict:
     errors = []
+    warnings = []
 
     for validator in (
         _validate_active_save,
         _validate_server_settings,
-        _validate_rcon_password,
         _validate_whitelist,
         _validate_adminlist,
         _validate_banlist,
     ):
-        error = validator()
-        if error:
-            errors.append(error.to_dict())
+        result = validator()
+        if result:
+            errors.append(result.to_dict())
+
+    rcon_warning = _warn_rcon_password()
+    if rcon_warning:
+        warnings.append(rcon_warning.to_dict())
 
     if errors:
-        return {"valid": False, "errors": errors}
-    return {"valid": True, "errors": []}
+        return {"valid": False, "errors": errors, "warnings": warnings}
+    return {"valid": True, "errors": [], "warnings": warnings}

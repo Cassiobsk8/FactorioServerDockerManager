@@ -15,7 +15,7 @@ class StartupConfiguration:
     """Centralized configuration for Factorio server startup."""
 
     factorio_bin: Path
-    active_save: str
+    active_save: Path
     rcon_port: str
     rcon_password: str
     port: Optional[str] = None
@@ -27,6 +27,7 @@ class StartupConfiguration:
     adminlist: Optional[Path] = None
     banlist: Optional[Path] = None
     whitelist: Optional[Path] = None
+    console_log: Optional[Path] = None
 
 
 class StartupBuilder:
@@ -113,6 +114,9 @@ class RuntimeStartupBuilder(StartupBuilder):
 
         if config.whitelist and config.whitelist.exists():
             self._args.extend([f"--server-whitelist={config.whitelist}", "--use-server-whitelist"])
+
+        if config.console_log is not None:
+            self._args.append(f"--console-log={config.console_log}")
 
         for extension in self._extensions:
             extension(self)

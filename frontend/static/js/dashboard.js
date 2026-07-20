@@ -1,5 +1,18 @@
         const logsOutput = document.getElementById('logs-output');
-        let logsAutoScroll = true;
+        const logsAutoScrollBtn = document.getElementById('logs-auto-scroll');
+        let logViewer = null;
+
+        if (logsOutput) {
+            logViewer = new LogViewer(logsOutput, {
+                endpoint: '/logs/data',
+                onAutoScrollChange: function (enabled) {
+                    if (logsAutoScrollBtn) {
+                        logsAutoScrollBtn.classList.toggle('active', enabled);
+                    }
+                },
+            });
+            window.logViewer = logViewer;
+        }
 
         function formatInstallStatus(status) {
             if (!status) return '';
@@ -33,26 +46,6 @@
                 .replace(/[\s-]+/g, '_');
             const key = known[normalized] || 'status.state.unknown';
             return t(key);
-        }
-
-        async function fetchLogs() {
-            if (!logsOutput) {
-                return;
-            }
-
-            try {
-                const response = await fetch('/logs/data');
-                if (!response.ok) {
-                    return;
-                }
-                const data = await response.json();
-                logsOutput.textContent = data.logs || '';
-                if (logsAutoScroll) {
-                    logsOutput.scrollTop = logsOutput.scrollHeight;
-                }
-            } catch (err) {
-                // ignore; keep current logs
-            }
         }
 
         async function fetchStatus() {
@@ -239,9 +232,8 @@
             if (stopForm) stopForm.classList.toggle('visible', status === 'running');
         }
 
-        if (logsOutput) {
-            fetchLogs();
-            setInterval(fetchLogs, 2000);
+        if (logViewer) {
+            logViewer.start(2000);
         }
 
         renderHeroActions();
@@ -251,11 +243,9 @@
         fetchMetrics();
         setInterval(fetchMetrics, 2000);
 
-        const logsAutoScrollBtn = document.getElementById('logs-auto-scroll');
-        if (logsAutoScrollBtn) {
+        if (logsAutoScrollBtn && logViewer) {
             logsAutoScrollBtn.addEventListener('click', () => {
-                logsAutoScroll = !logsAutoScroll;
-                logsAutoScrollBtn.classList.toggle('active', logsAutoScroll);
+                logViewer.setAutoScroll(!logViewer.autoScroll);
             });
         }
 
@@ -316,14 +306,29 @@
             });
         }
 
+        function showStartupWarning(messages) {
+            const warningEl = document.getElementById('startup-warning');
+            if (!warningEl) return;
+            warningEl.innerHTML = '';
+            messages.forEach((message) => {
+                const item = document.createElement('div');
+                item.className = 'startup-warning-item';
+                item.textContent = message;
+                warningEl.appendChild(item);
+            });
+            warningEl.style.display = messages.length ? 'block' : 'none';
+        }
+
         async function validateStartup(e) {
             try {
                 const res = await fetch('/api/validate-startup', { method: 'POST' });
                 if (!res.ok) return;
                 const data = await res.json();
+                const warnings = (data.warnings || []).map((w) => w.message);
+                showStartupWarning(warnings);
                 if (!data.valid && data.errors && data.errors.length) {
-                    const messages = data.errors.map((err) => err.message).join('\n');
-                    alert(messages);
+                    const messages = data.errors.map((err) => err.message);
+                    showStartupWarning(warnings.concat(messages));
                     if (e) e.preventDefault();
                 }
             } catch (err) {

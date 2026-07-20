@@ -22,6 +22,7 @@ from backend.routes.api_routes import register_api_routes
 from backend.routes.rcon_routes import register_rcon_routes
 from backend.routes.access_control_routes import register_access_control_routes
 from backend.version import APP_VERSION
+from backend.services.log_manager import get_log_manager
 
 
 def create_app():
@@ -37,6 +38,8 @@ def create_app():
     register_api_routes(app)
     register_rcon_routes(app)
     register_access_control_routes(app)
+
+    get_log_manager().migrate_existing_installation()
 
     return app
 

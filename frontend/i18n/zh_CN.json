@@ -66,7 +66,7 @@
   "action.install": "安装服务器",
   "startup_preview.modal_title": "启动命令预览",
   "startup_preview.subtitle": "由 Runtime Startup Builder 生成的命令",
-  "startup_preview.show": "显示启动命令",
+  "startup_preview.show": "命令",
   "startup_preview.copy": "复制到剪贴板",
   "startup_preview.copied": "已复制！",
   "saves.create_title": "创建新世界",

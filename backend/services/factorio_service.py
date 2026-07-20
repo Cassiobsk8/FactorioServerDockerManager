@@ -13,6 +13,7 @@ import time
 import urllib.parse
 import urllib.request
 import zipfile
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
@@ -22,12 +23,10 @@ from backend.config import (
     DEFAULT_INSTALL_ARCHIVE,
     DEFAULT_INSTALL_URL,
     INSTALL_DIR,
-    INSTALL_LOG_PATH,
     INSTALL_PROGRESS_PATH,
     LOG_DIR,
     PID_PATH,
     SAVE_DIR,
-    SERVER_LOG_PATH,
     SERVER_SETTINGS_DIR,
     SERVER_SETTINGS_EXAMPLE_PATH,
     SERVER_SETTINGS_PATH,
@@ -35,6 +34,8 @@ from backend.config import (
     BANLIST_PATH,
     WHITELIST_PATH,
 )
+from backend.services.log_manager import get_log_manager
+from backend.services.runtime_session import get_runtime_session
 from backend.services.save_service import load_active_save
 from backend.services.settings_service import load_app_settings
 from backend.services.startup_builder import RuntimeStartupBuilder, StartupConfiguration
@@ -67,22 +68,32 @@ class FactorioService:
         if pid is not None and _is_process_running(pid):
             return "already running"
 
+        log_manager = get_log_manager()
+        log_manager.ensure()
+        log_manager.append_runtime(
+            f"Starting factorio server (pid pending) {datetime.now(timezone.utc).isoformat()}"
+        )
+
         cmd = _factorio_command()
         logger.info("Starting factorio server with cmd: %s", cmd)
-        log_file = _get_server_log_file()
-        log_file.parent.mkdir(parents=True, exist_ok=True)
-        log_handle = log_file.open("ab")
 
-        process = subprocess.Popen(
-            cmd,
-            cwd=str(INSTALL_DIR),
-            stdin=subprocess.DEVNULL,
-            stdout=log_handle,
-            stderr=subprocess.STDOUT,
-            close_fds=True,
-        )
-        log_handle.close()
+        log_handle = log_manager.server_log.open("ab")
+        try:
+            process = subprocess.Popen(
+                cmd,
+                cwd=str(INSTALL_DIR),
+                stdin=subprocess.DEVNULL,
+                stdout=log_handle,
+                stderr=subprocess.STDOUT,
+                close_fds=True,
+            )
+        finally:
+            log_handle.close()
         _write_pid(process.pid)
+        get_runtime_session().start(process.pid)
+        log_manager.append_runtime(
+            f"Factorio started (pid={process.pid}) {datetime.now(timezone.utc).isoformat()}"
+        )
         logger.info("Factorio started (pid=%s)", process.pid)
         return "started"
 
@@ -103,6 +114,7 @@ class FactorioService:
                 time.sleep(0.1)
 
         _clear_pid()
+        get_runtime_session().stop()
         logger.info("Factorio stopped (pid=%s)", pid)
         return "stopped"
 
@@ -330,29 +342,15 @@ def is_server_installed() -> bool:
 
 
 def _get_server_log_file() -> Path:
-    LOG_DIR.mkdir(parents=True, exist_ok=True)
-    return SERVER_LOG_PATH
+    return get_log_manager().server_log
 
 
 def _get_install_log_file() -> Path:
-    LOG_DIR.mkdir(parents=True, exist_ok=True)
-    return INSTALL_LOG_PATH
+    return get_log_manager().install_log
 
 
 def _get_factorio_generated_log_file() -> Path:
-    log_file = _get_server_log_file()
-    if log_file.exists():
-        return log_file
-
-    for candidate in [
-        INSTALL_DIR / "factorio-current.log",
-        INSTALL_DIR / "factorio-previous.log",
-        INSTALL_DIR / "logs" / "factorio-current.log",
-    ]:
-        if candidate.exists():
-            return candidate
-
-    return log_file
+    return get_log_manager().server_log
 
 
 def _get_install_progress_file() -> Path:
@@ -427,55 +425,23 @@ def get_logs() -> str:
     if not is_server_installed():
         return "Servidor não instalado."
 
-    if _install_in_progress():
-        log_file = _get_install_log_file()
-    else:
-        log_file = _get_server_log_file()
-
-    if log_file.exists():
-        return log_file.read_text(encoding="utf-8", errors="replace")
-
-    log_file = _get_factorio_generated_log_file()
-    if log_file.exists():
-        return log_file.read_text(encoding="utf-8", errors="replace")
-
-    return ""
+    return get_log_manager().read_active_log(install_in_progress=_install_in_progress())
 
 
 def clear_logs() -> None:
-    if _install_in_progress():
-        log_file = _get_install_log_file()
-    else:
-        log_file = _get_server_log_file()
-
-    if log_file.exists():
-        log_file.write_text("", encoding="utf-8")
-
-    generated_log_file = _get_factorio_generated_log_file()
-    if generated_log_file.exists() and generated_log_file != log_file:
-        generated_log_file.write_text("", encoding="utf-8")
+    get_log_manager().clear_active_log(install_in_progress=_install_in_progress())
 
 
 def clear_install_logs() -> None:
-    log_file = _get_install_log_file()
-    if log_file.exists():
-        log_file.write_text("", encoding="utf-8")
+    get_log_manager().clear_install_log()
 
 
 def begin_install_logging() -> logging.Handler:
-    log_file = _get_install_log_file()
-    log_file.parent.mkdir(parents=True, exist_ok=True)
-    handler = logging.FileHandler(log_file, encoding="utf-8")
-    handler.setFormatter(
-        logging.Formatter("%(asctime)s %(levelname)s %(name)s: %(message)s")
-    )
-    logging.getLogger().addHandler(handler)
-    return handler
+    return get_log_manager().install_logging_handler()
 
 
 def end_install_logging(handler: logging.Handler) -> None:
-    logging.getLogger().removeHandler(handler)
-    handler.close()
+    get_log_manager().remove_logging_handler(handler)
 
 
 def clear_installation() -> None:
@@ -492,6 +458,7 @@ def clear_installation() -> None:
             time.sleep(0.1)
 
     _clear_pid()
+    get_runtime_session().stop()
 
     if INSTALL_DIR.exists():
         try:
@@ -499,13 +466,11 @@ def clear_installation() -> None:
         except OSError as exc:
             log_error(f"Clear installation failed while removing install directory: {exc}")
 
-    if LOG_DIR.exists():
-        try:
-            shutil.rmtree(LOG_DIR)
-        except OSError as exc:
-            log_error(f"Clear installation failed while removing log directory: {exc}")
+    try:
+        get_log_manager().clear_all()
+    except OSError as exc:
+        log_error(f"Clear installation failed while clearing logs: {exc}")
 
-    clear_logs()
     clear_install_progress()
 
 
@@ -543,16 +508,31 @@ def save_server_config(
     return current
 
 
+class ServerSettingsExampleMissingError(RuntimeError):
+    """Raised when no server-settings.json exists and the official example is unavailable."""
+
+    def __init__(self, message: str) -> None:
+        super().__init__(message)
+
+
+def _ensure_example_available() -> Path:
+    if not SERVER_SETTINGS_EXAMPLE_PATH.exists():
+        raise ServerSettingsExampleMissingError(
+            "Official server-settings.example.json not found at "
+            f"{SERVER_SETTINGS_EXAMPLE_PATH}. Cannot create a default server-settings.json. "
+            "Reinstall the Factorio server or restore the example file."
+        )
+    return SERVER_SETTINGS_EXAMPLE_PATH
+
+
 def load_server_settings(config_path: Optional[Union[str, Path]] = None) -> Dict[str, Any]:
     path = Path(config_path or SERVER_SETTINGS_PATH)
     path.parent.mkdir(parents=True, exist_ok=True)
 
     if not path.exists():
-        if SERVER_SETTINGS_EXAMPLE_PATH.exists():
-            shutil.copy(SERVER_SETTINGS_EXAMPLE_PATH, path)
-            logger.info("Copied example server-settings to %s", path)
-        else:
-            path.write_text(json.dumps({}, indent=2), encoding="utf-8")
+        example = _ensure_example_available()
+        shutil.copy(example, path)
+        logger.info("Copied example server-settings to %s", path)
 
     try:
         raw = path.read_text(encoding="utf-8")
@@ -560,40 +540,42 @@ def load_server_settings(config_path: Optional[Union[str, Path]] = None) -> Dict
         raw = ""
 
     if not raw or raw.strip() == "":
-        if SERVER_SETTINGS_EXAMPLE_PATH.exists():
-            shutil.copy(SERVER_SETTINGS_EXAMPLE_PATH, path)
-            logger.info("Replaced empty server-settings with example at %s", path)
-            try:
-                return json.loads(path.read_text(encoding="utf-8"))
-            except json.JSONDecodeError:
-                return {}
-        else:
-            return {}
+        example = _ensure_example_available()
+        shutil.copy(example, path)
+        logger.info("Replaced empty server-settings with example at %s", path)
+        try:
+            return json.loads(path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            raise ServerSettingsExampleMissingError(
+                f"Example server-settings at {example} is not valid JSON."
+            )
 
     try:
         parsed = json.loads(raw)
     except json.JSONDecodeError:
-        if SERVER_SETTINGS_EXAMPLE_PATH.exists():
-            shutil.copy(SERVER_SETTINGS_EXAMPLE_PATH, path)
-            logger.warning("Invalid server-settings JSON; replaced with example at %s", path)
-            try:
-                return json.loads(path.read_text(encoding="utf-8"))
-            except json.JSONDecodeError:
-                return {}
-        return {}
+        example = _ensure_example_available()
+        shutil.copy(example, path)
+        logger.warning("Invalid server-settings JSON; replaced with example at %s", path)
+        try:
+            return json.loads(path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            raise ServerSettingsExampleMissingError(
+                f"Example server-settings at {example} is not valid JSON."
+            )
 
     if isinstance(parsed, dict):
         keys = list(parsed.keys())
         only_comments = bool(keys) and all(isinstance(k, str) and k.startswith("_comment_") for k in keys)
         if not keys or only_comments:
-            if SERVER_SETTINGS_EXAMPLE_PATH.exists():
-                shutil.copy(SERVER_SETTINGS_EXAMPLE_PATH, path)
-                logger.info("Server-settings was empty or comments-only; replaced with example at %s", path)
-                try:
-                    return json.loads(path.read_text(encoding="utf-8"))
-                except json.JSONDecodeError:
-                    return {}
-            return {}
+            example = _ensure_example_available()
+            shutil.copy(example, path)
+            logger.info("Server-settings was empty or comments-only; replaced with example at %s", path)
+            try:
+                return json.loads(path.read_text(encoding="utf-8"))
+            except json.JSONDecodeError:
+                raise ServerSettingsExampleMissingError(
+                    f"Example server-settings at {example} is not valid JSON."
+                )
 
     return parsed
 
@@ -762,6 +744,7 @@ def _factorio_command(install_dir: Optional[Path] = None) -> List[str]:
         adminlist=ADMINLIST_PATH if ADMINLIST_PATH.exists() else None,
         banlist=BANLIST_PATH if BANLIST_PATH.exists() else None,
         whitelist=WHITELIST_PATH if WHITELIST_PATH.exists() else None,
+        console_log=get_log_manager().server_log,
     )
 
     builder = RuntimeStartupBuilder(config)
@@ -769,7 +752,4 @@ def _factorio_command(install_dir: Optional[Path] = None) -> List[str]:
 
 
 def log_error(message: str) -> None:
-    log_file = _get_server_log_file()
-    log_file.parent.mkdir(parents=True, exist_ok=True)
-    with log_file.open("a", encoding="utf-8") as handler:
-        handler.write(message + "\n")
+    get_log_manager().append_server(message)

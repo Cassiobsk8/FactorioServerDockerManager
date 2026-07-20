@@ -10,7 +10,6 @@ from backend.config import (
     DEFAULT_INSTALL_URL,
     INSTALL_DIR,
     INSTALL_PROGRESS_PATH,
-    LOG_DIR,
     PID_PATH,
     SAVE_DIR,
     SERVER_SETTINGS_DIR,
@@ -20,8 +19,6 @@ from backend.config import (
 from backend.services.factorio_service import (
     _clear_pid,
     _extract_archive,
-    _get_factorio_generated_log_file,
-    _get_server_log_file,
     _is_process_running,
     _read_pid,
     _write_pid,
@@ -42,6 +39,7 @@ from backend.services.factorio_service import (
     update_server_settings_from_form,
     build_server_settings_fields,
 )
+from backend.services.log_manager import get_log_manager
 from backend.services.startup_builder import RuntimeStartupBuilder
 from backend.services.save_service import save_uploaded_file as _save_uploaded_file, get_save_directory as _get_save_directory, list_save_files as _list_save_files
 from backend.services.factorio_service import FactorioService
@@ -71,7 +69,6 @@ __all__ = [
     "BASE_DIR",
     "CONFIG_PATH",
     "INSTALL_DIR",
-    "LOG_DIR",
     "PID_PATH",
     "SAVE_DIR",
     "SERVER_SETTINGS_DIR",
@@ -81,6 +78,7 @@ __all__ = [
     "DEFAULT_CONFIG",
     "DEFAULT_INSTALL_ARCHIVE",
     "DEFAULT_INSTALL_URL",
+    "get_log_manager",
     "get_logs",
     "get_install_progress",
     "get_save_directory",
@@ -104,8 +102,6 @@ __all__ = [
     "_clear_pid",
     "_is_process_running",
     "_factorio_command",
-    "_get_server_log_file",
-    "_get_factorio_generated_log_file",
     "_extract_archive",
     "RuntimeStartupBuilder",
 ]

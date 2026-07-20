@@ -12,7 +12,6 @@ from backend.config import (
     DEFAULT_INSTALL_URL,
     INSTALL_DIR,
     INSTALL_PROGRESS_PATH,
-    LOG_DIR,
     PID_PATH,
     SERVER_SETTINGS_PATH,
 )
@@ -41,6 +40,9 @@ from backend.services.settings_service import load_app_settings
 from backend.services.runtime_state_service import clear_pending, mark_pending
 from backend.version import APP_VERSION, RELEASE_NAME, BUILD_DATE
 from flask import Blueprint, jsonify, redirect, render_template, request
+
+# TEMPORARY DIAGNOSTIC (H7.2A): instrument the live-log API pipeline.
+from backend.services.log_manager import get_log_manager
 
 logger = logging.getLogger("fsm.routes.server")
 
@@ -204,7 +206,16 @@ def update_config():
 
 @server_bp.route("/logs/data")
 def logs_data():
-    return jsonify({"logs": get_logs()})
+    # TEMPORARY DIAGNOSTIC (H7.2A)
+    srv_log = get_log_manager().server_log
+    size = srv_log.stat().st_size if srv_log.exists() else 0
+    mtime = srv_log.stat().st_mtime if srv_log.exists() else 0
+    logs = get_logs()
+    returned = len(logs.encode("utf-8"))
+    logger.debug(
+        "[LOG API] size=%s mtime=%s returned=%s", size, mtime, returned
+    )
+    return jsonify({"logs": logs})
 
 
 @server_bp.route("/logs/clear", methods=["POST"])

@@ -456,8 +456,51 @@ select {
     gap: var(--spacing-sm);
 }
 
-.startup-preview-toggle {
-    color: var(--accent);
+.secondary-button {
+    padding: var(--font-md) var(--font-lg);
+    border: 1px solid rgba(148, 163, 184, 0.28);
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--text);
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+    transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.secondary-button:hover {
+    background: rgba(148, 163, 184, 0.1);
+    border-color: rgba(148, 163, 184, 0.45);
+}
+
+.secondary-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(148, 163, 184, 0.28);
+}
+
+.server-hero .action-group .secondary-button {
+    min-width: 140px;
+    max-width: 160px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.startup-warning {
+    margin-top: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--warning-border, #f59e0b);
+    border-radius: var(--radius-md, 8px);
+    background: var(--warning-bg, rgba(245, 158, 11, 0.12));
+    color: var(--warning-text, #fbbf24);
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+.startup-warning-item + .startup-warning-item {
+    margin-top: var(--spacing-xs);
 }
 
 .log-card .panel-header {

@@ -8,7 +8,8 @@ import time
 from pathlib import Path
 from typing import Optional
 
-from backend.config import BASE_DIR, INSTALL_DIR, LOG_DIR, PID_PATH, SAVE_DIR
+from backend.config import BASE_DIR, INSTALL_DIR, PID_PATH, SAVE_DIR
+from backend.services.runtime_session import get_runtime_session
 
 
 def get_process_metrics(pid: Optional[int] = None) -> dict:
@@ -35,14 +36,7 @@ def get_process_metrics(pid: Optional[int] = None) -> dict:
             raw = stat_path.read_text(encoding="utf-8").split()
             utime = int(raw[13])
             stime = int(raw[14])
-            starttime = int(raw[21])
             clk_tck = os.sysconf(os.sysconf_names["SC_CLK_TCK"])
-
-            with open("/proc/uptime", encoding="utf-8") as f:
-                system_uptime = float(f.read().split()[0])
-
-            process_start = system_uptime - (starttime / clk_tck)
-            metrics["uptime_seconds"] = max(0, int(system_uptime - process_start))
 
             try:
                 with open(f"/proc/{pid}/stat", encoding="utf-8") as f1:
@@ -63,6 +57,8 @@ def get_process_metrics(pid: Optional[int] = None) -> dict:
                 pass
         except Exception:
             pass
+
+    metrics["uptime_seconds"] = get_runtime_session().get_uptime()
 
     if status_path.exists():
         try:

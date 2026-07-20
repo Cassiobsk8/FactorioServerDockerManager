@@ -66,7 +66,7 @@
   "action.install": "Instalar servidor",
   "startup_preview.modal_title": "Vista previa del comando de inicio",
   "startup_preview.subtitle": "Comando generado por Runtime Startup Builder",
-  "startup_preview.show": "Mostrar comando de inicio",
+  "startup_preview.show": "Comando",
   "startup_preview.copy": "Copiar al portapapeles",
   "startup_preview.copied": "¡Copiado!",
   "saves.create_title": "Crear Nuevo Mundo",

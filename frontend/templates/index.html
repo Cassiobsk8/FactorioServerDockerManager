@@ -170,6 +170,7 @@
                                 <form action="/control/start" method="post" id="action-start" class="hero-action-form">
                                     <button type="submit" data-i18n="action.start">Start</button>
                                 </form>
+                                <button type="button" class="secondary-button startup-preview-show" id="startup-preview-show" data-i18n="startup_preview.show">Command</button>
                                 <form action="/control/restart" method="post" id="action-restart" class="hero-action-form">
                                     <button type="submit" data-i18n="action.restart">Restart</button>
                                 </form>
@@ -182,7 +183,7 @@
                                     <span class="hero-loading-dot"></span>
                                 </div>
                             </div>
-                            <button type="button" class="text-button startup-preview-toggle" id="startup-preview-show" data-i18n="startup_preview.show">Show startup command</button>
+                            <div class="startup-warning" id="startup-warning" style="display:none;" role="alert"></div>
                         </div>
                     </aside>
 
@@ -740,6 +741,7 @@
     
     <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
     <script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/log_viewer.js') }}"></script>
     <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
     <script src="{{ url_for('static', filename='js/saves.js') }}"></script>
     <script src="{{ url_for('static', filename='js/config.js') }}"></script>

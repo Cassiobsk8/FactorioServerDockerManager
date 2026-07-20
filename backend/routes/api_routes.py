@@ -27,6 +27,7 @@ from backend.services.metrics_service import get_factorio_version, get_process_m
 from backend.services.save_service import load_active_save, get_save_info
 from backend.services.settings_service import load_app_settings, save_app_settings
 from backend.services.runtime_state_service import get_runtime_state, clear_pending, mark_pending, remove_pending
+from backend.services.runtime_session import get_runtime_session
 from backend.services.startup_validation_service import validate_startup
 from backend.version import APP_VERSION, RELEASE_NAME, BUILD_DATE
 from flask import Blueprint, jsonify, request
@@ -51,11 +52,13 @@ def api_status():
     metrics = get_process_metrics(pid)
     install_progress = get_install_progress()
     runtime_state = get_runtime_state()
+    runtime_session = get_runtime_session()
     factorio_services = get_factorio_services_status()
     return jsonify(
         {
             "status": factorio_service.get_status(),
             "runtime_state": runtime_state,
+            "runtime_session": runtime_session.to_dict(),
             "factorio_account": factorio_services,
             "server": {
                 "install_status": (

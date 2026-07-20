@@ -32,6 +32,7 @@ def test_valid_startup(validation_paths, monkeypatch):
     result = sv.validate_startup()
     assert result["valid"] is True
     assert result["errors"] == []
+    assert result["warnings"] == []
 
 
 def test_no_active_save(validation_paths):
@@ -54,7 +55,7 @@ def test_server_settings_missing(validation_paths, monkeypatch):
     assert any(e["code"] == "server_settings_missing" for e in result["errors"])
 
 
-def test_rcon_password_missing(validation_paths):
+def test_rcon_password_missing_is_warning_only(validation_paths):
     (validation_paths / "server-settings.json").write_text("{}")
     save_service.ACTIVE_SAVE_PATH.write_text(
         '{"active_save": "test.zip"}', encoding="utf-8"
@@ -63,8 +64,24 @@ def test_rcon_password_missing(validation_paths):
     save_dir.mkdir(parents=True, exist_ok=True)
     (save_dir / "test.zip").write_text("")
     result = sv.validate_startup()
-    assert result["valid"] is False
-    assert any(e["code"] == "rcon_password_missing" for e in result["errors"])
+    assert result["valid"] is True
+    assert result["errors"] == []
+    assert any(w["code"] == "rcon_password_missing" for w in result["warnings"])
+
+
+def test_rcon_password_configured_has_no_warning(validation_paths, monkeypatch):
+    monkeypatch.setattr(ss, "load_app_settings", lambda: {"rcon_password": "secret"})
+    (validation_paths / "server-settings.json").write_text("{}")
+    save_service.ACTIVE_SAVE_PATH.write_text(
+        '{"active_save": "test.zip"}', encoding="utf-8"
+    )
+    save_dir = validation_paths / "saves"
+    save_dir.mkdir(parents=True, exist_ok=True)
+    (save_dir / "test.zip").write_text("")
+    result = sv.validate_startup()
+    assert result["valid"] is True
+    assert result["warnings"] == []
+
 
 
 def test_whitelist_invalid_json(validation_paths, monkeypatch):

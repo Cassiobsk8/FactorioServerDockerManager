@@ -1,5 +1,103 @@
 # Changelog
 
+## 2.8.7 - LogViewer ReferenceError Fix (Hotfix H7.2B)
+
+Status: Resolved
+
+### Root Cause
+
+A instrumentação em `_apply()`/`update()` (`frontend/static/js/log_viewer.js`)
+identificou objetivamente a causa raiz: `ReferenceError: strSlice is not defined`
+lançado dentro de `_computeNewContent()` em todo poll com crescimento de log.
+
+A implementação do helper de fatiamento era `strSliceImpl(...)`, mas os dois
+pontos de chamada em `_computeNewContent()` usavam `strSlice(...)` — um erro de
+rename: o nome da chamada não foi atualizado para a implementação existente.
+Como `_computeNewContent()` rodava antes de `this._lastText = nextText`, o erro
+impedia a atualização de `_lastText` e o DOM não era alterado; o polling parava
+de refletir qualquer novo conteúdo após o primeiro append/edição divergente.
+
+### Changed
+
+- `frontend/static/js/log_viewer.js` — renomeadas as duas chamadas em
+  `_computeNewContent()` de `strSlice(...)` para `strSliceImpl(...)`, casando
+  com a única implementação existente. Nome consistente em todo o arquivo;
+  nenhum wrapper ou função duplicada criada.
+- `backend/tests/test_log_viewer.py` — adicionada regressão
+  `test_compute_new_content_uses_defined_symbols` garantindo que todo
+  `strSlice(` é `strSliceImpl(` (sem símbolo inexistente) e que os caminhos
+  de append/edição divergente produzem o `diff` correto e atualizam
+  `this._lastText` + DOM.
+
+### Validation
+
+- Backend: 254 passed.
+- LogViewer: 17 passed (inclui a nova regressão H7.2B).
+- Esperado pós-correção confirmado pela instrumentação: nenhum `ReferenceError`;
+  `this._lastText` passa de `0` para `nextText.length`; `DOM BEFORE` →
+  `DOM AFTER` indica mudança.
+
+## 2.8.7 - Live Log Polling Investigation (Hotfix H7.2)
+
+Status: Resolved
+
+### Root Cause
+
+O Live Log parou de atualizar continuamente após o H7.1 porque o método
+`_apply` de `frontend/static/js/log_viewer.js` acessava `diff.appended.length`
+mesmo no caminho de *full replace* (`diff.fullReplace === true`), onde
+`diff.appended` é `undefined`. Isso lançava um `TypeError` silencioso dentro da
+cadeia de promises do `fetch`, que era engolido por `_tickCatch`. Como o erro
+impedia `this._lastText = nextText` de executar, o estado interno ficava
+"travado" no conteúdo antigo: todo poll seguinte recomputava contra o
+`_lastText` obsoleto, repetia o *full replace* e relançava o erro — o polling
+morria permanentemente após a primeira atualização divergente (linha reescrita
+in-place, rotação, etc.). O primeiro carregamento funcionava porque é tratado
+pelo branch `_lastText === ''`.
+
+### Changed
+
+- `frontend/static/js/log_viewer.js` — `_apply` agora faz branch apenas em
+  `diff.fullReplace` e só referencia `diff.appended` dentro do branch
+  `else` (onde ele sempre existe). `this._lastText` é atualizado em todos os
+  caminhos, então o polling nunca mais "trava".
+- Backend confirmado íntegro: `LogManager.read_server_log()` / `read_active_log()`
+  relê o arquivo físico a cada chamada (`_read` → `path.read_text()`), sem cache
+  em memória e sem file handles persistentes. Endpoints `/logs/data` e
+  `/api/logs` continuam sendo chamados periodicamente via `setInterval`.
+
+### Validation
+
+- `backend/tests/test_log_viewer.py`: harna JS→Python corrigido para a versão
+  atual do `log_viewer.js`; adicionados testes de regressão para atualização
+  contínua após update divergente, crescimento do log, no-op entre polls e
+  sessão longa (150 ticks) sem perda de linhas.
+- `backend/tests/test_log_manager.py`: adicionados testes confirmando releitura
+  do arquivo físico a cada `read_server_log()` / `read_active_log()`.
+- Backend: 253 passed.
+
+## 2.8.7 - Official Log Routing (Hotfix H7)
+
+Status: Resolved
+
+### Added
+
+- `backend/services/log_manager.py` — `LogManager` centraliza todos os arquivos de log (install, server, crash, runtime). Aplicação acessa logs apenas via `LogManager` / `get_log_manager()`.
+- Servidor iniciado com o parâmetro oficial `--console-log=<logs/server.log>` como origem principal dos logs (`StartupConfiguration.console_log`, emitido por `RuntimeStartupBuilder`).
+- `LogManager.migrate_existing_installation()` migra instalações existentes preservando `logs/server.log` e importando `factorio-current.log` / `factorio-previous.log` (sem perda de logs antigos).
+- `LogManager.rotate()` prepara rotação futura por tamanho (contrato de rotação documentado).
+
+### Changed
+
+- `factorio_service.start_server()` não redireciona mais stdout/stderr; o Factorio escreve diretamente via `--console-log`.
+- `get_logs()`, `clear_logs()`, `log_error()`, `begin_install_logging()`/`end_install_logging()` e `clear_installation()` roteados pelo `LogManager`.
+- `config.py`: novos caminhos `crash.log` e `runtime.log`; nomes de log extraídos para constantes.
+- `backend/version.py`: 2.8.0 → 2.8.7 ("Official Log Routing").
+
+### Validation
+
+- Testes de `LogManager` (17): criação automática, leitura, append, clear por fase, rotação e compatibilidade/migração. Backend: 219 passed.
+
 ## 2.8.1 - Access Control Freeze
 
 Status: Module Frozen (Tarefa 5/5)

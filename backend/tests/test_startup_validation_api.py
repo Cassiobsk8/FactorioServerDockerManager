@@ -31,3 +31,15 @@ def test_api_validate_startup_handles_exception():
         client = app.test_client()
         response = client.post("/api/validate-startup")
         assert response.status_code == 500
+
+
+def test_api_validate_startup_returns_warnings_key():
+    with patch(
+        "backend.routes.api_routes.validate_startup",
+        return_value={"valid": True, "errors": [], "warnings": [{"code": "rcon_password_missing", "message": "RCON disabled"}]},
+    ):
+        client = app.test_client()
+        response = client.post("/api/validate-startup")
+        assert response.status_code == 200
+        payload = response.get_json()
+        assert payload["warnings"] == [{"code": "rcon_password_missing", "message": "RCON disabled"}]

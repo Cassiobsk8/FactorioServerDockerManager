@@ -1,0 +1,31 @@
+{
+    "_comment_": "This is an example of the server-settings.json file. Use it as a base for your own configuration.",
+    "name": "Factorio Server",
+    "description": "A Factorio server managed by Factorio Server Docker Manager.",
+    "tags": ["game", "factorio"],
+    "max_players": 0,
+    "visibility": {
+        "public": true,
+        "lan": true
+    },
+    "username": "",
+    "password": "",
+    "token": "",
+    "game_password": "",
+    "require_user_verification": true,
+    "max_upload_in_kilobytes_per_second": 0,
+    "minimum_latency_in_ticks": 0,
+    "ignore_player_limit_for_returning_players": false,
+    "allow_commands": "admins-only",
+    "autosave_interval": 10,
+    "autosave_slots": 20,
+    "afk_autokick_interval": 0,
+    "auto_pause": true,
+    "only_admins_can_pause_the_game": true,
+    "autosave_only_on_server": true,
+    "non_blocking_saving": false,
+    "minimum_segment_size": 25,
+    "minimum_segment_size_peer_count": 20,
+    "ignore_limit_for_returning_players": false,
+    "disable_blueprint_library_storage": false
+}

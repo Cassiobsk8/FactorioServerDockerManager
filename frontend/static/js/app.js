@@ -89,8 +89,12 @@
 
             const logsEl = document.getElementById('logs-output');
             if (logsEl) {
-                logsEl.textContent = '';
-                logsEl.scrollTop = 0;
+                if (window.logViewer) {
+                    window.logViewer.reset('');
+                } else {
+                    logsEl.textContent = '';
+                    logsEl.scrollTop = 0;
+                }
             }
 
             const response = await fetch('/install/start', {
