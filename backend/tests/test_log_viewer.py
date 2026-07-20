@@ -3,6 +3,8 @@ from types import SimpleNamespace
 import textwrap
 from pathlib import Path
 
+import pytest
+
 LOG_VIEWER_PATH = (
     Path(__file__).resolve().parent.parent.parent
     / "frontend"
@@ -325,7 +327,24 @@ class FakeWindow(dict):
         return self._selection
 
 
-def _make_viewer(selection=None, initial_text=""):
+class FakeNavigator:
+    def __init__(self, clipboard=None):
+        self.clipboard = clipboard
+
+
+class FakeClipboard:
+    def __init__(self, succeed=True):
+        self.succeed = succeed
+        self.written = None
+
+    def writeText(self, text):
+        if not self.succeed:
+            raise OSError('clipboard unavailable')
+        self.written = text
+        return None  # JS returns undefined on success, Python None works similarly
+
+
+def _make_viewer(selection=None, initial_text="", clipboard=None):
     window = FakeWindow(selection=selection)
     window["document"] = type(
         "Doc", (), {"createTextNode": staticmethod(lambda t: FakeTextNode(t))}
@@ -335,6 +354,7 @@ def _make_viewer(selection=None, initial_text=""):
         "window": window,
         "document": window["document"],
         "SimpleNamespace": __import__("types").SimpleNamespace,
+        "navigator": FakeNavigator(clipboard=clipboard),
     }
     exec(compile(code, str(LOG_VIEWER_PATH), "exec"), ns)
     LogViewer = ns["LogViewer"]
@@ -510,6 +530,7 @@ def test_logs_output_element_present():
     html = TEMPLATE_PATH.read_text(encoding="utf-8")
     assert 'id="logs-output"' in html
     assert 'id="logs-auto-scroll"' in html
+    assert 'id="logs-copy"' in html
 
 
 def test_log_viewer_css_class_exists():
@@ -546,4 +567,46 @@ def test_compute_new_content_uses_defined_symbols():
     viewer.update("aaa\nCHANGED\n")
     assert el.textContent == "aaa\nCHANGED\n"
     assert viewer._lastText == "aaa\nCHANGED\n"
+
+
+def test_copy_when_clipboard_available():
+    clipboard = FakeClipboard(succeed=True)
+    viewer, el = _make_viewer(initial_text="", clipboard=clipboard)
+    viewer._lastText = "line1\nline2\n"
+
+    result = viewer.copy()
+
+    assert result is None or (hasattr(result, '__await__') or hasattr(result, 'then'))
+    assert clipboard.written == "line1\nline2\n"
+
+
+def test_copy_when_clipboard_unavailable():
+    clipboard = FakeClipboard(succeed=False)
+    viewer, el = _make_viewer(initial_text="", clipboard=clipboard)
+    viewer._lastText = "line1\nline2\n"
+
+    with pytest.raises(OSError, match="clipboard unavailable"):
+        viewer.copy()
+
+
+def test_copy_empty_log():
+    clipboard = FakeClipboard(succeed=True)
+    viewer, el = _make_viewer(initial_text="", clipboard=clipboard)
+    viewer._lastText = ""
+
+    viewer.copy()
+
+    assert clipboard.written == ""
+
+
+def test_copy_large_log():
+    clipboard = FakeClipboard(succeed=True)
+    viewer, el = _make_viewer(initial_text="", clipboard=clipboard)
+    large_text = "\n".join(f"log line {i}" for i in range(10000)) + "\n"
+    viewer._lastText = large_text
+
+    viewer.copy()
+
+    assert clipboard.written == large_text
+    assert clipboard.written.count("\n") == 10000
 

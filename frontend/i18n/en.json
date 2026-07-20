@@ -30,6 +30,9 @@
   "logs.title": "Logs",
   "logs.clear": "Clear",
   "logs.auto_scroll": "Auto Scroll",
+  "logs.copy": "Copy Log",
+  "logs.copied": "Log copied.",
+  "logs.copy_failed": "Failed to copy log.",
   "status.server_status": "Server status",
   "status.install_status": "Install status",
   "status.active_save": "Active save",
@@ -312,6 +315,7 @@
   "world_builder.error.preview_failed": "Failed to generate preview",
   "world_builder.error.create_failed": "Failed to create world",
   "world_builder.error.create_exception": "Error creating world",
+  "world_builder.error.outdated_preview": "Update the preview before creating the world.",
   "world_builder.status.unavailable": "World Builder Preview unavailable.",
   "world_builder.status.unavailable_detail": "Factorio installation is incomplete."
 }

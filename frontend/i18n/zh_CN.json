@@ -30,6 +30,9 @@
   "logs.title": "日志",
   "logs.clear": "清除",
   "logs.auto_scroll": "自动滚动",
+  "logs.copy": "复制日志",
+  "logs.copied": "日志已复制。",
+  "logs.copy_failed": "复制日志失败。",
   "status.server_status": "服务器状态",
   "status.install_status": "安装状态",
   "status.active_save": "当前存档",
@@ -312,6 +315,7 @@
   "world_builder.error.preview_failed": "生成预览失败",
   "world_builder.error.create_failed": "创建世界失败",
   "world_builder.error.create_exception": "创建世界时出错",
+  "world_builder.error.outdated_preview": "创建世界前请先更新预览。",
   "world_builder.status.unavailable": "World Builder 预览不可用。",
   "world_builder.status.unavailable_detail": "Factorio 安装未完成。"
 }

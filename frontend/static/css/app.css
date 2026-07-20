@@ -2524,3 +2524,9 @@ pre {
     font-size: var(--font-sm);
     line-height: 1.4;
 }
+
+.world-builder-create-hint {
+    margin: var(--spacing-xs) 0 0;
+    color: #fbbf24;
+    font-size: var(--font-sm);
+}

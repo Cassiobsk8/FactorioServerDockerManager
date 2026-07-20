@@ -138,6 +138,12 @@ def test_world_builder_form_fields_exist():
     assert 'id="wb-create-world"' in html
 
 
+def test_world_builder_create_hint_exists():
+    html = _read_template()
+    assert 'id="wb-create-hint"' in html
+    assert 'world_builder.error.outdated_preview' in html
+
+
 def test_world_builder_status_banner_exists():
     html = _read_template()
     assert 'id="wb-status-banner"' in html
@@ -160,6 +166,7 @@ def test_world_builder_css_exists():
     assert ".world-builder-preview-image" in css
     assert ".world-builder-preview-card" in css
     assert ".world-builder-status-banner" in css
+    assert ".world-builder-create-hint" in css
 
 
 def test_world_builder_js_exists():
@@ -171,9 +178,13 @@ def test_world_builder_js_exists():
     assert "markPreviewOutdated" in js
     assert "generateRandomSeed" in js
     assert "checkWorldBuilderStatus" in js
+    assert "refreshPreviewStatus" in js
+    assert "fetchCurrentConfigHash" in js
+    assert "currentPreviewConfig" in js
     assert "/api/world-builder/preview" in js
     assert "/api/world-builder/create" in js
     assert "/api/world-builder/status" in js
+    assert "/api/world-builder/config-hash" in js
     assert "preview_url" in js
 
 
@@ -198,6 +209,7 @@ def test_world_builder_i18n_keys_exist():
         "world_builder.error.preview_failed",
         "world_builder.error.create_failed",
         "world_builder.error.create_exception",
+        "world_builder.error.outdated_preview",
         "world_builder.status.unavailable",
         "world_builder.status.unavailable_detail",
     }

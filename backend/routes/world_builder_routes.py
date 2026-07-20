@@ -10,6 +10,7 @@ from backend.services.world_builder_service import (
     list_planets,
     PREVIEWS_DIR,
     WorldConfig,
+    _compute_config_hash,
     validate_factorio_binary,
 )
 from flask import Blueprint, jsonify, request, send_from_directory
@@ -17,6 +18,25 @@ from flask import Blueprint, jsonify, request, send_from_directory
 logger = logging.getLogger("fsm.routes.world_builder")
 
 world_builder_bp = Blueprint("world_builder", __name__)
+
+
+@world_builder_bp.route("/api/world-builder/config-hash", methods=["POST"])
+def api_world_builder_config_hash():
+    try:
+        data = request.get_json(silent=True) or {}
+        config = WorldConfig(
+            world_name=data.get("world_name", ""),
+            seed=data.get("seed"),
+            random_seed=data.get("random_seed", True),
+            planet=data.get("planet", "nauvis"),
+            settings=data.get("settings", {}),
+            map_settings=data.get("map_settings", {}),
+        )
+        config_hash = _compute_config_hash(config)
+        return jsonify({"config_hash": config_hash})
+    except Exception as exc:
+        logger.exception("Failed to compute config hash")
+        return jsonify({"error": str(exc)}), 500
 
 
 @world_builder_bp.route("/api/world-builder/options")

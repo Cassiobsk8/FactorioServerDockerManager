@@ -126,6 +126,8 @@ class FactorioService:
         if is_server_installed():
             return "already installed"
 
+        get_log_manager().clear_all()
+
         if archive_path:
             if archive_path.startswith("http://") or archive_path.startswith("https://"):
                 archive = _download_archive(archive_path)

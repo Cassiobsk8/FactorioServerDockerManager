@@ -30,6 +30,9 @@
   "logs.title": "Registros",
   "logs.clear": "Limpiar",
   "logs.auto_scroll": "Desplazamiento automático",
+  "logs.copy": "Copiar Log",
+  "logs.copied": "Log copiado.",
+  "logs.copy_failed": "Fallo al copiar log.",
   "status.server_status": "Estado del servidor",
   "status.install_status": "Estado de instalación",
   "status.active_save": "Partida activa",
@@ -312,6 +315,7 @@
   "world_builder.error.preview_failed": "Error al generar vista previa",
   "world_builder.error.create_failed": "Error al crear mundo",
   "world_builder.error.create_exception": "Error creando mundo",
+  "world_builder.error.outdated_preview": "Actualiza la vista previa antes de crear el mundo.",
   "world_builder.status.unavailable": "Vista previa del World Builder no disponible.",
   "world_builder.status.unavailable_detail": "Instalación de Factorio incompleta."
 }

@@ -197,4 +197,43 @@ def test_status_returns_invalid_when_binary_missing(client, tmp_path, monkeypatc
     assert payload["valid"] is False
 
 
+def test_config_hash_returns_hash(client):
+    response = client.post(
+        "/api/world-builder/config-hash",
+        json={"world_name": "RouteWorld", "planet": "nauvis"},
+    )
+    assert response.status_code == 200
+    payload = response.get_json()
+    assert "config_hash" in payload
+    assert len(payload["config_hash"]) == 64
+
+
+def test_config_hash_changes_with_seed(client):
+    response1 = client.post(
+        "/api/world-builder/config-hash",
+        json={"world_name": "RouteWorld", "seed": "123", "random_seed": False, "planet": "nauvis"},
+    )
+    response2 = client.post(
+        "/api/world-builder/config-hash",
+        json={"world_name": "RouteWorld", "seed": "456", "random_seed": False, "planet": "nauvis"},
+    )
+    assert response1.get_json()["config_hash"] != response2.get_json()["config_hash"]
+
+
+def test_config_hash_consistent_with_preview_hash(client):
+    preview_response = client.post(
+        "/api/world-builder/preview",
+        json={"world_name": "RouteWorld", "seed": "123", "random_seed": False, "planet": "nauvis"},
+    )
+    preview_payload = preview_response.get_json()
+
+    hash_response = client.post(
+        "/api/world-builder/config-hash",
+        json={"world_name": "RouteWorld", "seed": "123", "random_seed": False, "planet": "nauvis"},
+    )
+    hash_payload = hash_response.get_json()
+
+    assert preview_payload["preview_hash"] == hash_payload["config_hash"]
+
+
 

@@ -432,3 +432,184 @@ def test_validate_installation_rejects_version_failure(tmp_path, monkeypatch):
 
     with pytest.raises(RuntimeError, match="--version failed"):
         validate_installation()
+
+
+def test_first_installation_starts_with_empty_logs(tmp_path, monkeypatch):
+    log_manager.reset_log_manager()
+    runtime_session.reset_runtime_session()
+    _clear_pid()
+    manager = log_manager.LogManager(log_dir=tmp_path / "logs")
+    monkeypatch.setattr("backend.services.factorio_service.get_log_manager", lambda: manager)
+
+    install_dir = tmp_path / "factorio"
+    monkeypatch.setattr(docker_manager, "INSTALL_DIR", install_dir)
+    monkeypatch.setattr("backend.services.factorio_service.INSTALL_DIR", install_dir)
+
+    archive = tmp_path / "fake.tar.xz"
+    stage = tmp_path / "stage"
+    bin_dir = stage / "bin" / "x64"
+    bin_dir.mkdir(parents=True, exist_ok=True)
+    (stage / "data").mkdir(parents=True, exist_ok=True)
+    (stage / "config").mkdir(parents=True, exist_ok=True)
+
+    payload = bin_dir / "factorio"
+    payload.write_text("#!/bin/sh\nif [ \"$1\" = \"--version\" ]; then echo 'Factorio headless 2.0.77'; exit 0; fi\necho sim\n", encoding="utf-8")
+    payload.chmod(0o755)
+
+    with tarfile.open(archive, "w:xz") as tar:
+        tar.add(payload, arcname="factorio/bin/x64/factorio")
+        tar.add(stage / "data", arcname="factorio/data")
+        tar.add(stage / "config", arcname="factorio/config")
+
+    service = FactorioService()
+    assert service.install_server(archive_path=str(archive)) == "installed"
+
+    for path in (manager.install_log, manager.server_log, manager.crash_log, manager.runtime_log):
+        if path.exists():
+            assert path.read_text(encoding="utf-8") == ""
+
+    log_manager.reset_log_manager()
+
+
+def test_second_installation_clears_previous_logs(tmp_path, monkeypatch):
+    log_manager.reset_log_manager()
+    runtime_session.reset_runtime_session()
+    _clear_pid()
+    manager = log_manager.LogManager(log_dir=tmp_path / "logs")
+    monkeypatch.setattr("backend.services.factorio_service.get_log_manager", lambda: manager)
+
+    install_dir = tmp_path / "factorio"
+    monkeypatch.setattr(docker_manager, "INSTALL_DIR", install_dir)
+    monkeypatch.setattr("backend.services.factorio_service.INSTALL_DIR", install_dir)
+
+    archive = tmp_path / "fake.tar.xz"
+    stage = tmp_path / "stage"
+    bin_dir = stage / "bin" / "x64"
+    bin_dir.mkdir(parents=True, exist_ok=True)
+    (stage / "data").mkdir(parents=True, exist_ok=True)
+    (stage / "config").mkdir(parents=True, exist_ok=True)
+
+    payload = bin_dir / "factorio"
+    payload.write_text("#!/bin/sh\nif [ \"$1\" = \"--version\" ]; then echo 'Factorio headless 2.0.77'; exit 0; fi\necho sim\n", encoding="utf-8")
+    payload.chmod(0o755)
+
+    with tarfile.open(archive, "w:xz") as tar:
+        tar.add(payload, arcname="factorio/bin/x64/factorio")
+        tar.add(stage / "data", arcname="factorio/data")
+        tar.add(stage / "config", arcname="factorio/config")
+
+    service = FactorioService()
+    assert service.install_server(archive_path=str(archive)) == "installed"
+
+    manager.append_server("old server log")
+    manager.append_install("old install log")
+    manager.append_crash("old crash log")
+    manager.append_runtime("old runtime log")
+
+    from backend.services.factorio_service import clear_installation
+    clear_installation()
+
+    stage2 = tmp_path / "stage2"
+    bin_dir2 = stage2 / "bin" / "x64"
+    bin_dir2.mkdir(parents=True, exist_ok=True)
+    (stage2 / "data").mkdir(parents=True, exist_ok=True)
+    (stage2 / "config").mkdir(parents=True, exist_ok=True)
+
+    payload2 = bin_dir2 / "factorio"
+    payload2.write_text("#!/bin/sh\nif [ \"$1\" = \"--version\" ]; then echo 'Factorio headless 2.0.77'; exit 0; fi\necho sim\n", encoding="utf-8")
+    payload2.chmod(0o755)
+
+    archive2 = tmp_path / "fake2.tar.xz"
+    with tarfile.open(archive2, "w:xz") as tar:
+        tar.add(payload2, arcname="factorio/bin/x64/factorio")
+        tar.add(stage2 / "data", arcname="factorio/data")
+        tar.add(stage2 / "config", arcname="factorio/config")
+
+    assert service.install_server(archive_path=str(archive2)) == "installed"
+
+    for path in (manager.install_log, manager.server_log, manager.crash_log, manager.runtime_log):
+        if path.exists():
+            assert path.read_text(encoding="utf-8") == ""
+
+    log_manager.reset_log_manager()
+
+
+def test_restart_installation_clears_logs(tmp_path, monkeypatch):
+    log_manager.reset_log_manager()
+    runtime_session.reset_runtime_session()
+    _clear_pid()
+    manager = log_manager.LogManager(log_dir=tmp_path / "logs")
+    monkeypatch.setattr("backend.services.factorio_service.get_log_manager", lambda: manager)
+
+    install_dir = tmp_path / "factorio"
+    monkeypatch.setattr(docker_manager, "INSTALL_DIR", install_dir)
+    monkeypatch.setattr("backend.services.factorio_service.INSTALL_DIR", install_dir)
+
+    archive = tmp_path / "fake.tar.xz"
+    stage = tmp_path / "stage"
+    bin_dir = stage / "bin" / "x64"
+    bin_dir.mkdir(parents=True, exist_ok=True)
+    (stage / "data").mkdir(parents=True, exist_ok=True)
+    (stage / "config").mkdir(parents=True, exist_ok=True)
+
+    payload = bin_dir / "factorio"
+    payload.write_text("#!/bin/sh\nif [ \"$1\" = \"--version\" ]; then echo 'Factorio headless 2.0.77'; exit 0; fi\necho sim\n", encoding="utf-8")
+    payload.chmod(0o755)
+
+    with tarfile.open(archive, "w:xz") as tar:
+        tar.add(payload, arcname="factorio/bin/x64/factorio")
+        tar.add(stage / "data", arcname="factorio/data")
+        tar.add(stage / "config", arcname="factorio/config")
+
+    service = FactorioService()
+    assert service.install_server(archive_path=str(archive)) == "installed"
+
+    manager.append_server("previous attempt log")
+    manager.append_install("previous attempt install")
+
+    (install_dir / "bin" / "x64" / "factorio").unlink()
+    assert not is_server_installed()
+
+    stage2 = tmp_path / "stage2"
+    bin_dir2 = stage2 / "bin" / "x64"
+    bin_dir2.mkdir(parents=True, exist_ok=True)
+    (stage2 / "data").mkdir(parents=True, exist_ok=True)
+    (stage2 / "config").mkdir(parents=True, exist_ok=True)
+
+    payload2 = bin_dir2 / "factorio"
+    payload2.write_text("#!/bin/sh\nif [ \"$1\" = \"--version\" ]; then echo 'Factorio headless 2.0.77'; exit 0; fi\necho sim\n", encoding="utf-8")
+    payload2.chmod(0o755)
+
+    archive2 = tmp_path / "fake2.tar.xz"
+    with tarfile.open(archive2, "w:xz") as tar:
+        tar.add(payload2, arcname="factorio/bin/x64/factorio")
+        tar.add(stage2 / "data", arcname="factorio/data")
+        tar.add(stage2 / "config", arcname="factorio/config")
+
+    assert service.install_server(archive_path=str(archive2)) == "installed"
+
+    assert "previous attempt" not in manager.read_server_log()
+    assert "previous attempt" not in manager.read_install_log()
+
+    log_manager.reset_log_manager()
+
+
+def test_clear_all_empties_log_buffer_before_start(tmp_path, monkeypatch):
+    log_manager.reset_log_manager()
+    runtime_session.reset_runtime_session()
+    manager = log_manager.LogManager(log_dir=tmp_path / "logs")
+    monkeypatch.setattr("backend.services.factorio_service.get_log_manager", lambda: manager)
+
+    manager.ensure()
+    manager.append_server("old server log")
+    manager.append_install("old install log")
+    manager.append_crash("old crash log")
+    manager.append_runtime("old runtime log")
+
+    manager.clear_all()
+
+    for path in (manager.install_log, manager.server_log, manager.crash_log, manager.runtime_log):
+        if path.exists():
+            assert path.read_text(encoding="utf-8") == ""
+
+    log_manager.reset_log_manager()

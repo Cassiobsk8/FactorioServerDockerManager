@@ -194,6 +194,7 @@
                                 <h2 data-i18n="logs.title">Logs</h2>
                                 <div class="logs-header-actions">
                                     <button type="button" class="text-button logs-auto-scroll active" id="logs-auto-scroll" data-i18n="logs.auto_scroll">Auto Scroll</button>
+                                    <button type="button" class="text-button logs-copy" id="logs-copy" data-i18n="logs.copy">Copy Log</button>
                                     <form action="/logs/clear" method="post" class="header-action">
                                         <button type="submit" class="text-button" data-i18n="logs.clear">Clear</button>
                                     </form>
@@ -343,6 +344,7 @@
                                 <button type="button" class="secondary-button" id="wb-update-preview" data-i18n="world_builder.update_preview">Update Preview</button>
                                 <button type="button" class="danger-button" id="wb-create-world" data-i18n="world_builder.create_world">Create World</button>
                             </div>
+                            <p class="world-builder-create-hint" id="wb-create-hint" style="display:none;" data-i18n="world_builder.error.outdated_preview">Update the preview before creating the world.</p>
                         </form>
                     </section>
                     <section class="panel card config-card world-builder-preview-card">

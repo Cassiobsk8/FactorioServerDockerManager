@@ -249,6 +249,24 @@
             });
         }
 
+        const copyLogBtn = document.getElementById('logs-copy');
+        if (copyLogBtn && logViewer) {
+            copyLogBtn.addEventListener('click', async () => {
+                try {
+                    await logViewer.copy();
+                    copyLogBtn.textContent = t('logs.copied');
+                    setTimeout(() => {
+                        copyLogBtn.textContent = t('logs.copy');
+                    }, 2000);
+                } catch (err) {
+                    copyLogBtn.textContent = t('logs.copy_failed');
+                    setTimeout(() => {
+                        copyLogBtn.textContent = t('logs.copy');
+                    }, 2000);
+                }
+            });
+        }
+
         const serverNameEl = document.getElementById('server-name');
         const serverNameEditBtn = document.getElementById('server-name-edit');
         const serverNameInput = document.getElementById('server-name-input');

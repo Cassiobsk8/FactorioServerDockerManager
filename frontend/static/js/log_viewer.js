@@ -171,6 +171,14 @@
         return this;
     };
 
+    LogViewer.prototype.copy = function () {
+        var text = this._lastText || '';
+        if (!navigator.clipboard || !navigator.clipboard.writeText) {
+            return Promise.reject('Clipboard API unavailable');
+        }
+        return navigator.clipboard.writeText(text);
+    };
+
     LogViewer.prototype.stop = function () {
         if (this._intervalId !== null) {
             global.clearInterval(this._intervalId);

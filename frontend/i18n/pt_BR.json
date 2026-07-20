@@ -30,6 +30,9 @@
   "logs.title": "Logs",
   "logs.clear": "Limpar",
   "logs.auto_scroll": "Rolagem automática",
+  "logs.copy": "Copiar Log",
+  "logs.copied": "Log copiado.",
+  "logs.copy_failed": "Falha ao copiar log.",
   "status.server_status": "Status do servidor",
   "status.install_status": "Status da instalação",
   "status.active_save": "Save ativo",
@@ -312,6 +315,7 @@
   "world_builder.error.preview_failed": "Falha ao gerar preview",
   "world_builder.error.create_failed": "Falha ao criar mundo",
   "world_builder.error.create_exception": "Erro ao criar mundo",
+  "world_builder.error.outdated_preview": "Atualize o preview antes de criar o mundo.",
   "world_builder.status.unavailable": "World Builder Preview indisponível.",
   "world_builder.status.unavailable_detail": "Instalação do Factorio não concluída."
 }
