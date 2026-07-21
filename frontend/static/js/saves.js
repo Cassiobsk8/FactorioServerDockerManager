@@ -7,9 +7,11 @@
             if (!tbody) return;
 
             try {
-                const res = await fetch('/api/saves');
-                if (!res.ok) return;
-                const data = await res.json();
+                const data = await BootstrapCache.get('saves', async () => {
+                    const res = await fetch('/api/saves');
+                    if (!res.ok) throw new Error('saves_failed');
+                    return res.json();
+                });
                 const saves = data.saves || [];
 
                 const previouslyOpen = document.querySelector('.saves-menu-dropdown.open');

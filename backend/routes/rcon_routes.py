@@ -15,6 +15,8 @@ from backend.services.rcon_service import (
     get_rcon_status,
     attempt_rcon_connection,
 )
+from backend.services.runtime_session import get_runtime_session
+from backend.services.settings_service import load_app_settings
 from flask import Blueprint, jsonify, request
 
 logger = logging.getLogger("fsm.routes.rcon")
@@ -39,8 +41,29 @@ def api_rcon_status():
 @rcon_bp.route("/api/rcon/players")
 def api_rcon_players():
     try:
-        players = get_rcon_players()
-        return jsonify(players)
+        settings = load_app_settings()
+        if not settings.get("rcon_password"):
+            return jsonify({"connected": False, "players": [], "player_count": 0, "error": "RCON not configured"})
+
+        runtime_session = get_runtime_session()
+        if runtime_session.status != "running":
+            return jsonify({"connected": False, "players": [], "player_count": 0, "error": "Server not running"})
+
+        try:
+            service = get_rcon_service()
+        except RconNotConfiguredError:
+            return jsonify({"connected": False, "players": [], "player_count": 0, "error": "RCON not configured"})
+
+        if not service.is_connected():
+            return jsonify({"connected": False, "players": [], "player_count": 0, "error": "RCON not connected"})
+
+        players = service.get_players()
+        return jsonify({
+            "connected": True,
+            "players": players,
+            "player_count": len(players),
+            "error": None,
+        })
     except Exception as exc:
         logger.exception("RCON players failed")
         return jsonify({"connected": False, "players": [], "error": str(exc)}), 500

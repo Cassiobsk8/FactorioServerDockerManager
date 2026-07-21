@@ -32,3 +32,48 @@
             if (t <= 0) return 0;
             return Math.min(100, Math.round((u / t) * 100));
         }
+
+        const BootstrapCache = {
+            _cache: {},
+            _pending: {},
+
+            async get(key, fetcher, options = {}) {
+                const cached = this._cache[key];
+                if (cached && !options.force) {
+                    const age = Date.now() - cached.timestamp;
+                    if (age < 1000) {
+                        return cached.data;
+                    }
+                }
+
+                if (this._pending[key]) {
+                    return this._pending[key];
+                }
+
+                const promise = fetcher().then(data => {
+                    this._cache[key] = { data, timestamp: Date.now() };
+                    delete this._pending[key];
+                    return data;
+                }).catch(err => {
+                    delete this._pending[key];
+                    throw err;
+                });
+
+                this._pending[key] = promise;
+                return promise;
+            },
+
+            invalidate(key) {
+                if (key) {
+                    delete this._cache[key];
+                } else {
+                    this._cache = {};
+                }
+            },
+
+            isStale(key, maxAge = 30000) {
+                const cached = this._cache[key];
+                if (!cached) return true;
+                return Date.now() - cached.timestamp > maxAge;
+            },
+        };

@@ -317,9 +317,11 @@
 
         async function pollRconStatus() {
             try {
-                const res = await fetch('/api/rcon/status');
-                if (!res.ok) return;
-                const data = await res.json();
+                const data = await BootstrapCache.get('rcon-status', async () => {
+                    const res = await fetch('/api/rcon/status');
+                    if (!res.ok) throw new Error('rcon_status_failed');
+                    return res.json();
+                });
                 refreshRconStatusUI(data, 'pollRconStatus');
             } catch (err) {
             }
@@ -327,12 +329,12 @@
 
         async function fetchRconStatusOnce() {
             try {
-                const res = await fetch('/api/rcon/status');
-                if (!res.ok) return;
-                refreshRconStatusUI(await res.json(), 'fetchRconStatusOnce');
+                const data = await BootstrapCache.get('rcon-status', async () => {
+                    const res = await fetch('/api/rcon/status');
+                    if (!res.ok) throw new Error('rcon_status_failed');
+                    return res.json();
+                });
+                refreshRconStatusUI(data, 'fetchRconStatusOnce');
             } catch (err) {
             }
         }
-
-        pollRconStatus();
-        setInterval(pollRconStatus, 30000);

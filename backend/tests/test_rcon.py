@@ -204,10 +204,9 @@ def test_get_rcon_status_reports_not_configured():
 
 def test_get_rcon_status_reports_connection_error(monkeypatch):
     save_app_settings({"rcon_host": "127.0.0.1", "rcon_port": "1", "rcon_password": "secret", "rcon_timeout": "1"})
-    with mock.patch.object(socket, "create_connection", side_effect=ConnectionRefusedError("refused")):
-        status = rcon_service.get_rcon_status()
+    status = rcon_service.get_rcon_status()
     assert status["connected"] is False
-    assert status["error"] is not None
+    assert status["error"] is None
 
 
 def test_status_payload_has_no_password():
@@ -379,6 +378,8 @@ def test_get_rcon_status_includes_metrics():
     fake = _auth_ok_socket()
     fake._stream += _pack(2, 0, "ok")
     with mock.patch.object(socket, "create_connection", return_value=fake):
+        service = get_rcon_service()
+        service.connect()
         status = get_rcon_status()
     assert status["connected"] is True
     assert status["connected_since"] is not None
@@ -391,8 +392,75 @@ def test_get_rcon_players_executes_players_command():
     save_app_settings({"rcon_host": "127.0.0.1", "rcon_port": "27015", "rcon_password": "secret", "rcon_timeout": "5"})
     fake = _cmd_response_socket("Players (2): Player1, Player2")
     with mock.patch.object(socket, "create_connection", return_value=fake):
+        service = get_rcon_service()
+        service.connect()
         result = rcon_service.get_rcon_players()
     assert result["connected"] is True
     assert result["players"] == ["Player1", "Player2"]
     assert result["player_count"] == 2
     assert result["error"] is None
+
+
+def test_rcon_lifecycle_connect_on_server_start():
+    save_app_settings({"rcon_host": "127.0.0.1", "rcon_port": "27015", "rcon_password": "secret", "rcon_timeout": "5"})
+    fake = _auth_ok_socket()
+    with mock.patch.object(socket, "create_connection", return_value=fake):
+        reset_rcon_service()
+        assert rcon_service._rcon_service is None
+        rcon_service.connect_rcon_service()
+        service = rcon_service.get_rcon_service()
+        assert service.is_connected() is True
+
+
+def test_rcon_lifecycle_disconnect_on_server_stop():
+    save_app_settings({"rcon_host": "127.0.0.1", "rcon_port": "27015", "rcon_password": "secret", "rcon_timeout": "5"})
+    fake = _auth_ok_socket()
+    with mock.patch.object(socket, "create_connection", return_value=fake):
+        reset_rcon_service()
+        rcon_service.connect_rcon_service()
+        service = rcon_service.get_rcon_service()
+        assert service.is_connected() is True
+        rcon_service.disconnect_rcon_service()
+        assert service.is_connected() is False
+
+
+def test_rcon_lifecycle_does_not_connect_when_disabled():
+    save_app_settings({"rcon_host": "127.0.0.1", "rcon_port": "27015", "rcon_password": "", "rcon_timeout": "5"})
+    reset_rcon_service()
+    rcon_service.connect_rcon_service()
+    assert rcon_service._rcon_service is None
+
+
+def test_rcon_lifecycle_does_not_connect_when_already_connected():
+    save_app_settings({"rcon_host": "127.0.0.1", "rcon_port": "27015", "rcon_password": "secret", "rcon_timeout": "5"})
+    fake = _auth_ok_socket()
+    with mock.patch.object(socket, "create_connection", return_value=fake):
+        reset_rcon_service()
+        rcon_service.connect_rcon_service()
+        service = rcon_service.get_rcon_service()
+        assert service.is_connected() is True
+        reconnect_count = service.reconnect_count
+        rcon_service.connect_rcon_service()
+        assert service.reconnect_count == reconnect_count
+
+
+def test_get_rcon_players_does_not_connect_when_not_connected():
+    save_app_settings({"rcon_host": "127.0.0.1", "rcon_port": "27015", "rcon_password": "secret", "rcon_timeout": "5"})
+    reset_rcon_service()
+    with mock.patch.object(socket, "create_connection") as mock_create:
+        result = rcon_service.get_rcon_players()
+    assert mock_create.call_count == 0
+    assert result["connected"] is False
+    assert result["players"] == []
+    assert result["player_count"] == 0
+    assert "not connected" in result["error"]
+
+
+def test_get_rcon_players_does_not_connect_when_disabled():
+    save_app_settings({"rcon_host": "127.0.0.1", "rcon_port": "27015", "rcon_password": "", "rcon_timeout": "5"})
+    reset_rcon_service()
+    result = rcon_service.get_rcon_players()
+    assert result["connected"] is False
+    assert result["players"] == []
+    assert result["player_count"] == 0
+    assert "not configured" in result["error"]

@@ -217,7 +217,7 @@ def test_validate_factorio_binary_accepts_elf_magic(tmp_path, monkeypatch):
 
     result = validate_factorio_binary()
     assert result["valid"] is True
-    assert result["reason"] == "real"
+    assert result["reason"] == "ok"
 
 
 def test_validate_factorio_binary_rejects_python_script(tmp_path, monkeypatch):
@@ -236,8 +236,10 @@ def test_validate_factorio_binary_rejects_python_script(tmp_path, monkeypatch):
 def test_validate_factorio_binary_rejects_missing(tmp_path, monkeypatch):
     monkeypatch.setattr(world_builder_service, "INSTALL_DIR", tmp_path / "missing")
 
-    with pytest.raises(RuntimeError, match="Factorio binary not found"):
-        validate_factorio_binary()
+    result = validate_factorio_binary()
+    assert result["valid"] is False
+    assert result["reason"] == "not_installed"
+    assert result["message"] is not None
 
 
 def test_generate_preview_uses_official_parameters(tmp_path, monkeypatch):
@@ -572,7 +574,7 @@ def test_generate_preview_handles_missing_binary(tmp_path, monkeypatch):
     monkeypatch.setattr(world_builder_service, "INSTALL_DIR", tmp_path / "missing")
 
     config = DummyWorldConfig(world_name="TestWorld", planet="nauvis")
-    with pytest.raises(RuntimeError, match="Factorio binary not found"):
+    with pytest.raises(RuntimeError, match="Factorio installation is not complete"):
         generate_preview(config)
 
 

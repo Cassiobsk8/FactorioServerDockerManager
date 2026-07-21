@@ -161,6 +161,30 @@ def test_preview_image_returns_404_when_missing_with_extension(client):
     assert response.status_code == 404
 
 
+def test_preview_image_info_log_excludes_file_listing(client, caplog):
+    (world_builder_service.PREVIEWS_DIR / "abc123.png").write_text("png")
+
+    with caplog.at_level("INFO"):
+        client.get("/api/world-builder/preview-image/abc123")
+
+    info_messages = [record.getMessage() for record in caplog.records if record.levelname == "INFO"]
+    diagnostic_messages = [msg for msg in info_messages if "DIAGNOSTIC preview-image route" in msg]
+    assert len(diagnostic_messages) == 1
+    assert "files=" not in diagnostic_messages[0]
+
+
+def test_preview_image_debug_log_includes_file_listing(client, caplog):
+    (world_builder_service.PREVIEWS_DIR / "abc123.png").write_text("png")
+
+    with caplog.at_level("DEBUG"):
+        client.get("/api/world-builder/preview-image/abc123")
+
+    debug_messages = [record.getMessage() for record in caplog.records if record.levelname == "DEBUG"]
+    file_listing_messages = [msg for msg in debug_messages if "DIAGNOSTIC preview-image route files:" in msg]
+    assert len(file_listing_messages) == 1
+    assert "abc123.png" in file_listing_messages[0]
+
+
 def test_status_returns_valid_for_elf_binary(client, tmp_path, monkeypatch):
     install_dir = tmp_path / "factorio"
     monkeypatch.setattr(world_builder_service, "INSTALL_DIR", install_dir)
@@ -170,7 +194,7 @@ def test_status_returns_valid_for_elf_binary(client, tmp_path, monkeypatch):
     assert response.status_code == 200
     payload = response.get_json()
     assert payload["valid"] is True
-    assert payload["reason"] == "real"
+    assert payload["reason"] == "ok"
 
 
 def test_status_returns_invalid_for_python_script(client, tmp_path, monkeypatch):
@@ -192,9 +216,11 @@ def test_status_returns_invalid_when_binary_missing(client, tmp_path, monkeypatc
     monkeypatch.setattr(world_builder_service, "INSTALL_DIR", tmp_path / "missing")
 
     response = client.get("/api/world-builder/status")
-    assert response.status_code == 500
+    assert response.status_code == 200
     payload = response.get_json()
     assert payload["valid"] is False
+    assert payload["reason"] == "not_installed"
+    assert payload["message"] is not None
 
 
 def test_config_hash_returns_hash(client):

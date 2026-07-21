@@ -151,6 +151,8 @@ def test_status_uses_persistent_connection_state():
     _configured()
     fake = _auth_ok_socket()
     with mock.patch.object(socket, "create_connection", return_value=fake):
+        service = get_rcon_service()
+        service.connect()
         status = get_rcon_status()
     assert status["connected"] is True
     assert status["configured"] is True
@@ -164,12 +166,10 @@ def test_status_reports_disconnected_when_socket_drops():
         service = get_rcon_service()
         service.connect()
         assert service.is_connected()
-        # simula perda da conexao real
         service._close_socket()
         status = get_rcon_status()
-    # tenta reconectar e, como o fake ja foi consumido, deve falhar de forma real
     assert status["connected"] is False
-    assert status["error"]
+    assert status["error"] is None
 
 
 # 4. Polling: get_rcon_status e redirecionamento de estado
@@ -177,6 +177,8 @@ def test_status_endpoint_reflects_real_state_across_calls():
     _configured()
     fake = _auth_ok_socket()
     with mock.patch.object(socket, "create_connection", return_value=fake):
+        service = get_rcon_service()
+        service.connect()
         first = get_rcon_status()
         second = get_rcon_status()
     # segunda chamada reaproveita o socket (ja conectado)
@@ -191,6 +193,8 @@ def test_players_end_to_end():
     fake = _cmd_response_socket("Players (3): A, B, C")
     with mock.patch.object(socket, "create_connection", return_value=fake):
         from backend.services.rcon_service import get_rcon_players
+        service = get_rcon_service()
+        service.connect()
         result = get_rcon_players()
     assert result["connected"] is True
     assert result["players"] == ["A", "B", "C"]

@@ -80,9 +80,11 @@
             if (!planetSelect) return;
 
             try {
-                const res = await fetch('/api/world-builder/options?planet=' + encodeURIComponent(planetSelect.value || 'nauvis'));
-                if (!res.ok) return;
-                const data = await res.json();
+                const data = await BootstrapCache.get('world-builder-options', async () => {
+                    const res = await fetch('/api/world-builder/options?planet=' + encodeURIComponent(planetSelect.value || 'nauvis'));
+                    if (!res.ok) throw new Error('options_failed');
+                    return res.json();
+                });
 
                 const currentValue = planetSelect.value;
                 planetSelect.innerHTML = '';
@@ -108,15 +110,26 @@
             const inputs = document.querySelectorAll('#world-builder-form input, #world-builder-form select');
 
             try {
-                const res = await fetch('/api/world-builder/status');
-                if (!res.ok) {
-                    throw new Error('status_check_failed');
-                }
-                const data = await res.json();
+                const data = await BootstrapCache.get('world-builder-status', async () => {
+                    const res = await fetch('/api/world-builder/status');
+                    if (!res.ok) throw new Error('status_check_failed');
+                    return res.json();
+                });
                 wbState.ui.factorioValid = !!data.valid;
 
                 if (!wbState.ui.factorioValid) {
-                    if (banner) banner.style.display = 'flex';
+                    if (banner) {
+                        banner.style.display = 'flex';
+                        const title = banner.querySelector('[data-i18n="world_builder.status.unavailable"]');
+                        const detail = banner.querySelector('[data-i18n="world_builder.status.unavailable_detail"]');
+                        if (data.reason === 'not_installed') {
+                            if (title) title.textContent = t('world_builder.status.unavailable');
+                            if (detail) detail.textContent = t('world_builder.status.not_installed_detail');
+                        } else {
+                            if (title) title.textContent = t('world_builder.status.unavailable');
+                            if (detail) detail.textContent = data.message || t('world_builder.status.unavailable_detail');
+                        }
+                    }
                     [updateButton, createButton, generateButton].forEach((btn) => {
                         if (btn) btn.disabled = true;
                     });

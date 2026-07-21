@@ -319,6 +319,7 @@
   "world_builder.error.outdated_preview": "Atualize o preview antes de criar o mundo.",
   "world_builder.status.unavailable": "World Builder Preview indisponível.",
   "world_builder.status.unavailable_detail": "Instalação do Factorio não concluída.",
+  "world_builder.status.not_installed_detail": "Instalação do Factorio não está completa.",
   "world_builder.preset": "Preset",
   "world_builder.preset_placeholder": "--",
   "world_builder.reset": "Resetar",

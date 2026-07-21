@@ -12,9 +12,11 @@
 
         async function loadSettings() {
             try {
-                const res = await fetch('/api/settings');
-                if (!res.ok) return null;
-                const data = await res.json();
+                const data = await BootstrapCache.get('app-settings', async () => {
+                    const res = await fetch('/api/settings');
+                    if (!res.ok) throw new Error('settings_failed');
+                    return res.json();
+                });
                 return data.language || null;
             } catch (e) {
                 return null;
@@ -101,6 +103,7 @@
             } catch (e) {
                 // ignore
             }
+            BootstrapCache.invalidate('app-settings');
             await applyLanguage(lang);
         }
 

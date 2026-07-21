@@ -58,11 +58,13 @@
             }
 
             try {
-                const response = await fetch('/status');
-                if (!response.ok) {
-                    return;
-                }
-                const data = await response.json();
+                const data = await BootstrapCache.get('status', async () => {
+                    const response = await fetch('/status');
+                    if (!response.ok) {
+                        throw new Error('status_failed');
+                    }
+                    return response.json();
+                });
                 const rawStatus = data.status || serverStatus.textContent;
                 const isOnline = rawStatus === 'running' || rawStatus === 'online';
                 serverStatus.textContent = formatStatus(rawStatus);
@@ -146,22 +148,19 @@
                 renderActiveSave(server.active_save);
 
                 if (savesCountEl) {
-                    const res = await fetch('/api/saves');
-                    if (res.ok) {
-                        const savesData = await res.json();
-                        const saves = savesData.saves || [];
-                        savesCountEl.textContent = String(saves.length);
-                    }
+                    const savesData = await BootstrapCache.get('saves', async () => {
+                        const r = await fetch('/api/saves');
+                        if (!r.ok) throw new Error('saves_failed');
+                        return r.json();
+                    });
+                    const saves = savesData.saves || [];
+                    savesCountEl.textContent = String(saves.length);
                 }
 
                 if (playersEl) {
-                    const playersRes = await fetch('/api/rcon/players');
-                    if (playersRes.ok) {
-                        const playersData = await playersRes.json();
-                        const count = Array.isArray(playersData.players) ? playersData.players.length : (playersData.player_count ?? '--');
-                        playersEl.textContent = String(count);
-                    } else {
-                        playersEl.textContent = '--';
+                    const status = data.status || '';
+                    if (status !== 'running') {
+                        playersEl.textContent = '—';
                     }
                 }
 

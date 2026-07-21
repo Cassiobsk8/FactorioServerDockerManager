@@ -35,6 +35,7 @@ from backend.config import (
     WHITELIST_PATH,
 )
 from backend.services.log_manager import get_log_manager
+from backend.services.rcon_service import connect_rcon_service, disconnect_rcon_service
 from backend.services.runtime_session import get_runtime_session
 from backend.services.save_service import load_active_save
 from backend.services.settings_service import load_app_settings
@@ -91,6 +92,7 @@ class FactorioService:
             log_handle.close()
         _write_pid(process.pid)
         get_runtime_session().start(process.pid)
+        connect_rcon_service()
         log_manager.append_runtime(
             f"Factorio started (pid={process.pid}) {datetime.now(timezone.utc).isoformat()}"
         )
@@ -115,6 +117,7 @@ class FactorioService:
 
         _clear_pid()
         get_runtime_session().stop()
+        disconnect_rcon_service()
         logger.info("Factorio stopped (pid=%s)", pid)
         return "stopped"
 

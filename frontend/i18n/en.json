@@ -319,6 +319,7 @@
   "world_builder.error.outdated_preview": "Update the preview before creating the world.",
   "world_builder.status.unavailable": "World Builder Preview unavailable.",
   "world_builder.status.unavailable_detail": "Factorio installation is incomplete.",
+  "world_builder.status.not_installed_detail": "Factorio installation is not complete.",
   "world_builder.preset": "Preset",
   "world_builder.preset_placeholder": "--",
   "world_builder.reset": "Reset",

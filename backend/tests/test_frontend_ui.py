@@ -218,3 +218,62 @@ def test_world_builder_i18n_keys_exist():
         data = json.loads((i18n_dir / lang).read_text(encoding="utf-8"))
         missing = required_keys - data.keys()
         assert not missing, f"Missing keys in {lang}: {missing}"
+
+
+def test_bootstrap_cache_exists_in_utils():
+    utils_path = Path(__file__).resolve().parent.parent.parent / "frontend" / "static" / "js" / "utils.js"
+    js = utils_path.read_text(encoding="utf-8")
+    assert "const BootstrapCache" in js
+    assert "async get(" in js
+    assert "invalidate(" in js
+    assert "isStale(" in js
+
+
+def test_dashboard_uses_bootstrap_cache():
+    dashboard_path = Path(__file__).resolve().parent.parent.parent / "frontend" / "static" / "js" / "dashboard.js"
+    js = dashboard_path.read_text(encoding="utf-8")
+    assert "BootstrapCache.get('saves'" in js
+    assert "BootstrapCache.get('status'" in js
+
+
+def test_world_builder_uses_bootstrap_cache():
+    wb_path = Path(__file__).resolve().parent.parent.parent / "frontend" / "static" / "js" / "world_builder.js"
+    js = wb_path.read_text(encoding="utf-8")
+    assert "BootstrapCache.get('world-builder-status'" in js
+    assert "BootstrapCache.get('world-builder-options'" in js
+
+
+def test_rcon_uses_bootstrap_cache():
+    rcon_path = Path(__file__).resolve().parent.parent.parent / "frontend" / "static" / "js" / "rcon.js"
+    js = rcon_path.read_text(encoding="utf-8")
+    assert "BootstrapCache.get('rcon-status'" in js
+
+
+def test_saves_uses_bootstrap_cache():
+    saves_path = Path(__file__).resolve().parent.parent.parent / "frontend" / "static" / "js" / "saves.js"
+    js = saves_path.read_text(encoding="utf-8")
+    assert "BootstrapCache.get('saves'" in js
+
+
+def test_config_uses_bootstrap_cache():
+    config_path = Path(__file__).resolve().parent.parent.parent / "frontend" / "static" / "js" / "config.js"
+    js = config_path.read_text(encoding="utf-8")
+    assert "BootstrapCache.get('server-settings'" in js
+
+
+def test_i18n_uses_bootstrap_cache():
+    i18n_path = Path(__file__).resolve().parent.parent.parent / "frontend" / "static" / "js" / "i18n.js"
+    js = i18n_path.read_text(encoding="utf-8")
+    assert "BootstrapCache.get('app-settings'" in js
+
+
+def test_settings_save_invalidates_cache():
+    config_path = Path(__file__).resolve().parent.parent.parent / "frontend" / "static" / "js" / "config.js"
+    js = config_path.read_text(encoding="utf-8")
+    assert "BootstrapCache.invalidate('server-settings')" in js
+
+
+def test_language_change_invalidates_cache():
+    i18n_path = Path(__file__).resolve().parent.parent.parent / "frontend" / "static" / "js" / "i18n.js"
+    js = i18n_path.read_text(encoding="utf-8")
+    assert "BootstrapCache.invalidate('app-settings')" in js

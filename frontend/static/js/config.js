@@ -3,9 +3,11 @@
             if (!container) return;
 
             try {
-                const res = await fetch('/server-settings');
-                if (!res.ok) return;
-                const data = await res.json();
+                const data = await BootstrapCache.get('server-settings', async () => {
+                    const res = await fetch('/server-settings');
+                    if (!res.ok) throw new Error('server_settings_failed');
+                    return res.json();
+                });
                 const fields = data.fields || [];
                 if (!fields.length) {
                     container.innerHTML = `<p>${t('config.no_settings')}</p>`;
@@ -28,6 +30,7 @@
                     method: 'POST',
                     body: formData,
                 });
+                BootstrapCache.invalidate('server-settings');
                 fetchAndRenderSettings();
             } catch (err) {
                 // ignore

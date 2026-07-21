@@ -319,6 +319,7 @@
   "world_builder.error.outdated_preview": "创建世界前请先更新预览。",
   "world_builder.status.unavailable": "World Builder 预览不可用。",
   "world_builder.status.unavailable_detail": "Factorio 安装未完成。",
+  "world_builder.status.not_installed_detail": "Factorio 安装未完成。",
   "world_builder.preset": "预设",
   "world_builder.preset_placeholder": "--",
   "world_builder.reset": "重置",

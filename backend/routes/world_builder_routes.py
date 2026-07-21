@@ -58,7 +58,7 @@ def api_world_builder_status():
         validation = validate_factorio_binary()
         return jsonify(validation)
     except Exception as exc:
-        logger.exception("Failed to validate Factorio binary")
+        logger.exception("Unexpected error validating Factorio binary")
         return jsonify({"valid": False, "reason": "error", "message": str(exc)}), 500
 
 
@@ -127,15 +127,20 @@ def api_world_builder_preview_image(preview_hash: str):
         normalized_hash = preview_hash.removesuffix(".png")
         preview_file = PREVIEWS_DIR / f"{normalized_hash}.png"
         logger.info(
-            "DIAGNOSTIC preview-image route: preview_hash=%s normalized_hash=%s PREVIEWS_DIR=%s path=%s exists=%s files=%s expected=%s",
+            "DIAGNOSTIC preview-image route: preview_hash=%s normalized_hash=%s PREVIEWS_DIR=%s path=%s exists=%s expected=%s",
             preview_hash,
             normalized_hash,
             PREVIEWS_DIR,
             preview_file,
             preview_file.exists(),
-            sorted(p.name for p in PREVIEWS_DIR.iterdir()) if PREVIEWS_DIR.exists() else [],
             f"{normalized_hash}.png",
         )
+        if PREVIEWS_DIR.exists():
+            logger.debug(
+                "DIAGNOSTIC preview-image route files: preview_hash=%s files=%s",
+                preview_hash,
+                sorted(p.name for p in PREVIEWS_DIR.iterdir()),
+            )
         if not preview_file.exists():
             return jsonify({"error": "preview not found"}), 404
         return send_from_directory(

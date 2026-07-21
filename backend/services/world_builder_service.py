@@ -25,15 +25,21 @@ MANIFEST_PATH = WORLD_BUILDER_DIR / "manifest.json"
 DEFAULT_PLANETS = ["nauvis", "vulcanus", "fulgora", "gleba", "aquilo"]
 
 
-def _get_factorio_bin() -> Path:
+def _get_factorio_bin() -> Optional[Path]:
     factorio_bin = INSTALL_DIR / "bin" / "x64" / "factorio"
     if not factorio_bin.exists():
-        raise RuntimeError("Factorio binary not found. Install the server first.")
+        return None
     return factorio_bin
 
 
 def validate_factorio_binary() -> dict[str, Any]:
     factorio_bin = _get_factorio_bin()
+    if factorio_bin is None:
+        return {
+            "valid": False,
+            "reason": "not_installed",
+            "message": "World Builder preview unavailable. Factorio installation is not complete.",
+        }
 
     try:
         with open(factorio_bin, "rb") as f:
@@ -48,7 +54,7 @@ def validate_factorio_binary() -> dict[str, Any]:
             "message": "World Builder Preview indisponível. Instalação do Factorio não concluída.",
         }
 
-    return {"valid": True, "reason": "real"}
+    return {"valid": True, "reason": "ok"}
 
 
 def _ensure_dirs() -> None:

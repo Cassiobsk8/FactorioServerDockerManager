@@ -10,6 +10,7 @@ import pytest
 
 from backend.app import app
 from backend.services.rcon_service import RconConnectionError, RconTimeoutError, reset_rcon_service
+from backend.services.runtime_session import get_runtime_session, reset_runtime_session
 from backend.services.settings_service import save_app_settings
 
 BASE = Path(__file__).resolve().parent.parent.parent
@@ -130,7 +131,7 @@ def test_rcon_status_disconnected_when_offline():
     payload = res.get_json()
     assert payload["configured"] is True
     assert payload["connected"] is False
-    assert payload["error"] is not None
+    assert payload["error"] is None
     assert "password" not in payload
 
 
@@ -180,6 +181,8 @@ def test_rcon_status_connected_with_mock_server():
         return FakeSocket()
 
     with mock.patch.object(socket, "create_connection", side_effect=_fake_create_connection):
+        service = rcon_service.get_rcon_service()
+        service.connect()
         status = rcon_service.get_rcon_status()
 
     assert status["connected"] is True
@@ -195,3 +198,44 @@ def test_rcon_command_requires_configuration():
     payload = res.get_json()
     assert payload["connected"] is False
     assert "error" in payload
+
+
+def test_rcon_players_does_not_connect_when_server_stopped():
+    save_app_settings({"rcon_host": "127.0.0.1", "rcon_port": "1", "rcon_password": "secret", "rcon_timeout": "1"})
+    client = app.test_client()
+    res = client.get("/api/rcon/players")
+    assert res.status_code == 200
+    payload = res.get_json()
+    assert payload["connected"] is False
+    assert payload["players"] == []
+    assert payload["player_count"] == 0
+    assert payload["error"] == "Server not running"
+
+
+def test_rcon_players_does_not_connect_when_rcon_disabled():
+    save_app_settings({"rcon_password": ""})
+    client = app.test_client()
+    res = client.get("/api/rcon/players")
+    assert res.status_code == 200
+    payload = res.get_json()
+    assert payload["connected"] is False
+    assert payload["players"] == []
+    assert payload["player_count"] == 0
+    assert "not configured" in payload["error"]
+
+
+def test_rcon_players_does_not_connect_when_not_connected():
+    from backend.services import runtime_session
+
+    runtime_session.reset_runtime_session()
+    runtime_session.get_runtime_session().start(pid=12345)
+
+    save_app_settings({"rcon_host": "127.0.0.1", "rcon_port": "27015", "rcon_password": "secret", "rcon_timeout": "5"})
+    client = app.test_client()
+    res = client.get("/api/rcon/players")
+    assert res.status_code == 200
+    payload = res.get_json()
+    assert payload["connected"] is False
+    assert payload["players"] == []
+    assert payload["player_count"] == 0
+    assert payload["error"] == "RCON not connected"

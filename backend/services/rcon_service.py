@@ -380,6 +380,29 @@ def reset_rcon_service() -> None:
         _rcon_service = None
 
 
+def connect_rcon_service() -> None:
+    """Connect the RCON service if configured and not already connected."""
+    settings = _load_rcon_settings()
+    if not settings.get("password"):
+        return
+    try:
+        service = get_rcon_service()
+        if not service.is_connected():
+            service.connect()
+    except (RconNotConfiguredError, RconConnectionError, RconTimeoutError, RconAuthError):
+        pass
+
+
+def disconnect_rcon_service() -> None:
+    """Disconnect the RCON service if connected."""
+    try:
+        service = get_rcon_service()
+        if service.is_connected():
+            service.disconnect()
+    except RconNotConfiguredError:
+        pass
+
+
 def _parse_players(output: str) -> list[str]:
     """Parse the output of the Factorio /players command.
 
@@ -426,11 +449,6 @@ def get_rcon_status() -> dict[str, object]:
     try:
         service = get_rcon_service()
         status["connected"] = service.is_connected()
-        if not status["connected"]:
-            logger.info("[RCON STATUS] id=%s socket_fileno=None host=%s port=%s detail=not_connected_attempting_connect", id(service), service.host, service.port)
-            status["connected"] = service.connect()
-        else:
-            logger.info("[RCON STATUS] id=%s socket_fileno=%s host=%s port=%s detail=already_connected", id(service), service._socket.fileno(), service.host, service.port)
         if status["connected"]:
             status["connected_since"] = service.connected_since
             status["reconnect_count"] = service.reconnect_count
@@ -447,6 +465,8 @@ def get_rcon_players() -> dict[str, object]:
     """Return the list of online players, masking the password."""
     try:
         service = get_rcon_service()
+        if not service.is_connected():
+            return {"connected": False, "players": [], "player_count": 0, "error": "RCON not connected"}
         players = service.get_players()
         return {
             "connected": True,
