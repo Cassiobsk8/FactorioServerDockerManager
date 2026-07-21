@@ -179,8 +179,9 @@ def test_world_builder_js_exists():
     assert "generateRandomSeed" in js
     assert "checkWorldBuilderStatus" in js
     assert "refreshPreviewStatus" in js
-    assert "fetchCurrentConfigHash" in js
-    assert "currentPreviewConfig" in js
+    assert "wbState" in js
+    assert "worldConfig" in js
+    assert "preview" in js
     assert "/api/world-builder/preview" in js
     assert "/api/world-builder/create" in js
     assert "/api/world-builder/status" in js

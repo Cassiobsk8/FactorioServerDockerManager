@@ -667,3 +667,64 @@ versão do World Builder.
 
 *Documento de arquitetura atualizado com a entrega completa do World Builder V1, refinamentos WB-V1.2 e WB-V1.3.1, Hotfix HF-INSTALL-03, Integração Oficial WB-V1.5, Catálogo Oficial de Presets WB-V1.7 e Remoção de `--preset` (WB-V1.7).*
 
+---
+
+## 19. Engine de Configuração Baseada em Schema (WB-V2.1 + WB-V2.2)
+
+### Problema resolvido
+Campos de configuração do World Builder eram hardcoded no frontend e backend,
+dificultando a manutenção e a evolução do schema do Factorio.
+
+### Solução
+- **Schema Metadata** (`backend/services/world_builder_schema/schema.py`):
+  - Metadados completos de `map-gen-settings.json` e `map-settings.json`
+  - 10 categorias, 68 campos mapeados
+  - Suporte a campos Space Age exclusivos e planet-exclusive
+- **Config Engine** (`backend/services/world_builder_config_engine.py`):
+  - Transforma metadados do schema em configurações de formulário utilizáveis
+  - Suporta tipos: `string`, `number`, `boolean`, `enum`, `range`, `group`, `array`
+  - Serialização/desserialização automática entre form values e JSON
+  - Validação de valores contra constraints do schema
+- **API Routes** (`backend/routes/world_builder_config_routes.py`):
+  - `GET /api/world-builder/config-engine` — retorna form config
+  - `POST /api/world-builder/serialize-config` — serializa valores
+  - `POST /api/world-builder/deserialize-config` — desserializa JSON
+  - `GET /api/world-builder/default-config` — valores padrão
+  - `POST /api/world-builder/validate-field` — valida campo individual
+- **Frontend Dev Page** (`schema_config.js` + template):
+  - Tela de desenvolvimento que renderiza dinamicamente qualquer campo do schema
+  - Agrupa campos por categoria
+  - Permite serializar/desserializar e carregar defaults
+  - Tipos de input renderizados: checkbox, text, number, select, range, group, textarea
+
+### Fluxo
+```
+Schema Metadata → Form Config → React/Dynamic Form → JSON → Factorio
+```
+
+### Arquivos criados/modificados
+- `backend/services/world_builder_schema/__init__.py`
+- `backend/services/world_builder_schema/schema.py`
+- `backend/services/world_builder_config_engine.py`
+- `backend/routes/world_builder_config_routes.py`
+- `backend/tests/test_world_builder_schema.py`
+- `backend/tests/test_world_builder_config_engine.py`
+- `frontend/static/js/schema_config.js`
+- `frontend/templates/index.html` — nova aba "Schema Config"
+- `frontend/static/css/app.css` — estilos da página de schema
+- `frontend/i18n/*.json` — chaves `schema_config.*`
+- `backend/app.py` — registro das novas rotas
+- `WORLD_BUILDER_SCHEMA.md` — documentação do schema
+
+### Decisões arquiteturais
+- Nenhuma configuração é hardcoded no frontend; toda interface é gerada a partir do schema.
+- O backend mantém a autoridade do schema; o frontend apenas renderiza.
+- Serialização usa dotted keys (`pollution.enabled`) no form, convertidos para nested JSON.
+- Validação acontece tanto no backend (engine) quanto no frontend (API de validação).
+
+### Testes
+- **Schema**: 22 testes (integridade, categorias, duplicatas, tipos, Space Age)
+- **Config Engine**: 21 testes (form config, serialização, desserialização, validação, defaults)
+- **Total World Builder**: 99 testes passando (0 regressões)
+
+

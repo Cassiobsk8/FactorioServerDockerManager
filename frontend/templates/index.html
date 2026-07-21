@@ -31,6 +31,7 @@
                 <button class="tab-button active" data-tab="dashboard" data-i18n="menu.dashboard">Dashboard</button>
                 <button class="tab-button" data-tab="saves" data-i18n="menu.saves">Saves</button>
                 <button class="tab-button" data-tab="world-builder" data-i18n="menu.world_builder">World Builder</button>
+                <button class="tab-button" data-tab="schema-config" data-i18n="menu.schema_config">Schema Config</button>
                 <button class="tab-button" data-tab="console" data-i18n="menu.console">Console</button>
                 <button class="tab-button" data-tab="server-settings" data-i18n="menu.server_settings">Server Settings</button>
                 <button class="tab-button" data-tab="about" data-i18n="menu.about">About</button>
@@ -324,28 +325,58 @@
                             <span data-i18n="world_builder.status.unavailable">World Builder Preview indisponível.</span>
                             <span data-i18n="world_builder.status.unavailable_detail">Instalação do Factorio não concluída.</span>
                         </div>
-                        <form id="world-builder-form" class="stacked-form">
-                            <label>
-                                <span data-i18n="world_builder.world_name">World Name</span>
-                                <input type="text" id="wb-world-name" placeholder="meu_mundo" required />
-                            </label>
-                            <label>
-                                <span data-i18n="world_builder.seed">Seed</span>
-                                <div class="seed-row">
-                                    <input type="text" id="wb-seed" placeholder="123456789" />
-                                    <button type="button" class="text-button" id="wb-generate-seed" data-i18n="world_builder.generate_seed">🎲 Gerar</button>
+                        <div class="wb-scroll-area">
+                            <form id="world-builder-form" class="stacked-form">
+                                <div class="wb-header">
+                                    <label class="wb-preset-label">
+                                        <span data-i18n="world_builder.preset">Preset</span>
+                                        <select id="wb-preset" disabled>
+                                            <option value="" data-i18n="world_builder.preset_placeholder">--</option>
+                                        </select>
+                                    </label>
+                                    <button type="button" class="text-button wb-reset-button" id="wb-reset" disabled data-i18n="world_builder.reset">Reset</button>
+                                    <label class="wb-seed-label">
+                                        <span data-i18n="world_builder.seed">Seed</span>
+                                        <div class="seed-row">
+                                            <input type="text" id="wb-seed" placeholder="123456789" />
+                                            <button type="button" class="text-button" id="wb-generate-seed" data-i18n="world_builder.generate_seed">🎲 Generate</button>
+                                        </div>
+                                    </label>
                                 </div>
-                            </label>
-                            <label>
-                                <span data-i18n="world_builder.planet">Planet</span>
-                                <select id="wb-planet"></select>
-                            </label>
+                                <div class="wb-meta-row">
+                                    <label class="wb-world-name-label">
+                                        <span data-i18n="world_builder.world_name">World Name</span>
+                                        <input type="text" id="wb-world-name" placeholder="meu_mundo" required />
+                                    </label>
+                                    <label class="wb-planet-label">
+                                        <span data-i18n="world_builder.planet">Planet</span>
+                                        <select id="wb-planet"></select>
+                                    </label>
+                                </div>
+                                <div class="wb-description">
+                                    <p data-i18n="world_builder.description_placeholder">Preset description will appear here.</p>
+                                </div>
+                                <div class="wb-tabs">
+                                    <div class="wb-tab-list" role="tablist">
+                                        <button type="button" class="wb-tab active" role="tab" data-wb-tab="resources" data-i18n="world_builder.tab.resources">Resources</button>
+                                        <button type="button" class="wb-tab" role="tab" data-wb-tab="terrain" data-i18n="world_builder.tab.terrain">Terrain</button>
+                                        <button type="button" class="wb-tab" role="tab" data-wb-tab="enemy" data-i18n="world_builder.tab.enemy">Enemy</button>
+                                        <button type="button" class="wb-tab" role="tab" data-wb-tab="advanced" data-i18n="world_builder.tab.advanced">Advanced</button>
+                                    </div>
+                                    <div class="wb-tab-panel active" id="wb-tab-resources" data-wb-tab-panel="resources"></div>
+                                    <div class="wb-tab-panel" id="wb-tab-terrain" data-wb-tab-panel="terrain" style="display:none;"></div>
+                                    <div class="wb-tab-panel" id="wb-tab-enemy" data-wb-tab-panel="enemy" style="display:none;"></div>
+                                    <div class="wb-tab-panel" id="wb-tab-advanced" data-wb-tab-panel="advanced" style="display:none;"></div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="wb-footer">
+                            <p class="world-builder-create-hint" id="wb-create-hint" style="display:none;" data-i18n="world_builder.error.outdated_preview">Update the preview before creating the world.</p>
                             <div class="action-group">
                                 <button type="button" class="secondary-button" id="wb-update-preview" data-i18n="world_builder.update_preview">Update Preview</button>
                                 <button type="button" class="danger-button" id="wb-create-world" data-i18n="world_builder.create_world">Create World</button>
                             </div>
-                            <p class="world-builder-create-hint" id="wb-create-hint" style="display:none;" data-i18n="world_builder.error.outdated_preview">Update the preview before creating the world.</p>
-                        </form>
+                        </div>
                     </section>
                     <section class="panel card config-card world-builder-preview-card">
                         <div class="panel-header">
@@ -356,6 +387,33 @@
                             <p class="preview-placeholder" data-i18n="world_builder.preview.placeholder">No preview generated yet</p>
                             <img id="wb-preview-image" class="world-builder-preview-image" style="display:none;" alt="World preview" />
                         </div>
+                    </section>
+                </div>
+            </div>
+            <div class="tab-panel" id="schema-config-panel">
+                <div class="schema-config-layout">
+                    <section class="panel card config-card schema-config-sidebar">
+                        <div class="panel-header">
+                            <h2 data-i18n="schema_config.categories">Categories</h2>
+                        </div>
+                        <div id="schema-config-categories"></div>
+                    </section>
+                    <section class="panel card config-card schema-config-main">
+                        <div class="panel-header">
+                            <h2 data-i18n="schema_config.fields">Fields</h2>
+                            <select id="schema-config-source">
+                                <option value="" data-i18n="schema_config.all_files">All files</option>
+                                <option value="map-gen-settings.json">map-gen-settings.json</option>
+                                <option value="map-settings.json">map-settings.json</option>
+                            </select>
+                        </div>
+                        <div id="schema-config-fields"></div>
+                        <div class="schema-config-actions">
+                            <button type="button" class="secondary-button" id="schema-config-load-defaults" data-i18n="schema_config.load_defaults">Load Defaults</button>
+                            <button type="button" class="secondary-button" id="schema-config-serialize" data-i18n="schema_config.serialize">Serialize</button>
+                            <button type="button" class="secondary-button" id="schema_config-deserialize" data-i18n="schema_config.deserialize">Deserialize</button>
+                        </div>
+                        <pre class="schema-config-output" id="schema-config-output"></pre>
                     </section>
                 </div>
             </div>
@@ -793,6 +851,7 @@
     <script src="{{ url_for('static', filename='js/saves.js') }}"></script>
     <script src="{{ url_for('static', filename='js/config.js') }}"></script>
     <script src="{{ url_for('static', filename='js/world_builder.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/schema_config.js') }}"></script>
     <script src="{{ url_for('static', filename='js/rcon.js') }}"></script>
     <script src="{{ url_for('static', filename='js/access_control.js') }}"></script>
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>

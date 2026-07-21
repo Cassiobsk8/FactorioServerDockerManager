@@ -220,6 +220,69 @@ def test_config_hash_changes_with_seed(client):
     assert response1.get_json()["config_hash"] != response2.get_json()["config_hash"]
 
 
+def test_config_hash_changes_with_world_name(client):
+    response1 = client.post(
+        "/api/world-builder/config-hash",
+        json={"world_name": "WorldA", "planet": "nauvis"},
+    )
+    response2 = client.post(
+        "/api/world-builder/config-hash",
+        json={"world_name": "WorldB", "planet": "nauvis"},
+    )
+    assert response1.get_json()["config_hash"] != response2.get_json()["config_hash"]
+
+
+def test_config_hash_changes_with_planet(client):
+    response1 = client.post(
+        "/api/world-builder/config-hash",
+        json={"world_name": "RouteWorld", "planet": "nauvis"},
+    )
+    response2 = client.post(
+        "/api/world-builder/config-hash",
+        json={"world_name": "RouteWorld", "planet": "vulcanus"},
+    )
+    assert response1.get_json()["config_hash"] != response2.get_json()["config_hash"]
+
+
+def test_config_hash_changes_with_random_seed_flag(client):
+    response1 = client.post(
+        "/api/world-builder/config-hash",
+        json={"world_name": "RouteWorld", "seed": "123", "random_seed": True, "planet": "nauvis"},
+    )
+    response2 = client.post(
+        "/api/world-builder/config-hash",
+        json={"world_name": "RouteWorld", "seed": "123", "random_seed": False, "planet": "nauvis"},
+    )
+    assert response1.get_json()["config_hash"] != response2.get_json()["config_hash"]
+
+
+def test_config_hash_independent_fields(client):
+    base = {"world_name": "World", "planet": "nauvis"}
+
+    response_base = client.post("/api/world-builder/config-hash", json=base)
+    response_seed = client.post("/api/world-builder/config-hash", json={**base, "seed": "123", "random_seed": False})
+    response_name = client.post("/api/world-builder/config-hash", json={**base, "world_name": "Other"})
+    response_planet = client.post("/api/world-builder/config-hash", json={**base, "planet": "vulcanus"})
+
+    hashes = {
+        "base": response_base.get_json()["config_hash"],
+        "seed": response_seed.get_json()["config_hash"],
+        "name": response_name.get_json()["config_hash"],
+        "planet": response_planet.get_json()["config_hash"],
+    }
+
+    assert len(set(hashes.values())) == 4
+
+
+def test_config_hash_consistent_across_requests(client):
+    config = {"world_name": "PersistentWorld", "seed": "999", "random_seed": False, "planet": "nauvis"}
+
+    hash1 = client.post("/api/world-builder/config-hash", json=config).get_json()["config_hash"]
+    hash2 = client.post("/api/world-builder/config-hash", json=config).get_json()["config_hash"]
+
+    assert hash1 == hash2
+
+
 def test_config_hash_consistent_with_preview_hash(client):
     preview_response = client.post(
         "/api/world-builder/preview",

@@ -1,26 +1,44 @@
+        const wbState = {
+            worldConfig: {
+                world_name: '',
+                seed: null,
+                random_seed: true,
+                planet: 'nauvis',
+                settings: {},
+                map_settings: {},
+            },
+            preview: {
+                hash: null,
+                config: null,
+                isLoading: false,
+            },
+            ui: {
+                factorioValid: true,
+            },
+        };
+
         let worldBuilderInitialized = false;
-        let currentPreviewHash = null;
-        let currentPreviewConfig = null;
-        let isLoadingPreview = false;
-        let factorioInstallationValid = true;
 
         function generateRandomSeed() {
             return Math.floor(Math.random() * 1000000000);
         }
 
         function getCurrentConfig() {
-            const worldNameInput = document.getElementById('wb-world-name');
-            const seedInput = document.getElementById('wb-seed');
-            const planetSelect = document.getElementById('wb-planet');
+            return { ...wbState.worldConfig };
+        }
 
-            return {
-                world_name: worldNameInput ? worldNameInput.value.trim() : '',
-                seed: seedInput ? seedInput.value.trim() : null,
-                random_seed: !(seedInput && seedInput.value.trim()),
-                planet: planetSelect ? planetSelect.value : 'nauvis',
-                settings: {},
-                map_settings: {},
-            };
+        function updateWorldConfig(partial) {
+            if (partial.world_name !== undefined) {
+                wbState.worldConfig.world_name = (partial.world_name || '').trim();
+            }
+            if (partial.seed !== undefined) {
+                const trimmed = partial.seed == null ? null : String(partial.seed).trim();
+                wbState.worldConfig.seed = trimmed;
+                wbState.worldConfig.random_seed = !trimmed;
+            }
+            if (partial.planet !== undefined) {
+                wbState.worldConfig.planet = partial.planet || 'nauvis';
+            }
         }
 
         async function fetchCurrentConfigHash() {
@@ -41,14 +59,14 @@
 
         async function refreshPreviewStatus() {
             const configHash = await fetchCurrentConfigHash();
-            if (!configHash) return;
+            if (!configHash) {
+                setPreviewStatus('error');
+                return;
+            }
 
             const createButton = document.getElementById('wb-create-world');
-            const image = document.getElementById('wb-preview-image');
-            const container = document.getElementById('wb-preview-container');
-            const placeholder = container ? container.querySelector('.preview-placeholder') : null;
 
-            if (configHash !== currentPreviewHash) {
+            if (configHash !== wbState.preview.hash) {
                 setPreviewStatus('outdated');
                 if (createButton) createButton.disabled = true;
             } else {
@@ -66,6 +84,7 @@
                 if (!res.ok) return;
                 const data = await res.json();
 
+                const currentValue = planetSelect.value;
                 planetSelect.innerHTML = '';
                 (data.planets || []).forEach((planet) => {
                     const option = document.createElement('option');
@@ -73,6 +92,9 @@
                     option.textContent = planet;
                     planetSelect.appendChild(option);
                 });
+                if (currentValue && data.planets.includes(currentValue)) {
+                    planetSelect.value = currentValue;
+                }
             } catch (err) {
                 // ignore
             }
@@ -91,9 +113,9 @@
                     throw new Error('status_check_failed');
                 }
                 const data = await res.json();
-                factorioInstallationValid = !!data.valid;
+                wbState.ui.factorioValid = !!data.valid;
 
-                if (!factorioInstallationValid) {
+                if (!wbState.ui.factorioValid) {
                     if (banner) banner.style.display = 'flex';
                     [updateButton, createButton, generateButton].forEach((btn) => {
                         if (btn) btn.disabled = true;
@@ -111,7 +133,7 @@
                     });
                 }
             } catch (err) {
-                factorioInstallationValid = false;
+                wbState.ui.factorioValid = false;
                 if (banner) banner.style.display = 'flex';
                 [updateButton, createButton, generateButton].forEach((btn) => {
                     if (btn) btn.disabled = true;
@@ -167,8 +189,8 @@
         }
 
         function markPreviewOutdated() {
-            currentPreviewHash = null;
-            currentPreviewConfig = null;
+            wbState.preview.hash = null;
+            wbState.preview.config = null;
             setPreviewStatus('outdated');
 
             const createButton = document.getElementById('wb-create-world');
@@ -178,21 +200,14 @@
         }
 
         async function updatePreview() {
-            if (isLoadingPreview) return;
+            if (wbState.preview.isLoading) return;
 
-            const worldNameInput = document.getElementById('wb-world-name');
-            const seedInput = document.getElementById('wb-seed');
-            const planetSelect = document.getElementById('wb-planet');
-
-            if (!worldNameInput) return;
-
-            const worldName = worldNameInput.value.trim();
-            if (!worldName) {
+            if (!wbState.worldConfig.world_name) {
                 alert(t('error.create_world_failed'));
                 return;
             }
 
-            isLoadingPreview = true;
+            wbState.preview.isLoading = true;
             const updateButton = document.getElementById('wb-update-preview');
             const createButton = document.getElementById('wb-create-world');
             if (updateButton) updateButton.disabled = true;
@@ -204,12 +219,7 @@
                 const res = await fetch('/api/world-builder/preview', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        world_name: worldName,
-                        seed: seedInput ? seedInput.value.trim() : null,
-                        random_seed: !(seedInput && seedInput.value.trim()),
-                        planet: planetSelect ? planetSelect.value : 'nauvis',
-                    }),
+                    body: JSON.stringify(getCurrentConfig()),
                 });
 
                 if (!res.ok) {
@@ -220,8 +230,8 @@
                 }
 
                 const data = await res.json();
-                currentPreviewHash = data.preview_hash;
-                currentPreviewConfig = getCurrentConfig();
+                wbState.preview.hash = data.preview_hash;
+                wbState.preview.config = getCurrentConfig();
 
                 const image = document.getElementById('wb-preview-image');
                 const container = document.getElementById('wb-preview-container');
@@ -239,28 +249,21 @@
                 alert(t('world_builder.error.preview_failed'));
                 setPreviewStatus('error');
             } finally {
-                isLoadingPreview = false;
+                wbState.preview.isLoading = false;
                 if (updateButton) updateButton.disabled = false;
                 if (createButton) createButton.disabled = false;
             }
         }
 
         async function createWorld() {
-            if (isLoadingPreview) return;
+            if (wbState.preview.isLoading) return;
 
-            const worldNameInput = document.getElementById('wb-world-name');
-            const seedInput = document.getElementById('wb-seed');
-            const planetSelect = document.getElementById('wb-planet');
-
-            if (!worldNameInput) return;
-
-            const worldName = worldNameInput.value.trim();
-            if (!worldName) {
+            if (!wbState.worldConfig.world_name) {
                 alert(t('error.create_world_failed'));
                 return;
             }
 
-            if (!currentPreviewHash) {
+            if (!wbState.preview.hash) {
                 alert(t('world_builder.error.preview_failed'));
                 return;
             }
@@ -273,11 +276,8 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        world_name: worldName,
-                        seed: seedInput ? seedInput.value.trim() : null,
-                        random_seed: !(seedInput && seedInput.value.trim()),
-                        planet: planetSelect ? planetSelect.value : 'nauvis',
-                        preview_hash: currentPreviewHash,
+                        ...getCurrentConfig(),
+                        preview_hash: wbState.preview.hash,
                     }),
                 });
 
@@ -288,7 +288,7 @@
                 }
 
                 const data = await res.json();
-                alert(t('world_builder.create_world') + ': ' + (data.save_file || worldName));
+                alert(t('world_builder.create_world') + ': ' + (data.save_file || wbState.worldConfig.world_name));
                 markPreviewOutdated();
             } catch (err) {
                 alert(t('world_builder.error.create_exception'));
@@ -297,9 +297,242 @@
             }
         }
 
+        function createSliderPlaceholder(label) {
+            return `<div class="wb-placeholder-slider">
+                <label><span>${label}</span>
+                    <input type="range" min="0" max="100" value="50" disabled />
+                </label>
+            </div>`;
+        }
+
+        function createCheckboxPlaceholder(label) {
+            return `<label class="wb-placeholder-checkbox">
+                <input type="checkbox" disabled />
+                <span>${label}</span>
+            </label>`;
+        }
+
+        function createSelectPlaceholder(label, options) {
+            const opts = (options || []).map(o => `<option>${o}</option>`).join('');
+            return `<label class="wb-placeholder-select">
+                <span>${label}</span>
+                <select disabled>${opts}</select>
+            </label>`;
+        }
+
+        function createSection(title, content) {
+            return `<div class="wb-section">
+                <h3 class="wb-section-title">${title}</h3>
+                <div class="wb-section-body">${content}</div>
+            </div>`;
+        }
+
+        function createGroup(title, content) {
+            return `<div class="wb-group">
+                <h4 class="wb-group-title">${title}</h4>
+                <div class="wb-group-body">${content}</div>
+            </div>`;
+        }
+
+        function createResourceRow(name) {
+            return `<div class="wb-resource-row">
+                ${createCheckboxPlaceholder(name)}
+                ${createSliderPlaceholder('Frequency')}
+                ${createSliderPlaceholder('Size')}
+                ${createSliderPlaceholder('Richness')}
+            </div>`;
+        }
+
+        function createTerrainSubheader(label1, label2) {
+            return `<div class="wb-terrain-subheader">
+                <span></span>
+                <span>${label1}</span>
+                <span>${label2}</span>
+            </div>`;
+        }
+
+        function createTerrainRowWithCheckbox(name, slider1, slider2) {
+            return `<div class="wb-terrain-row">
+                ${createCheckboxPlaceholder(name)}
+                ${createSliderPlaceholder(slider1)}
+                ${createSliderPlaceholder(slider2)}
+            </div>`;
+        }
+
+        function createTerrainRow(name, slider1, slider2) {
+            return `<div class="wb-terrain-row">
+                <span class="wb-terrain-label">${name}</span>
+                ${createSliderPlaceholder(slider1)}
+                ${createSliderPlaceholder(slider2)}
+            </div>`;
+        }
+
+        function createTerrainSelectRow(name, options) {
+            const opts = (options || []).map(o => `<option>${o}</option>`).join('');
+            return `<div class="wb-terrain-row">
+                <span class="wb-terrain-label">${name}</span>
+                <div class="wb-placeholder-select">
+                    <span>${name}</span>
+                    <select disabled>${opts}</select>
+                </div>
+                <span></span>
+            </div>`;
+        }
+
+        function createTerrainDivider() {
+            return `<div class="wb-terrain-divider"></div>`;
+        }
+
+        function createEnemyRowWithCheckbox(name, slider1, slider2) {
+            return `<div class="wb-enemy-row">
+                ${createCheckboxPlaceholder(name)}
+                ${createSliderPlaceholder(slider1)}
+                ${createSliderPlaceholder(slider2)}
+            </div>`;
+        }
+
+        function createEnemyCheckboxRow(name) {
+            return `<div class="wb-enemy-row">
+                ${createCheckboxPlaceholder(name)}
+            </div>`;
+        }
+
+        function createEnemySliderRow(label) {
+            return `<div class="wb-enemy-slider-row">
+                ${createSliderPlaceholder(label)}
+            </div>`;
+        }
+
+        function createEnemySlidersRow(label1, label2, label3) {
+            return `<div class="wb-enemy-row">
+                ${createSliderPlaceholder(label1)}
+                ${createSliderPlaceholder(label2)}
+                ${createSliderPlaceholder(label3)}
+            </div>`;
+        }
+
+        function populateTabs() {
+            const resourcesPanel = document.getElementById('wb-tab-resources');
+            const terrainPanel = document.getElementById('wb-tab-terrain');
+            const enemyPanel = document.getElementById('wb-tab-enemy');
+            const advancedPanel = document.getElementById('wb-tab-advanced');
+
+            if (resourcesPanel) {
+                resourcesPanel.innerHTML = `<div class="wb-resources-table-wrapper">
+                    <div class="wb-resources-header">
+                        <span data-i18n="world_builder.resource.header.resource">Resource</span>
+                        <span data-i18n="world_builder.resource.header.frequency">Frequency</span>
+                        <span data-i18n="world_builder.resource.header.size">Size</span>
+                        <span data-i18n="world_builder.resource.header.richness">Richness</span>
+                    </div>
+                    <div class="wb-resources-body">
+                        ${createResourceRow('Iron Ore')}
+                        ${createResourceRow('Copper Ore')}
+                        ${createResourceRow('Stone')}
+                        ${createResourceRow('Coal')}
+                        ${createResourceRow('Uranium')}
+                    </div>
+                </div>`;
+            }
+
+            if (terrainPanel) {
+                terrainPanel.innerHTML = `<div class="wb-terrain-table-wrapper">
+                    <div class="wb-terrain-full-width">
+                        ${createSelectPlaceholder('Map type', ['Default', 'Island', 'Continents'])}
+                    </div>
+                    <div class="wb-terrain-header">
+                        <span></span>
+                        <span>Scale</span>
+                        <span>Coverage</span>
+                    </div>
+                    <div class="wb-terrain-body">
+                        ${createTerrainRowWithCheckbox('Water', 'Scale', 'Coverage')}
+                        ${createTerrainRowWithCheckbox('Trees', 'Scale', 'Coverage')}
+                        ${createTerrainDivider()}
+                        ${createTerrainSubheader('Frequency', 'Continuity')}
+                        ${createTerrainRowWithCheckbox('Cliffs', 'Frequency', 'Continuity')}
+                        ${createTerrainDivider()}
+                        ${createTerrainSubheader('Scale', 'Bias')}
+                        ${createTerrainRow('Moisture', 'Scale', 'Bias')}
+                        ${createTerrainSelectRow('Terrain', ['Default', 'Sand', 'Red desert'])}
+                    </div>
+                </div>`;
+            }
+
+            if (enemyPanel) {
+                enemyPanel.innerHTML = `<div class="wb-enemy-table-wrapper">
+                    <div class="wb-enemy-group">
+                        ${createEnemyRowWithCheckbox('Enemy Bases', 'Frequency', 'Size')}
+                    </div>
+                    ${createTerrainDivider()}
+                    <div class="wb-enemy-group">
+                        ${createEnemyCheckboxRow('Peaceful Mode')}
+                    </div>
+                    ${createTerrainDivider()}
+                    <div class="wb-enemy-group">
+                        ${createEnemySliderRow('Starting Area')}
+                    </div>
+                    ${createTerrainDivider()}
+                    <div class="wb-enemy-group">
+                        ${createEnemySliderRow('Maximum Expansion Distance')}
+                        ${createEnemySliderRow('Minimum Group Size')}
+                        ${createEnemySliderRow('Maximum Group Size')}
+                        ${createEnemySliderRow('Minimum Cooldown')}
+                        ${createEnemySliderRow('Maximum Cooldown')}
+                    </div>
+                    ${createTerrainDivider()}
+                    <div class="wb-enemy-group">
+                        ${createEnemySlidersRow('Time', 'Destroy', 'Pollution')}
+                    </div>
+                </div>`;
+            }
+
+            if (advancedPanel) {
+                advancedPanel.innerHTML = [
+                    createGroup('Replay', [
+                        createCheckboxPlaceholder('Enabled')
+                    ]),
+                    createGroup('Map', [
+                        createSliderPlaceholder('Width'),
+                        createSliderPlaceholder('Height')
+                    ]),
+                    createGroup('Recipes', [
+                        createSliderPlaceholder('Difficulty')
+                    ]),
+                    createGroup('Technology', [
+                        createSliderPlaceholder('Difficulty'),
+                        createSliderPlaceholder('Price Multiplier'),
+                        createSliderPlaceholder('Research Queue')
+                    ]),
+                    createGroup('Pollution', [
+                        createSliderPlaceholder('Absorption Modifier'),
+                        createSliderPlaceholder('Attack Cost Modifier'),
+                        createSliderPlaceholder('Minimum Damage Trees'),
+                        createSliderPlaceholder('Absorbed Per Damaged Tree'),
+                        createSliderPlaceholder('Diffusion Ratio')
+                    ]),
+                ].join('');
+            }
+        }
+
+        function initWbTabs() {
+            document.querySelectorAll('.wb-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.wb-tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.wb-tab-panel').forEach(p => p.style.display = 'none');
+                    tab.classList.add('active');
+                    const panel = document.getElementById('wb-tab-' + tab.dataset.wbTab);
+                    if (panel) panel.style.display = '';
+                });
+            });
+        }
+
         function initWorldBuilder() {
             if (worldBuilderInitialized) return;
             worldBuilderInitialized = true;
+
+            populateTabs();
+            initWbTabs();
 
             const worldNameInput = document.getElementById('wb-world-name');
             const seedInput = document.getElementById('wb-seed');
@@ -308,20 +541,46 @@
             const updateButton = document.getElementById('wb-update-preview');
             const createButton = document.getElementById('wb-create-world');
 
+            if (worldNameInput) {
+                updateWorldConfig({ world_name: worldNameInput.value });
+                worldNameInput.addEventListener('input', () => {
+                    updateWorldConfig({ world_name: worldNameInput.value });
+                    refreshPreviewStatus();
+                });
+                worldNameInput.addEventListener('change', () => {
+                    updateWorldConfig({ world_name: worldNameInput.value });
+                    refreshPreviewStatus();
+                });
+            }
+
+            if (seedInput) {
+                updateWorldConfig({ seed: seedInput.value });
+                seedInput.addEventListener('input', () => {
+                    updateWorldConfig({ seed: seedInput.value });
+                    refreshPreviewStatus();
+                });
+                seedInput.addEventListener('change', () => {
+                    updateWorldConfig({ seed: seedInput.value });
+                    refreshPreviewStatus();
+                });
+            }
+
             if (generateButton && seedInput) {
                 generateButton.addEventListener('click', () => {
-                    seedInput.value = generateRandomSeed();
+                    const newSeed = generateRandomSeed();
+                    seedInput.value = newSeed;
+                    updateWorldConfig({ seed: newSeed });
                     markPreviewOutdated();
                 });
             }
 
-            const inputs = [worldNameInput, seedInput, planetSelect];
-            inputs.forEach((input) => {
-                if (input) {
-                    input.addEventListener('input', refreshPreviewStatus);
-                    input.addEventListener('change', refreshPreviewStatus);
-                }
-            });
+            if (planetSelect) {
+                updateWorldConfig({ planet: planetSelect.value });
+                planetSelect.addEventListener('change', () => {
+                    updateWorldConfig({ planet: planetSelect.value });
+                    markPreviewOutdated();
+                });
+            }
 
             if (updateButton) {
                 updateButton.addEventListener('click', updatePreview);
