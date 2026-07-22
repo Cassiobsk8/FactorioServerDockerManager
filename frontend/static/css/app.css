@@ -2813,11 +2813,11 @@ pre {
 
 .wb-resource-row {
     display: grid;
-    grid-template-columns: 1.5fr 0.6fr 0.45fr 1fr 1fr 1fr;
-    gap: 0.6rem;
+    grid-template-columns: 1.5fr 0.8fr 0.5fr 1fr 1fr 1fr;
+    gap: var(--spacing-md);
     align-items: center;
-    padding: 0.35rem 0;
-    border-bottom: 1px solid rgba(148, 163, 184, 0.06);
+    padding: var(--spacing-sm) 0;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.08);
 }
 
 .wb-resource-row:last-child {
@@ -2831,15 +2831,15 @@ pre {
 
 .wb-resources-header {
     display: grid;
-    grid-template-columns: 1.5fr 0.6fr 0.45fr 1fr 1fr 1fr;
-    gap: 0.6rem;
-    padding: 0.4rem 0;
-    font-size: 0.7rem;
-    font-weight: 600;
+    grid-template-columns: 1.5fr 0.8fr 0.5fr 1fr 1fr 1fr;
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm) 0;
+    font-size: var(--font-xs);
+    font-weight: 700;
     color: var(--subtext);
     text-transform: uppercase;
-    letter-spacing: 0.04em;
-    border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+    letter-spacing: 0.06em;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.18);
     position: sticky;
     top: 0;
     background: rgba(15, 23, 42, 0.96);
@@ -2847,22 +2847,19 @@ pre {
 }
 
 .wb-resource-label {
-    font-size: 0.8rem;
-    font-weight: 500;
+    font-size: var(--font-sm);
+    font-weight: 600;
     color: var(--text);
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 .wb-resource-planet {
-    font-size: 0.75rem;
+    font-size: var(--font-xs);
     color: var(--subtext);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     text-align: center;
-    max-width: 5rem;
 }
 
 .wb-resource-checkbox-wrapper {
@@ -2872,36 +2869,32 @@ pre {
 }
 
 .wb-resource-checkbox {
-    width: 0.85rem;
-    height: 0.85rem;
+    width: 1rem;
+    height: 1rem;
     accent-color: var(--accent);
     cursor: pointer;
 }
 
 .wb-resource-slider {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    gap: var(--spacing-xs);
     align-items: center;
-    gap: 0.35rem;
 }
 
 .wb-resource-value {
-    font-size: 0.7rem;
+    font-size: var(--font-xs);
     color: var(--subtext);
     font-variant-numeric: tabular-nums;
-    min-width: 2.2rem;
-    text-align: right;
 }
 
 .wb-resource-input {
-    flex: 1;
-    min-width: 0;
+    width: 100%;
     accent-color: var(--accent);
 }
 
 .wb-resource-discrete-input {
-    flex: 1;
-    min-width: 0;
+    width: 100%;
     accent-color: var(--accent);
 }
 
@@ -3065,8 +3058,8 @@ pre {
 
     .wb-resources-header,
     .wb-resource-row {
-        grid-template-columns: 1.5fr 0.6fr 0.45fr 1fr 1fr 1fr;
-        gap: 0.5rem;
+        grid-template-columns: 1fr 0.8fr 0.5fr 1fr 1fr 1fr;
+        gap: var(--spacing-sm);
     }
 
     .wb-terrain-header,
