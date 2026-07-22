@@ -267,6 +267,40 @@ def test_i18n_uses_bootstrap_cache():
     assert "BootstrapCache.get('app-settings'" in js
 
 
+def test_favicon_links_exist():
+    html = _read_template()
+    assert "url_for('static', filename='icons/favicon.ico')" in html
+    assert 'type="image/x-icon"' in html
+    assert 'rel="icon"' in html
+
+
+def test_logo_img_in_sidebar():
+    html = _read_template()
+    assert "url_for('static', filename='img/logo.png')" in html
+    assert 'class="brand-logo"' in html
+    assert 'alt="Factorio Server Manager"' in html
+
+
+def test_old_brand_svg_removed():
+    html = _read_template()
+    assert 'class="brand-icon"' not in html
+    assert 'viewBox="0 0 48 48"' not in html
+
+
+def test_about_hero_uses_logo():
+    html = _read_template()
+    assert 'class="about-hero-icon"' in html
+    assert '<img' in html
+    assert '⚙️' not in html
+
+
+def test_logo_css_responsive():
+    css_path = Path(__file__).resolve().parent.parent.parent / "frontend" / "static" / "css" / "app.css"
+    css = css_path.read_text(encoding="utf-8")
+    assert ".brand-logo" in css
+    assert "object-fit: contain" in css
+
+
 def test_settings_save_invalidates_cache():
     config_path = Path(__file__).resolve().parent.parent.parent / "frontend" / "static" / "js" / "config.js"
     js = config_path.read_text(encoding="utf-8")
