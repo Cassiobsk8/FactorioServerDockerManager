@@ -161,6 +161,60 @@ def test_preview_image_returns_404_when_missing_with_extension(client):
     assert response.status_code == 404
 
 
+def test_preview_with_autoplace_controls(client):
+    response = client.post(
+        "/api/world-builder/preview",
+        json={
+            "world_name": "RouteWorld",
+            "planet": "nauvis",
+            "settings": {
+                "autoplace_controls": {
+                    "coal": {"frequency": 2, "size": 1, "richness": 3}
+                }
+            }
+        },
+    )
+    assert response.status_code == 200
+    payload = response.get_json()
+    assert payload["status"] == "ready"
+    assert payload["preview_hash"] in payload["preview_url"]
+
+
+def test_create_world_with_autoplace_controls(client):
+    preview_response = client.post(
+        "/api/world-builder/preview",
+        json={
+            "world_name": "RouteWorld",
+            "planet": "nauvis",
+            "settings": {
+                "autoplace_controls": {
+                    "coal": {"frequency": 2, "size": 1, "richness": 3}
+                }
+            }
+        },
+    )
+    assert preview_response.status_code == 200
+    preview_payload = preview_response.get_json()
+
+    response = client.post(
+        "/api/world-builder/create",
+        json={
+            "world_name": "RouteWorld",
+            "planet": "nauvis",
+            "settings": {
+                "autoplace_controls": {
+                    "coal": {"frequency": 2, "size": 1, "richness": 3}
+                }
+            },
+            "preview_hash": preview_payload["preview_hash"],
+        },
+    )
+    assert response.status_code == 201
+    payload = response.get_json()
+    assert payload["status"] == "created"
+    assert payload["save_file"] == "RouteWorld.zip"
+
+
 def test_preview_image_info_log_excludes_file_listing(client, caplog):
     (world_builder_service.PREVIEWS_DIR / "abc123.png").write_text("png")
 
@@ -303,6 +357,44 @@ def test_config_hash_independent_fields(client):
     }
 
     assert len(set(hashes.values())) == 4
+
+
+def test_config_hash_changes_with_autoplace_controls(client):
+    base = {"world_name": "World", "planet": "nauvis"}
+
+    response_base = client.post("/api/world-builder/config-hash", json=base)
+    response_with_settings = client.post(
+        "/api/world-builder/config-hash",
+        json={
+            **base,
+            "settings": {
+                "autoplace_controls": {
+                    "coal": {"frequency": 2, "size": 1, "richness": 1}
+                }
+            }
+        },
+    )
+
+    assert response_base.get_json()["config_hash"] != response_with_settings.get_json()["config_hash"]
+
+
+def test_config_engine_returns_resource_autoplace_controls(client):
+    response = client.get("/api/world-builder/config-engine?source_file=map-gen-settings.json")
+    assert response.status_code == 200
+    payload = response.get_json()
+    assert "fields" in payload
+
+    resource_fields = [f for f in payload["fields"] if f["category"] == "Resources"]
+    assert len(resource_fields) > 0
+
+    autoplace_fields = [f for f in resource_fields if f["id"].startswith("autoplace_controls.")]
+    assert len(autoplace_fields) > 0
+
+    for field in autoplace_fields:
+        assert "frequency" in field["default"]
+        assert "size" in field["default"]
+        if field.get("default", {}).get("richness") is not None:
+            assert "richness" in field["default"]
 
 
 def test_config_hash_consistent_across_requests(client):

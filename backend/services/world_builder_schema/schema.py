@@ -35,6 +35,7 @@ class FieldMetadata:
     parent: str | None = None
     planet_exclusive: list[str] | None = None
     space_age_exclusive: bool = False
+    can_be_disabled: bool = True
 
 
 def _autoplace(
@@ -44,18 +45,30 @@ def _autoplace(
     default: float = 1.0,
     min_val: float = 0.0,
     max_val: float = 10.0,
+    planet_exclusive: list[str] | None = None,
+    richness: bool = True,
+    order_: str | None = None,
+    can_be_disabled: bool = True,
 ) -> dict[str, Any]:
-    return {
+    data: dict[str, Any] = {
         "id": f"autoplace_controls.{control_id}",
         "label": label,
         "description": description,
         "category": CATEGORY_RESOURCES,
         "type": "AutoplaceControl",
-        "default": {"frequency": default, "size": default, "richness": default},
+        "default": {"frequency": default, "size": default},
         "min": min_val,
         "max": max_val,
         "source_file": "map-gen-settings.json",
+        "can_be_disabled": can_be_disabled,
     }
+    if richness:
+        data["default"]["richness"] = default
+    if planet_exclusive is not None:
+        data["planet_exclusive"] = planet_exclusive
+    if order_ is not None:
+        data["order"] = order_
+    return data
 
 
 def _field(
@@ -73,6 +86,8 @@ def _field(
     parent: str | None = None,
     planet_exclusive: list[str] | None = None,
     space_age_exclusive: bool = False,
+    order_: str | None = None,
+    can_be_disabled: bool = True,
 ) -> dict[str, Any]:
     data: dict[str, Any] = {
         "id": field_id,
@@ -82,6 +97,7 @@ def _field(
         "type": type_,
         "default": default,
         "source_file": source_file,
+        "can_be_disabled": can_be_disabled,
     }
     if options is not None:
         data["options"] = options
@@ -97,6 +113,8 @@ def _field(
         data["planet_exclusive"] = planet_exclusive
     if space_age_exclusive:
         data["space_age_exclusive"] = True
+    if order_ is not None:
+        data["order"] = order_
     return data
 
 
@@ -107,17 +125,34 @@ MAP_GEN_SETTINGS_SCHEMA = [
     _field("peaceful_mode", "Peaceful Mode", "If true, enemy creatures will not attack unless the player first attacks them.", CATEGORY_ENEMIES, "boolean", default=False, source_file="map-gen-settings.json"),
     _field("no_enemies_mode", "No Enemies Mode", "If true, enemy creatures will not naturally spawn.", CATEGORY_ENEMIES, "boolean", default=False, source_file="map-gen-settings.json"),
     _field("default_enable_all_autoplace_controls", "Default Enable All Autoplace Controls", "Whether undefined autoplace_controls should fall back to the default controls.", CATEGORY_ADVANCED, "boolean", default=True, source_file="map-gen-settings.json"),
-    _autoplace("coal", "Coal", "Frequency, size and richness of coal deposits."),
-    _autoplace("stone", "Stone", "Frequency, size and richness of stone deposits."),
-    _autoplace("copper-ore", "Copper Ore", "Frequency, size and richness of copper ore deposits."),
-    _autoplace("iron-ore", "Iron Ore", "Frequency, size and richness of iron ore deposits."),
-    _autoplace("uranium-ore", "Uranium Ore", "Frequency, size and richness of uranium ore deposits."),
-    _autoplace("crude-oil", "Crude Oil", "Frequency, size and richness of crude oil patches."),
-    _field("autoplace_controls.water", "Water", "Frequency and size of water patches.", CATEGORY_WATER, "AutoplaceControl", default={"frequency": 1.0, "size": 1.0}, min_=0.0, max_=10.0, source_file="map-gen-settings.json"),
-    _autoplace("trees", "Trees", "Frequency and size of tree clusters."),
-    _autoplace("enemy-base", "Enemy Bases", "Frequency and size of enemy bases."),
-    _field("autoplace_controls.fulgora_cliff", "Fulgora Cliffs", "Frequency, size and richness of cliffs on Fulgora.", CATEGORY_PLANET, "AutoplaceControl", default={"frequency": 1.0, "size": 2.0, "richness": 0.0}, min_=0.0, max_=10.0, source_file="map-gen-settings.json", planet_exclusive=["fulgora"], space_age_exclusive=True),
-    _field("autoplace_controls.gleba_cliff", "Gleba Cliffs", "Frequency, size and richness of cliffs on Gleba.", CATEGORY_PLANET, "AutoplaceControl", default={"frequency": 1.0, "size": 2.0, "richness": 0.0}, min_=0.0, max_=10.0, source_file="map-gen-settings.json", planet_exclusive=["gleba"], space_age_exclusive=True),
+    _autoplace("coal", "Coal", "Frequency, size and richness of coal deposits.", order_="a-d"),
+    _autoplace("stone", "Stone", "Frequency, size and richness of stone deposits.", order_="a-c"),
+    _autoplace("copper-ore", "Copper Ore", "Frequency, size and richness of copper ore deposits.", order_="a-b"),
+    _autoplace("iron-ore", "Iron Ore", "Frequency, size and richness of iron ore deposits.", order_="a-a"),
+    _autoplace("uranium-ore", "Uranium Ore", "Frequency, size and richness of uranium ore deposits.", order_="a-f"),
+    _autoplace("crude-oil", "Crude Oil", "Frequency, size and richness of crude oil patches.", order_="a-e"),
+    _field("autoplace_controls.water", "Water", "Frequency and size of water patches.", CATEGORY_WATER, "AutoplaceControl", default={"frequency": 1.0, "size": 1.0}, min_=0.0, max_=10.0, source_file="map-gen-settings.json", order_="c-a"),
+    _autoplace("trees", "Trees", "Frequency and size of tree clusters.", order_="c-x"),
+    _autoplace("enemy-base", "Enemy Bases", "Frequency and size of enemy bases.", order_="c-z", can_be_disabled=False),
+    _field("autoplace_controls.rocks", "Rocks", "Frequency and size of rock patches.", CATEGORY_RESOURCES, "AutoplaceControl", default={"frequency": 1.0, "size": 1.0}, min_=0.0, max_=10.0, source_file="map-gen-settings.json", order_="c-y"),
+    _field("autoplace_controls.starting_area_moisture", "Starting Area Moisture", "Moisture setting for the starting area.", CATEGORY_RESOURCES, "AutoplaceControl", default={"frequency": 1.0, "size": 1.0}, min_=0.0, max_=10.0, source_file="map-gen-settings.json", order_="c-z"),
+    _field("autoplace_controls.nauvis_cliff", "Nauvis Cliffs", "Frequency, size and richness of cliffs on Nauvis.", CATEGORY_PLANET, "AutoplaceControl", default={"frequency": 1.0, "size": 2.0, "richness": 0.0}, min_=0.0, max_=10.0, source_file="map-gen-settings.json", order_="c-z"),
+    _autoplace("vulcanus_coal", "Vulcanus Coal", "Frequency, size and richness of coal deposits on Vulcanus.", planet_exclusive=["vulcanus"], order_="b-a"),
+    _autoplace("calcite", "Calcite", "Frequency, size and richness of calcite deposits.", planet_exclusive=["vulcanus"], order_="b-c"),
+    _autoplace("sulfuric-acid-geyser", "Sulfuric Acid Geyser", "Frequency, size and richness of sulfuric acid geysers.", planet_exclusive=["vulcanus"], order_="b-c"),
+    _autoplace("tungsten-ore", "Tungsten Ore", "Frequency, size and richness of tungsten ore deposits.", planet_exclusive=["vulcanus"], order_="b-d"),
+    _autoplace("gleba_stone", "Gleba Stone", "Frequency, size and richness of stone deposits on Gleba.", planet_exclusive=["gleba"], order_="c-a"),
+    _field("autoplace_controls.gleba_water", "Gleba Water", "Frequency and size of water patches on Gleba.", CATEGORY_RESOURCES, "AutoplaceControl", default={"frequency": 1.0, "size": 1.0}, min_=0.0, max_=10.0, source_file="map-gen-settings.json", planet_exclusive=["gleba"], order_="c-z-b", can_be_disabled=False),
+    _field("autoplace_controls.gleba_plants", "Gleba Plants", "Frequency and size of plant life on Gleba.", CATEGORY_RESOURCES, "AutoplaceControl", default={"frequency": 1.0, "size": 1.0}, min_=0.0, max_=10.0, source_file="map-gen-settings.json", planet_exclusive=["gleba"], order_="c-z-c", can_be_disabled=False),
+    _autoplace("scrap", "Scrap", "Frequency, size and richness of scrap piles.", planet_exclusive=["fulgora"], order_="d-a"),
+    _field("autoplace_controls.fulgora_islands", "Fulgora Islands", "Frequency and size of islands on Fulgora.", CATEGORY_RESOURCES, "AutoplaceControl", default={"frequency": 1.0, "size": 1.0}, min_=0.0, max_=10.0, source_file="map-gen-settings.json", planet_exclusive=["fulgora"], order_="c-z-d", can_be_disabled=False),
+    _autoplace("aquilo_crude_oil", "Aquilo Crude Oil", "Frequency, size and richness of crude oil patches on Aquilo.", planet_exclusive=["aquilo"], order_="e-a"),
+    _autoplace("fluorine_vent", "Fluorine Vent", "Frequency, size and richness of fluorine vents.", planet_exclusive=["aquilo"], order_="e-c"),
+    _autoplace("lithium_brine", "Lithium Brine", "Frequency, size and richness of lithium brine deposits.", planet_exclusive=["aquilo"], order_="e-b"),
+    _field("autoplace_controls.vulcanus_volcanism", "Vulcanus Volcanism", "Frequency and size of volcanic activity on Vulcanus.", CATEGORY_RESOURCES, "AutoplaceControl", default={"frequency": 1.0, "size": 1.0}, min_=0.0, max_=10.0, source_file="map-gen-settings.json", planet_exclusive=["vulcanus"], order_="c-z-a", can_be_disabled=False),
+    _field("autoplace_controls.gleba_enemy_base", "Gleba Enemy Bases", "Frequency and size of enemy bases on Gleba.", CATEGORY_RESOURCES, "AutoplaceControl", default={"frequency": 1.0, "size": 1.0}, min_=0.0, max_=10.0, source_file="map-gen-settings.json", planet_exclusive=["gleba"], order_="z", can_be_disabled=False),
+    _field("autoplace_controls.fulgora_cliff", "Fulgora Cliffs", "Frequency, size and richness of cliffs on Fulgora.", CATEGORY_PLANET, "AutoplaceControl", default={"frequency": 1.0, "size": 2.0, "richness": 0.0}, min_=0.0, max_=10.0, source_file="map-gen-settings.json", planet_exclusive=["fulgora"], space_age_exclusive=True, order_="c-z-c"),
+    _field("autoplace_controls.gleba_cliff", "Gleba Cliffs", "Frequency, size and richness of cliffs on Gleba.", CATEGORY_PLANET, "AutoplaceControl", default={"frequency": 1.0, "size": 2.0, "richness": 0.0}, min_=0.0, max_=10.0, source_file="map-gen-settings.json", planet_exclusive=["gleba"], space_age_exclusive=True, order_="c-z-b"),
     _field("cliff_settings.name", "Cliff Prototype Name", "Name of the cliff prototype.", CATEGORY_TERRAIN, "string", default="cliff", source_file="map-gen-settings.json"),
     _field("cliff_settings.cliff_elevation_0", "Cliff Elevation 0", "Elevation of first row of cliffs.", CATEGORY_TERRAIN, "double", default=10, min_=0, max_=100, source_file="map-gen-settings.json"),
     _field("cliff_settings.cliff_elevation_interval", "Cliff Elevation Interval", "Elevation difference between successive rows of cliffs.", CATEGORY_TERRAIN, "double", default=40, min_=1, max_=200, source_file="map-gen-settings.json"),

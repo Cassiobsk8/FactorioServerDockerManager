@@ -40,6 +40,7 @@ def _build_form_field(field: dict[str, Any]) -> dict[str, Any]:
         "label": field["label"],
         "description": field["description"],
         "type": form_type,
+        "original_type": field.get("type"),
         "category": field["category"],
         "source_file": field["source_file"],
         "default": field.get("default"),
@@ -54,10 +55,16 @@ def _build_form_field(field: dict[str, Any]) -> dict[str, Any]:
         data["max"] = field["max"]
     if field.get("unit"):
         data["unit"] = field["unit"]
+    if field.get("parent"):
+        data["parent"] = field["parent"]
     if field.get("planet_exclusive"):
         data["planet_exclusive"] = field["planet_exclusive"]
     if field.get("space_age_exclusive"):
         data["space_age_exclusive"] = True
+    if field.get("order"):
+        data["order"] = field["order"]
+    if field.get("can_be_disabled") is not None:
+        data["can_be_disabled"] = field["can_be_disabled"]
     return data
 
 

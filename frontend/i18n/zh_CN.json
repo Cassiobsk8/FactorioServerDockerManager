@@ -334,6 +334,7 @@
   "world_builder.resource.coal": "煤炭",
   "world_builder.resource.uranium": "铀矿",
   "world_builder.resource.header.resource": "资源",
+  "world_builder.resource.header.planet": "星球",
   "world_builder.resource.header.frequency": "频率",
   "world_builder.resource.header.size": "规模",
   "world_builder.resource.header.richness": "丰富度",

@@ -334,6 +334,7 @@
   "world_builder.resource.coal": "Carbón",
   "world_builder.resource.uranium": "Uranio",
   "world_builder.resource.header.resource": "Recurso",
+  "world_builder.resource.header.planet": "Planeta",
   "world_builder.resource.header.frequency": "Frecuencia",
   "world_builder.resource.header.size": "Tamaño",
   "world_builder.resource.header.richness": "Riqueza",

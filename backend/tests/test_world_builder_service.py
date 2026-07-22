@@ -883,6 +883,29 @@ def test_write_map_gen_settings_returns_none_when_empty(tmp_path):
     assert result is None
 
 
+def test_write_map_gen_settings_with_autoplace_controls(tmp_path):
+    config = DummyWorldConfig(
+        world_name="Test",
+        seed="123",
+        random_seed=False,
+        planet="nauvis",
+        settings={
+            "autoplace_controls": {
+                "coal": {"frequency": 2, "size": 3, "richness": 4},
+            }
+        },
+    )
+    result = _write_map_gen_settings(config, tmp_path)
+
+    assert result is not None
+    assert result.exists()
+    data = json.loads(result.read_text(encoding="utf-8"))
+    assert data["autoplace_controls"]["coal"]["frequency"] == 2
+    assert data["autoplace_controls"]["coal"]["size"] == 3
+    assert data["autoplace_controls"]["coal"]["richness"] == 4
+    assert data["seed"] == 123
+
+
 def test_write_map_settings_creates_file(tmp_path):
     config = DummyWorldConfig(
         world_name="Test",

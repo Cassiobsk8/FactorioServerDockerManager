@@ -169,6 +169,34 @@ def test_world_builder_css_exists():
     assert ".world-builder-create-hint" in css
 
 
+def test_world_builder_resources_css_exists():
+    css_path = Path(__file__).resolve().parent.parent.parent / "frontend" / "static" / "css" / "app.css"
+    css = css_path.read_text(encoding="utf-8")
+    assert ".wb-resource-label" in css
+    assert ".wb-resource-slider" in css
+    assert ".wb-resource-value" in css
+    assert ".wb-resource-input" in css
+
+
+def test_world_builder_resources_dom_structure():
+    html = _read_template()
+    assert 'id="wb-tab-resources"' in html
+    assert 'id="wb-tab-terrain"' in html
+    assert 'id="wb-tab-enemy"' in html
+    assert 'id="wb-tab-advanced"' in html
+    assert 'id="wb-preview-status"' in html
+    assert 'id="wb-preview-image"' in html
+    assert 'id="wb-preview-container"' in html
+
+
+def test_world_builder_resources_js_resilient_filter():
+    js_path = Path(__file__).resolve().parent.parent.parent / "frontend" / "static" / "js" / "world_builder.js"
+    js = js_path.read_text(encoding="utf-8")
+    assert "original_type === 'AutoplaceControl'" in js
+    assert "autoplace_controls." in js
+    assert "renderResourcesError" in js
+
+
 def test_world_builder_js_exists():
     js_path = Path(__file__).resolve().parent.parent.parent / "frontend" / "static" / "js" / "world_builder.js"
     assert js_path.exists()
@@ -179,6 +207,9 @@ def test_world_builder_js_exists():
     assert "generateRandomSeed" in js
     assert "checkWorldBuilderStatus" in js
     assert "refreshPreviewStatus" in js
+    assert "loadResourceFields" in js
+    assert "renderResources" in js
+    assert "handleResourceChange" in js
     assert "wbState" in js
     assert "worldConfig" in js
     assert "preview" in js

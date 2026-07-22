@@ -166,3 +166,41 @@ def test_form_config_has_all_categories():
     assert "Expansion" in config["categories"]
     assert "Advanced" in config["categories"]
     assert "Planet" in config["categories"]
+
+
+def test_form_config_has_autoplace_controls_in_resources():
+    from backend.services.world_builder_schema import get_fields_by_category
+
+    resource_fields = get_fields_by_category("Resources")
+    autoplace_fields = [f for f in resource_fields if f["type"] == "AutoplaceControl"]
+    assert len(autoplace_fields) > 0
+    for field in autoplace_fields:
+        assert field["default"] is not None
+        assert "frequency" in field["default"]
+        assert "size" in field["default"]
+        if field.get("default", {}).get("richness") is not None:
+            assert "richness" in field["default"]
+
+
+def test_build_form_field_preserves_original_type_for_autoplace():
+    from backend.services.world_builder_config_engine import _build_form_field
+
+    field = {
+        "id": "autoplace_controls.coal",
+        "label": "Coal",
+        "description": "Frequency, size and richness of coal deposits.",
+        "category": "Resources",
+        "type": "AutoplaceControl",
+        "default": {"frequency": 1.0, "size": 1.0, "richness": 1.0},
+        "source_file": "map-gen-settings.json",
+        "min": 0.0,
+        "max": 10.0,
+    }
+    result = _build_form_field(field)
+    assert result["type"] == "group"
+    assert result["original_type"] == "AutoplaceControl"
+    assert result["default"] == {"frequency": 1.0, "size": 1.0, "richness": 1.0}
+    assert result["min"] == 0.0
+    assert result["max"] == 10.0
+
+

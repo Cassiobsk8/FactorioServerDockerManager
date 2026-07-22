@@ -12,10 +12,59 @@
                 config: null,
                 isLoading: false,
             },
+            resourceFields: [],
+            resourcePreviousValues: {},
             ui: {
                 factorioValid: true,
             },
         };
+
+        const FACTORIO_SLIDER_VALUES = [0.166666667, 0.25, 0.333333333, 0.5, 0.75, 1, 1.333333333, 1.5, 2, 3, 4, 6];
+        const FACTORIO_SLIDER_LABELS = ['17%', '25%', '33%', '50%', '75%', '100%', '133%', '150%', '200%', '300%', '400%', '600%'];
+
+        function factorioValueToIndex(value) {
+            if (typeof value !== 'number' || !isFinite(value)) return 5;
+            let closestIndex = 0;
+            let closestDiff = Math.abs(FACTORIO_SLIDER_VALUES[0] - value);
+            for (let i = 1; i < FACTORIO_SLIDER_VALUES.length; i++) {
+                const diff = Math.abs(FACTORIO_SLIDER_VALUES[i] - value);
+                if (diff < closestDiff) {
+                    closestDiff = diff;
+                    closestIndex = i;
+                }
+            }
+            return closestIndex;
+        }
+
+        function factorioIndexToValue(index) {
+            const i = Math.max(0, Math.min(11, Math.round(index)));
+            return FACTORIO_SLIDER_VALUES[i];
+        }
+
+        function factorioIndexToLabel(index) {
+            const i = Math.max(0, Math.min(11, Math.round(index)));
+            return FACTORIO_SLIDER_LABELS[i];
+        }
+
+        const PLANET_ICONS = {
+            'nauvis': '🌍',
+            'vulcanus': '🌋',
+            'gleba': '🌿',
+            'fulgora': '🔴',
+            'aquilo': '❄'
+        };
+
+        function formatPlanet(field) {
+            const planets = field.planet_exclusive;
+            if (planets && planets.length > 0) {
+                const planet = planets[0];
+                const icon = PLANET_ICONS[planet] || '';
+                const name = planet.charAt(0).toUpperCase() + planet.slice(1);
+                return `${icon} ${name}`;
+            }
+            const icon = PLANET_ICONS['nauvis'] || '';
+            return `${icon} Nauvis`;
+        }
 
         let worldBuilderInitialized = false;
 
@@ -335,6 +384,54 @@
             </label>`;
         }
 
+        function createDiscreteSlider(name, currentIndex, disabled) {
+            const index = Math.max(0, Math.min(11, Math.round(currentIndex)));
+            return `<input type="range" class="wb-resource-discrete-input" data-control="${name}" min="0" max="11" step="1" value="${index}" ${disabled ? 'disabled' : ''} /><span class="wb-resource-value" data-control="${name}">${factorioIndexToLabel(index)}</span>`;
+        }
+
+        function createResourceCheckbox(name, checked, disabled) {
+            return `<input type="checkbox" class="wb-resource-checkbox" data-control="${name}" ${checked ? 'checked' : ''} ${disabled ? 'disabled' : ''} />`;
+        }
+
+        function handleResourceEnableChange(e) {
+            const input = e.target;
+            const row = input.closest('.wb-resource-row');
+            if (!row) return;
+
+            const resourceId = row.dataset.resource;
+            const enabled = input.checked;
+            const sliders = row.querySelectorAll('.wb-resource-discrete-input');
+            const valueSpans = row.querySelectorAll('.wb-resource-value');
+
+            if (enabled) {
+                const prev = wbState.resourcePreviousValues[resourceId] || {frequency: 1, size: 1, richness: 1};
+                wbState.worldConfig.settings.autoplace_controls[resourceId] = { ...prev };
+
+                sliders.forEach(slider => {
+                    slider.disabled = false;
+                    const control = slider.dataset.control;
+                    const val = prev[control] != null ? prev[control] : 1;
+                    slider.value = factorioValueToIndex(val);
+                    const span = slider.parentElement.querySelector(`.wb-resource-value[data-control="${control}"]`);
+                    if (span) span.textContent = factorioIndexToLabel(factorioValueToIndex(val));
+                });
+            } else {
+                const current = wbState.worldConfig.settings.autoplace_controls[resourceId] || {frequency: 1, size: 1, richness: 1};
+                wbState.resourcePreviousValues[resourceId] = { ...current };
+
+                wbState.worldConfig.settings.autoplace_controls[resourceId] = { frequency: 0, size: 0, richness: 0 };
+
+                sliders.forEach(slider => {
+                    slider.disabled = true;
+                });
+                valueSpans.forEach(span => {
+                    span.textContent = factorioIndexToLabel(factorioValueToIndex(0));
+                });
+            }
+
+            markPreviewOutdated();
+        }
+
         function createSection(title, content) {
             return `<div class="wb-section">
                 <h3 class="wb-section-title">${title}</h3>
@@ -426,6 +523,144 @@
             </div>`;
         }
 
+        async function loadResourceFields() {
+            if (wbState.resourceFields && wbState.resourceFields.length > 0) return;
+
+            try {
+                const res = await fetch('/api/world-builder/config-engine?source_file=map-gen-settings.json');
+                if (!res.ok) {
+                    renderResourcesError('Failed to load resource configuration');
+                    return;
+                }
+                const data = await res.json();
+
+                const fields = (data.fields || []).filter(f => {
+                    const id = f.id || '';
+                    const isAutoplaceControl = id.startsWith('autoplace_controls.');
+                    const byOriginalType = f.original_type === 'AutoplaceControl';
+                    const byFormType = f.type === 'AutoplaceControl' || (f.type === 'group' && byOriginalType);
+                    return isAutoplaceControl || byFormType;
+                });
+
+                fields.sort((a, b) => {
+                    const orderA = a.order || '';
+                    const orderB = b.order || '';
+                    if (orderA !== orderB) return orderA < orderB ? -1 : orderA > orderB ? 1 : 0;
+                    const labelA = (a.label || a.id || '').toLowerCase();
+                    const labelB = (b.label || b.id || '').toLowerCase();
+                    return labelA < labelB ? -1 : labelA > labelB ? 1 : 0;
+                });
+
+                if (!fields.length) {
+                    renderResourcesError('No resource controls found in schema');
+                    console.warn('[WorldBuilder] Resource fields not found in config-engine payload', data);
+                    return;
+                }
+
+                wbState.resourceFields = fields;
+
+                if (!wbState.worldConfig.settings) {
+                    wbState.worldConfig.settings = {};
+                }
+                if (!wbState.worldConfig.settings.autoplace_controls) {
+                    wbState.worldConfig.settings.autoplace_controls = {};
+                }
+
+                renderResources(fields);
+            } catch (err) {
+                renderResourcesError('Failed to load resources');
+                console.warn('[WorldBuilder] Error loading resource fields:', err);
+            }
+        }
+
+        function renderResourcesError(message) {
+            const body = document.querySelector('#wb-tab-resources .wb-resources-body');
+            if (!body) return;
+            body.innerHTML = `<div class="wb-resource-error">${message}</div>`;
+        }
+
+        function renderResources(fields) {
+            const panel = document.getElementById('wb-tab-resources');
+            if (!panel || !fields.length) return;
+
+            const body = panel.querySelector('.wb-resources-body');
+            if (!body) return;
+
+            body.innerHTML = fields.map(field => {
+                const resourceId = field.id.replace('autoplace_controls.', '');
+                const rawDefaults = field.default || {};
+                const controlDefaults = (rawDefaults && typeof rawDefaults === 'object' && !Array.isArray(rawDefaults))
+                    ? rawDefaults
+                    : {frequency: 1, size: 1, richness: 1};
+                const current = (wbState.worldConfig.settings && wbState.worldConfig.settings.autoplace_controls && wbState.worldConfig.settings.autoplace_controls[resourceId]) || controlDefaults;
+
+                const isDisabled = current && current.frequency === 0 && current.size === 0 && current.richness === 0;
+                const displayValues = (isDisabled && wbState.resourcePreviousValues[resourceId])
+                    ? wbState.resourcePreviousValues[resourceId]
+                    : current;
+                const effective = displayValues || controlDefaults;
+
+                const freq = (effective && effective.frequency != null) ? effective.frequency : controlDefaults.frequency;
+                const size = (effective && effective.size != null) ? effective.size : controlDefaults.size;
+                const richness = (effective && effective.richness != null) ? effective.richness : controlDefaults.richness;
+
+                const canBeDisabled = field.can_be_disabled !== false;
+
+                return `<div class="wb-resource-row" data-resource="${resourceId}">
+                    <span class="wb-resource-label">${field.label || resourceId}</span>
+                    <span class="wb-resource-planet">${formatPlanet(field)}</span>
+                    <label class="wb-resource-checkbox-wrapper">
+                        ${canBeDisabled ? `<input type="checkbox" class="wb-resource-checkbox" data-control="enabled" ${isDisabled ? '' : 'checked'} />` : ''}
+                    </label>
+                    <label class="wb-resource-slider">
+                        ${createDiscreteSlider('frequency', factorioValueToIndex(freq), isDisabled)}
+                    </label>
+                    <label class="wb-resource-slider">
+                        ${createDiscreteSlider('size', factorioValueToIndex(size), isDisabled)}
+                    </label>
+                    <label class="wb-resource-slider">
+                        ${createDiscreteSlider('richness', factorioValueToIndex(richness), isDisabled)}
+                    </label>
+                </div>`;
+            }).join('');
+
+            body.querySelectorAll('.wb-resource-discrete-input').forEach(input => {
+                input.addEventListener('input', handleResourceChange);
+                input.addEventListener('change', handleResourceChange);
+            });
+
+            body.querySelectorAll('.wb-resource-checkbox').forEach(input => {
+                input.addEventListener('change', handleResourceEnableChange);
+            });
+        }
+
+        function handleResourceChange(e) {
+            const input = e.target;
+            const row = input.closest('.wb-resource-row');
+            if (!row) return;
+
+            const resourceId = row.dataset.resource;
+            const control = input.dataset.control;
+            const index = parseInt(input.value, 10);
+            const value = factorioIndexToValue(index);
+
+            const valueSpan = input.parentElement.querySelector(`.wb-resource-value[data-control="${control}"]`);
+            if (valueSpan) valueSpan.textContent = factorioIndexToLabel(index);
+
+            if (!wbState.worldConfig.settings) {
+                wbState.worldConfig.settings = {};
+            }
+            if (!wbState.worldConfig.settings.autoplace_controls) {
+                wbState.worldConfig.settings.autoplace_controls = {};
+            }
+            if (!wbState.worldConfig.settings.autoplace_controls[resourceId]) {
+                wbState.worldConfig.settings.autoplace_controls[resourceId] = {};
+            }
+            wbState.worldConfig.settings.autoplace_controls[resourceId][control] = value;
+
+            markPreviewOutdated();
+        }
+
         function populateTabs() {
             const resourcesPanel = document.getElementById('wb-tab-resources');
             const terrainPanel = document.getElementById('wb-tab-terrain');
@@ -436,17 +671,13 @@
                 resourcesPanel.innerHTML = `<div class="wb-resources-table-wrapper">
                     <div class="wb-resources-header">
                         <span data-i18n="world_builder.resource.header.resource">Resource</span>
+                        <span data-i18n="world_builder.resource.header.planet">Planet</span>
+                        <span class="wb-resource-checkbox-header"></span>
                         <span data-i18n="world_builder.resource.header.frequency">Frequency</span>
                         <span data-i18n="world_builder.resource.header.size">Size</span>
                         <span data-i18n="world_builder.resource.header.richness">Richness</span>
                     </div>
-                    <div class="wb-resources-body">
-                        ${createResourceRow('Iron Ore')}
-                        ${createResourceRow('Copper Ore')}
-                        ${createResourceRow('Stone')}
-                        ${createResourceRow('Coal')}
-                        ${createResourceRow('Uranium')}
-                    </div>
+                    <div class="wb-resources-body"></div>
                 </div>`;
             }
 
@@ -605,6 +836,8 @@
             }
 
             markPreviewOutdated();
+
+            loadResourceFields();
         }
 
         if (document.readyState === 'loading') {
