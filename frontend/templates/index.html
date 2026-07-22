@@ -15,6 +15,10 @@
         <aside class="sidebar">
             <div class="brand">
                 <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Factorio Server Manager" class="brand-logo" />
+                <div>
+                    <h1>Factorio</h1>
+                    <p>Server Manager</p>
+                </div>
             </div>
 
             <nav class="tabs" aria-label="Main navigation">
@@ -835,6 +839,7 @@
 
     
     <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/core/app_state.js') }}"></script>
     <script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
     <script src="{{ url_for('static', filename='js/log_viewer.js') }}"></script>
     <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>

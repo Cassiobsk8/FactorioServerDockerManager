@@ -229,11 +229,59 @@ def test_bootstrap_cache_exists_in_utils():
     assert "isStale(" in js
 
 
-def test_dashboard_uses_bootstrap_cache():
+def test_template_loads_app_state_before_app():
+    html = _read_template()
+    assert "url_for('static', filename='js/core/app_state.js')" in html
+    app_state_pos = html.index("app_state.js")
+    app_js_pos = html.index("js/app.js")
+    assert app_state_pos < app_js_pos
+
+
+def test_app_js_uses_app_state_bootstrap():
+    app_path = Path(__file__).resolve().parent.parent.parent / "frontend" / "static" / "js" / "app.js"
+    js = app_path.read_text(encoding="utf-8")
+    assert "AppState.bootstrap()" in js
+    assert "Promise.all" not in js
+
+
+def test_dashboard_prefers_app_state():
     dashboard_path = Path(__file__).resolve().parent.parent.parent / "frontend" / "static" / "js" / "dashboard.js"
     js = dashboard_path.read_text(encoding="utf-8")
-    assert "BootstrapCache.get('saves'" in js
-    assert "BootstrapCache.get('status'" in js
+    assert "AppState.get('runtime')" in js
+    assert "AppState.get('saves')" in js
+
+
+def test_config_prefers_app_state():
+    config_path = Path(__file__).resolve().parent.parent.parent / "frontend" / "static" / "js" / "config.js"
+    js = config_path.read_text(encoding="utf-8")
+    assert "AppState.get('serverSettings')" in js
+    assert "BootstrapCache.invalidate('server-settings')" in js
+
+
+def test_i18n_prefers_app_state():
+    i18n_path = Path(__file__).resolve().parent.parent.parent / "frontend" / "static" / "js" / "i18n.js"
+    js = i18n_path.read_text(encoding="utf-8")
+    assert "AppState.get('settings')" in js
+    assert "BootstrapCache.invalidate('app-settings')" in js
+
+
+def test_rcon_prefers_app_state():
+    rcon_path = Path(__file__).resolve().parent.parent.parent / "frontend" / "static" / "js" / "rcon.js"
+    js = rcon_path.read_text(encoding="utf-8")
+    assert "AppState.get('rcon')" in js
+
+
+def test_world_builder_prefers_app_state():
+    wb_path = Path(__file__).resolve().parent.parent.parent / "frontend" / "static" / "js" / "world_builder.js"
+    js = wb_path.read_text(encoding="utf-8")
+    assert "AppState.get('worldBuilderStatus')" in js
+    assert "AppState.get('worldBuilderOptions')" in js
+
+
+def test_saves_prefers_app_state():
+    saves_path = Path(__file__).resolve().parent.parent.parent / "frontend" / "static" / "js" / "saves.js"
+    js = saves_path.read_text(encoding="utf-8")
+    assert "AppState.get('saves')" in js
 
 
 def test_world_builder_uses_bootstrap_cache():
@@ -241,6 +289,30 @@ def test_world_builder_uses_bootstrap_cache():
     js = wb_path.read_text(encoding="utf-8")
     assert "BootstrapCache.get('world-builder-status'" in js
     assert "BootstrapCache.get('world-builder-options'" in js
+
+
+def test_world_builder_init_avoids_duplicate_bootstrap_calls():
+    js_path = Path(__file__).resolve().parent.parent.parent / "frontend" / "static" / "js" / "world_builder.js"
+    js = js_path.read_text(encoding="utf-8")
+    init_start = js.index("function initWorldBuilder()")
+    init_body = js[init_start:]
+    assert "loadWorldBuilderOptions()" not in init_body
+    assert "checkWorldBuilderStatus()" not in init_body
+
+
+def test_app_state_exists():
+    app_state_path = Path(__file__).resolve().parent.parent.parent / "frontend" / "static" / "js" / "core" / "app_state.js"
+    js = app_state_path.read_text(encoding="utf-8")
+    assert "const AppState" in js
+    assert "async bootstrap()" in js
+    assert "Promise.allSettled" in js
+    assert "server-settings" in js
+    assert "/api/status" in js
+    assert "/api/world-builder/status" in js
+    assert "/api/world-builder/options" in js
+    assert "/api/settings" in js
+    assert "/api/saves" in js
+    assert "/api/rcon/status" in js
 
 
 def test_rcon_uses_bootstrap_cache():

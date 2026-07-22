@@ -12,7 +12,7 @@
 
         async function loadSettings() {
             try {
-                const data = await BootstrapCache.get('app-settings', async () => {
+                const data = await AppState.get('settings') || await BootstrapCache.get('app-settings', async () => {
                     const res = await fetch('/api/settings');
                     if (!res.ok) throw new Error('settings_failed');
                     return res.json();

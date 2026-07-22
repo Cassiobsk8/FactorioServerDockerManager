@@ -127,13 +127,11 @@ def api_world_builder_preview_image(preview_hash: str):
         normalized_hash = preview_hash.removesuffix(".png")
         preview_file = PREVIEWS_DIR / f"{normalized_hash}.png"
         logger.info(
-            "DIAGNOSTIC preview-image route: preview_hash=%s normalized_hash=%s PREVIEWS_DIR=%s path=%s exists=%s expected=%s",
+            "DIAGNOSTIC preview-image route: preview_hash=%s normalized_hash=%s path=%s exists=%s",
             preview_hash,
             normalized_hash,
-            PREVIEWS_DIR,
             preview_file,
             preview_file.exists(),
-            f"{normalized_hash}.png",
         )
         if PREVIEWS_DIR.exists():
             logger.debug(

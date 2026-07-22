@@ -242,6 +242,24 @@ def test_validate_factorio_binary_rejects_missing(tmp_path, monkeypatch):
     assert result["message"] is not None
 
 
+def test_validate_factorio_binary_returns_controlled_state_for_read_error(tmp_path, monkeypatch):
+    factorio_bin = tmp_path / "factorio" / "bin" / "x64" / "factorio"
+    factorio_bin.parent.mkdir(parents=True, exist_ok=True)
+    _write_fake_elf(factorio_bin)
+
+    monkeypatch.setattr(world_builder_service, "INSTALL_DIR", tmp_path / "factorio")
+
+    def mock_open(*args, **kwargs):
+        raise OSError("Permission denied")
+
+    monkeypatch.setattr("builtins.open", mock_open)
+
+    result = validate_factorio_binary()
+    assert result["valid"] is False
+    assert result["reason"] == "placeholder"
+    assert "readable" in result.get("message", "")
+
+
 def test_generate_preview_uses_official_parameters(tmp_path, monkeypatch):
     previews_dir = tmp_path / "previews"
     previews_dir.mkdir(parents=True, exist_ok=True)

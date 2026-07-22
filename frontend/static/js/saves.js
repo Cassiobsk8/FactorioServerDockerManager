@@ -7,7 +7,8 @@
             if (!tbody) return;
 
             try {
-                const data = await BootstrapCache.get('saves', async () => {
+                const savedOpen = openMenuFilename;
+                const data = await AppState.get('saves') || await BootstrapCache.get('saves', async () => {
                     const res = await fetch('/api/saves');
                     if (!res.ok) throw new Error('saves_failed');
                     return res.json();
@@ -19,6 +20,8 @@
                     const row = previouslyOpen.closest('tr');
                     if (row) openMenuFilename = row.dataset.filename;
                 }
+
+                if (savedOpen) openMenuFilename = savedOpen;
 
                 const existingRows = new Map();
                 Array.from(tbody.querySelectorAll('tr')).forEach((tr) => {

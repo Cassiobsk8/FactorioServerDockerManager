@@ -3,7 +3,7 @@
             if (!container) return;
 
             try {
-                const data = await BootstrapCache.get('server-settings', async () => {
+                const data = await AppState.get('serverSettings') || await BootstrapCache.get('server-settings', async () => {
                     const res = await fetch('/server-settings');
                     if (!res.ok) throw new Error('server_settings_failed');
                     return res.json();

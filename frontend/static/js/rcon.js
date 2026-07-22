@@ -317,7 +317,7 @@
 
         async function pollRconStatus() {
             try {
-                const data = await BootstrapCache.get('rcon-status', async () => {
+                const data = await AppState.get('rcon') || await BootstrapCache.get('rcon-status', async () => {
                     const res = await fetch('/api/rcon/status');
                     if (!res.ok) throw new Error('rcon_status_failed');
                     return res.json();
@@ -329,7 +329,7 @@
 
         async function fetchRconStatusOnce() {
             try {
-                const data = await BootstrapCache.get('rcon-status', async () => {
+                const data = await AppState.get('rcon') || await BootstrapCache.get('rcon-status', async () => {
                     const res = await fetch('/api/rcon/status');
                     if (!res.ok) throw new Error('rcon_status_failed');
                     return res.json();

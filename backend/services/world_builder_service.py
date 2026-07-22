@@ -45,7 +45,11 @@ def validate_factorio_binary() -> dict[str, Any]:
         with open(factorio_bin, "rb") as f:
             magic = f.read(4)
     except OSError as exc:
-        raise RuntimeError(f"Factorio binary not readable: {exc}") from exc
+        return {
+            "valid": False,
+            "reason": "placeholder",
+            "message": f"Factorio binary not readable: {exc}",
+        }
 
     if magic != b"\x7fELF":
         return {

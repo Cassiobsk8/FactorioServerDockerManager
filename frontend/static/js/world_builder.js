@@ -80,7 +80,8 @@
             if (!planetSelect) return;
 
             try {
-                const data = await BootstrapCache.get('world-builder-options', async () => {
+                const cached = AppState.get('worldBuilderOptions');
+                const data = cached || await BootstrapCache.get('world-builder-options', async () => {
                     const res = await fetch('/api/world-builder/options?planet=' + encodeURIComponent(planetSelect.value || 'nauvis'));
                     if (!res.ok) throw new Error('options_failed');
                     return res.json();
@@ -110,7 +111,8 @@
             const inputs = document.querySelectorAll('#world-builder-form input, #world-builder-form select');
 
             try {
-                const data = await BootstrapCache.get('world-builder-status', async () => {
+                const cached = AppState.get('worldBuilderStatus');
+                const data = cached || await BootstrapCache.get('world-builder-status', async () => {
                     const res = await fetch('/api/world-builder/status');
                     if (!res.ok) throw new Error('status_check_failed');
                     return res.json();
@@ -602,8 +604,6 @@
                 createButton.addEventListener('click', createWorld);
             }
 
-            loadWorldBuilderOptions();
-            checkWorldBuilderStatus();
             markPreviewOutdated();
         }
 

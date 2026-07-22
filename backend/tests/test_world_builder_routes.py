@@ -171,6 +171,11 @@ def test_preview_image_info_log_excludes_file_listing(client, caplog):
     diagnostic_messages = [msg for msg in info_messages if "DIAGNOSTIC preview-image route" in msg]
     assert len(diagnostic_messages) == 1
     assert "files=" not in diagnostic_messages[0]
+    assert "preview_hash=abc123" in diagnostic_messages[0]
+    assert "normalized_hash=abc123" in diagnostic_messages[0]
+    assert "exists=True" in diagnostic_messages[0]
+    assert "PREVIEWS_DIR=" not in diagnostic_messages[0]
+    assert "expected=" not in diagnostic_messages[0]
 
 
 def test_preview_image_debug_log_includes_file_listing(client, caplog):

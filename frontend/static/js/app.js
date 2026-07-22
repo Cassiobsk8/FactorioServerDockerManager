@@ -167,42 +167,7 @@
         initLanguage();
 
         async function loadInitialData() {
-            try {
-                await Promise.all([
-                    BootstrapCache.get('app-settings', async () => {
-                        const res = await fetch('/api/settings');
-                        if (!res.ok) throw new Error('settings_failed');
-                        return res.json();
-                    }),
-                    BootstrapCache.get('runtime-status', async () => {
-                        const res = await fetch('/api/status');
-                        if (!res.ok) throw new Error('status_failed');
-                        return res.json();
-                    }),
-                    BootstrapCache.get('world-builder-status', async () => {
-                        const res = await fetch('/api/world-builder/status');
-                        if (!res.ok) throw new Error('world_builder_status_failed');
-                        return res.json();
-                    }),
-                    BootstrapCache.get('world-builder-options', async () => {
-                        const res = await fetch('/api/world-builder/options');
-                        if (!res.ok) throw new Error('world_builder_options_failed');
-                        return res.json();
-                    }),
-                    BootstrapCache.get('rcon-status', async () => {
-                        const res = await fetch('/api/rcon/status');
-                        if (!res.ok) throw new Error('rcon_status_failed');
-                        return res.json();
-                    }),
-                    BootstrapCache.get('saves', async () => {
-                        const res = await fetch('/api/saves');
-                        if (!res.ok) throw new Error('saves_failed');
-                        return res.json();
-                    }),
-                ]);
-            } catch (err) {
-                // ignore bootstrap errors; components will fetch independently
-            }
+            await AppState.bootstrap();
         }
 
         loadInitialData();

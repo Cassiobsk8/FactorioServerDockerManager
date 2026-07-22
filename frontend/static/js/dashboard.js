@@ -58,13 +58,16 @@
             }
 
             try {
-                const data = await BootstrapCache.get('status', async () => {
-                    const response = await fetch('/status');
-                    if (!response.ok) {
-                        throw new Error('status_failed');
-                    }
-                    return response.json();
-                });
+                let data = AppState.get('runtime');
+                if (!data) {
+                    data = await BootstrapCache.get('status', async () => {
+                        const response = await fetch('/status');
+                        if (!response.ok) {
+                            throw new Error('status_failed');
+                        }
+                        return response.json();
+                    });
+                }
                 const rawStatus = data.status || serverStatus.textContent;
                 const isOnline = rawStatus === 'running' || rawStatus === 'online';
                 serverStatus.textContent = formatStatus(rawStatus);
@@ -115,7 +118,8 @@
             if (!cpuEl) return;
 
             try {
-                const response = await fetch('/api/status');
+                const cached = AppState.get('runtime');
+                const response = cached ? { ok: true, json: async () => cached } : await fetch('/api/status');
                 if (!response.ok) return;
                 const data = await response.json();
                 const server = data.server || {};
@@ -148,7 +152,7 @@
                 renderActiveSave(server.active_save);
 
                 if (savesCountEl) {
-                    const savesData = await BootstrapCache.get('saves', async () => {
+                    const savesData = AppState.get('saves') || await BootstrapCache.get('saves', async () => {
                         const r = await fetch('/api/saves');
                         if (!r.ok) throw new Error('saves_failed');
                         return r.json();
