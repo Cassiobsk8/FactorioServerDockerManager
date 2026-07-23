@@ -220,6 +220,20 @@ def test_world_builder_js_exists():
     assert "preview_url" in js
 
 
+def test_world_builder_preview_centers_scroll_on_load():
+    js_path = Path(__file__).resolve().parent.parent.parent / "frontend" / "static" / "js" / "world_builder.js"
+    js = js_path.read_text(encoding="utf-8")
+    update_preview_start = js.index("async function updatePreview()")
+    update_preview_body = js[update_preview_start:]
+    assert "image.onload" in update_preview_body, "updatePreview must attach onload to center scroll after preview image loads"
+    assert "scrollWidth" in update_preview_body, "Scroll centering logic must consider scrollWidth"
+    assert "clientWidth" in update_preview_body, "Scroll centering logic must consider clientWidth"
+    assert "scrollHeight" in update_preview_body, "Scroll centering logic must consider scrollHeight"
+    assert "clientHeight" in update_preview_body, "Scroll centering logic must consider clientHeight"
+    assert "scrollLeft" in update_preview_body, "Scroll centering logic must set scrollLeft"
+    assert "scrollTop" in update_preview_body, "Scroll centering logic must set scrollTop"
+
+
 def test_world_builder_i18n_keys_exist():
     i18n_dir = Path(__file__).resolve().parent.parent.parent / "frontend" / "i18n"
     required_keys = {

@@ -304,6 +304,13 @@
                 if (image && data.preview_url) {
                     image.src = data.preview_url;
                     image.style.display = 'block';
+                    image.onload = () => {
+                        const scrollContainer = document.getElementById('wb-preview-container');
+                        if (scrollContainer) {
+                            scrollContainer.scrollLeft = (scrollContainer.scrollWidth - scrollContainer.clientWidth) / 2;
+                            scrollContainer.scrollTop = (scrollContainer.scrollHeight - scrollContainer.clientHeight) / 2;
+                        }
+                    };
                 }
                 if (placeholder) {
                     placeholder.style.display = 'none';
