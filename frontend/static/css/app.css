@@ -3047,7 +3047,7 @@ pre {
 }
 
 .wb-terrain-group + .wb-terrain-group {
-    margin-top: var(--spacing-xs);
+    margin-top: var(--spacing-sm);
 }
 
 .wb-terrain-group + .wb-terrain-group::before {
@@ -3066,7 +3066,7 @@ pre {
     display: grid;
     grid-template-columns: var(--wb-terrain-grid);
     column-gap: var(--wb-terrain-column-gap);
-    padding: var(--spacing-xs) 0;
+    padding: var(--spacing-sm) 0;
     font-size: var(--font-xs);
     font-weight: 700;
     color: var(--subtext);
