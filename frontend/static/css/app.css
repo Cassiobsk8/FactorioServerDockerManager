@@ -46,7 +46,7 @@
     --font-xl: 1.6rem;
 
     /* World Builder table grid */
-    --wb-table-grid: 34px minmax(180px, 1fr) auto 1fr 1fr 1fr;
+    --wb-table-grid: 40px minmax(160px, 220px) 110px minmax(110px, 1fr) minmax(110px, 1fr) minmax(110px, 1fr);
 
     color-scheme: dark;
     --surface-strong: #1f2937;
@@ -2458,7 +2458,7 @@ pre {
 
 .world-builder-layout {
     display: grid;
-    grid-template-columns: 3fr 7fr;
+    grid-template-columns: 4fr 6fr;
     gap: var(--spacing-lg);
     flex: 1;
     min-height: 0;
@@ -2920,6 +2920,8 @@ pre {
     font-size: var(--font-xs);
     color: var(--subtext);
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     text-align: left;
     min-width: 0;
 }
