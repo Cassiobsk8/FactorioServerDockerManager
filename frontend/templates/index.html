@@ -312,9 +312,6 @@
             <div class="tab-panel" id="world-builder-panel">
                 <div class="world-builder-layout">
                     <section class="panel card config-card world-builder-config">
-                        <div class="panel-header">
-                            <h2 data-i18n="world_builder.configuration">Configuration</h2>
-                        </div>
                         <div class="world-builder-status-banner" id="wb-status-banner" style="display:none;">
                             <span data-i18n="world_builder.status.unavailable">World Builder Preview indisponível.</span>
                             <span data-i18n="world_builder.status.unavailable_detail">Instalação do Factorio não concluída.</span>
@@ -335,11 +332,13 @@
                                     </label>
                                     <label class="wb-preset-label">
                                         <span data-i18n="world_builder.preset">Preset</span>
-                                        <select id="wb-preset" disabled>
-                                            <option value="" data-i18n="world_builder.preset_placeholder">--</option>
-                                        </select>
+                                        <div class="preset-row">
+                                            <select id="wb-preset" disabled>
+                                                <option value="" data-i18n="world_builder.preset_placeholder">--</option>
+                                            </select>
+                                            <button type="button" class="text-button wb-reset-button" id="wb-reset" disabled data-i18n="world_builder.reset">Reset</button>
+                                        </div>
                                     </label>
-                                    <button type="button" class="text-button wb-reset-button" id="wb-reset" disabled data-i18n="world_builder.reset">Reset</button>
                                 </div>
                                 <div class="wb-description">
                                     <p data-i18n="world_builder.description_placeholder">Preset description will appear here.</p>
