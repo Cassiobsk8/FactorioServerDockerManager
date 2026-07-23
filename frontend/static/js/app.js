@@ -1,6 +1,5 @@
         const tabButtons = document.querySelectorAll('.tab-button');
         const panels = document.querySelectorAll('.tab-panel');
-        const installButton = document.getElementById('install-button');
         const installModal = document.getElementById('install-modal');
         const closeModal = document.getElementById('close-modal');
         const archivePathInput = document.getElementById('archive-path');
@@ -71,6 +70,18 @@
                     installProgressMeta.textContent = t('modal.complete');
                     try { fetchAndRenderSettings(); } catch (e) { /* ignore */ }
                     clearInterval(installInterval);
+
+                    if (typeof AppState !== 'undefined' && typeof AppState.invalidate === 'function') {
+                        AppState.invalidate();
+                    }
+                    if (typeof fetchStatus === 'function') {
+                        try { fetchStatus(); } catch (e) { /* ignore */ }
+                    }
+                    if (typeof checkWorldBuilderStatus === 'function') {
+                        try { checkWorldBuilderStatus(); } catch (e) { /* ignore */ }
+                    }
+
+                    setTimeout(closeInstallModal, 1500);
                 } else if (status === 'error') {
                     installProgressFill.style.width = '100%';
                     installProgressMeta.textContent = t('install_progress.error');
@@ -113,7 +124,7 @@
             const response = await fetch('/install/start', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({ archive_path: archivePathInput.value.trim() }),
+                body: new URLSearchParams({ archive_path: archivePathInput ? archivePathInput.value.trim() : '' }),
             });
 
             if (!response.ok) {
@@ -153,8 +164,9 @@
         pollInstallProgressForUI();
         setInterval(pollInstallProgressForUI, 2000);
 
-        if (installButton) {
-            installButton.addEventListener('click', (event) => {
+        const installForm = document.getElementById('action-install');
+        if (installForm) {
+            installForm.addEventListener('submit', (event) => {
                 event.preventDefault();
                 startInstallation();
             });
