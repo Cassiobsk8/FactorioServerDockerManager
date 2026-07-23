@@ -851,6 +851,48 @@
 
             markPreviewOutdated();
 
+            const previewContainer = document.getElementById('wb-preview-container');
+            if (previewContainer) {
+                let isDragging = false;
+                let dragStartX = 0;
+                let dragStartY = 0;
+                let scrollStartLeft = 0;
+                let scrollStartTop = 0;
+
+                previewContainer.addEventListener('pointerdown', (e) => {
+                    if (e.button !== 0) return;
+                    isDragging = true;
+                    dragStartX = e.clientX;
+                    dragStartY = e.clientY;
+                    scrollStartLeft = previewContainer.scrollLeft;
+                    scrollStartTop = previewContainer.scrollTop;
+                    previewContainer.classList.add('dragging');
+                    previewContainer.setPointerCapture(e.pointerId);
+                    e.preventDefault();
+                });
+
+                previewContainer.addEventListener('pointermove', (e) => {
+                    if (!isDragging) return;
+                    const deltaX = dragStartX - e.clientX;
+                    const deltaY = dragStartY - e.clientY;
+                    previewContainer.scrollLeft = scrollStartLeft + deltaX;
+                    previewContainer.scrollTop = scrollStartTop + deltaY;
+                    e.preventDefault();
+                });
+
+                previewContainer.addEventListener('pointerup', (e) => {
+                    if (!isDragging) return;
+                    isDragging = false;
+                    previewContainer.classList.remove('dragging');
+                    previewContainer.releasePointerCapture(e.pointerId);
+                });
+
+                previewContainer.addEventListener('pointercancel', () => {
+                    isDragging = false;
+                    previewContainer.classList.remove('dragging');
+                });
+            }
+
             loadResourceFields();
         }
 

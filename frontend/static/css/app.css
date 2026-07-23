@@ -2512,6 +2512,14 @@ pre {
     opacity: 0.45;
 }
 
+.world-builder-preview.dragging {
+    cursor: grabbing;
+}
+
+.world-builder-preview:not(.dragging) {
+    cursor: grab;
+}
+
 .preset-row {
     display: flex;
     gap: var(--spacing-sm);
