@@ -466,40 +466,64 @@
             </div>`;
         }
 
-        function createTerrainSubheader(label1, label2) {
-            return `<div class="wb-terrain-subheader">
-                <span></span>
-                <span>${label1}</span>
-                <span>${label2}</span>
+        function createMapTypeSelect() {
+            return `<div class="wb-map-type-row">
+                <span class="wb-map-type-label">Tipo de Mapa</span>
+                <select class="wb-map-type-select">
+                    <option value="default" selected>Elevação Nauvis (Padrão)</option>
+                    <option value="lake">Elevação de Lagos</option>
+                    <option value="island">Elevação da Ilha</option>
+                </select>
             </div>`;
         }
 
-        function createTerrainRowWithCheckbox(name, slider1, slider2) {
-            return `<div class="wb-terrain-row">
-                ${createCheckboxPlaceholder(name)}
-                ${createSliderPlaceholder(slider1)}
-                ${createSliderPlaceholder(slider2)}
-            </div>`;
+        function createBiasSlider(name) {
+            return `<label class="wb-bias-slider">
+                <input type="range" min="-0.50" max="0.50" step="0.05" value="0.00" disabled />
+                <span class="wb-bias-value">0.00</span>
+            </label>`;
         }
 
-        function createTerrainRow(name, slider1, slider2) {
-            return `<div class="wb-terrain-row">
-                <span class="wb-terrain-label">${name}</span>
-                ${createSliderPlaceholder(slider1)}
-                ${createSliderPlaceholder(slider2)}
-            </div>`;
-        }
-
-        function createTerrainSelectRow(name, options) {
-            const opts = (options || []).map(o => `<option>${o}</option>`).join('');
-            return `<div class="wb-terrain-row">
-                <span class="wb-terrain-label">${name}</span>
-                <div class="wb-placeholder-select">
-                    <span>${name}</span>
-                    <select disabled>${opts}</select>
+        function createTerrainGroup(headerHtml, rowsHtml) {
+            return `<div class="wb-terrain-group">
+                <div class="wb-terrain-table wb-table">
+                    <div class="wb-terrain-table-header">${headerHtml}</div>
+                    <div class="wb-table-body">${rowsHtml}</div>
                 </div>
-                <span></span>
             </div>`;
+        }
+
+        function createTerrainGroupRowWithCheckbox(name, planetHtml, slider1, slider2) {
+            return `<div class="wb-table-row">
+                <div class="wb-terrain-name">
+                    <input type="checkbox" class="wb-table-checkbox" disabled />
+                    <span class="wb-table-label">${name}</span>
+                </div>
+                <span class="wb-table-planet" title="${planetHtml.name}">${planetHtml.icon}</span>
+                <label class="wb-table-slider">${slider1}</label>
+                <label class="wb-table-slider">${slider2}</label>
+            </div>`;
+        }
+
+        function createTerrainGroupRow(name, planetHtml, slider1, slider2) {
+            return `<div class="wb-table-row">
+                <div class="wb-terrain-name">
+                    <span class="wb-table-label">${name}</span>
+                </div>
+                <span class="wb-table-planet" title="${planetHtml.name}">${planetHtml.icon}</span>
+                <label class="wb-table-slider">${slider1}</label>
+                <label class="wb-table-slider">${slider2}</label>
+            </div>`;
+        }
+
+        function createTerrainSlider() {
+            return `<input type="range" class="wb-table-discrete-input" min="0" max="11" step="1" value="5" disabled />
+                    <span class="wb-table-value">100%</span>`;
+        }
+
+        function createBiasSlider() {
+            return `<input type="range" min="-0.50" max="0.50" step="0.05" value="0.00" disabled />
+                    <span class="wb-bias-value">0.00</span>`;
         }
 
         function createTerrainDivider() {
@@ -701,27 +725,29 @@
             }
 
             if (terrainPanel) {
-                terrainPanel.innerHTML = `<div class="wb-terrain-table-wrapper">
-                    <div class="wb-terrain-full-width">
-                        ${createSelectPlaceholder('Map type', ['Default', 'Island', 'Continents'])}
-                    </div>
-                    <div class="wb-terrain-header">
-                        <span></span>
-                        <span>Scale</span>
-                        <span>Coverage</span>
-                    </div>
-                    <div class="wb-terrain-body">
-                        ${createTerrainRowWithCheckbox('Water', 'Scale', 'Coverage')}
-                        ${createTerrainRowWithCheckbox('Trees', 'Scale', 'Coverage')}
-                        ${createTerrainDivider()}
-                        ${createTerrainSubheader('Frequency', 'Continuity')}
-                        ${createTerrainRowWithCheckbox('Cliffs', 'Frequency', 'Continuity')}
-                        ${createTerrainDivider()}
-                        ${createTerrainSubheader('Scale', 'Bias')}
-                        ${createTerrainRow('Moisture', 'Scale', 'Bias')}
-                        ${createTerrainSelectRow('Terrain', ['Default', 'Sand', 'Red desert'])}
-                    </div>
-                </div>`;
+                const nauvis = { icon: PLANET_ICONS['nauvis'], name: 'Nauvis' };
+
+                terrainPanel.innerHTML = `${createMapTypeSelect()}
+                    ${createTerrainGroup(
+                        '<span></span><span></span><span data-i18n="world_builder.terrain.header.scale">Escala</span><span data-i18n="world_builder.terrain.header.coverage">Cobertura</span>',
+                        [
+                            createTerrainGroupRowWithCheckbox('Water', nauvis, createTerrainSlider(), createTerrainSlider()),
+                            createTerrainGroupRowWithCheckbox('Trees', nauvis, createTerrainSlider(), createTerrainSlider())
+                        ].join('')
+                    )}
+                    ${createTerrainGroup(
+                        '<span></span><span></span><span data-i18n="world_builder.terrain.header.frequency">Frequência</span><span data-i18n="world_builder.terrain.header.continuity">Continuidade</span>',
+                        [
+                            createTerrainGroupRowWithCheckbox('Cliffs', nauvis, createTerrainSlider(), createTerrainSlider())
+                        ].join('')
+                    )}
+                    ${createTerrainGroup(
+                        '<span></span><span></span><span data-i18n="world_builder.terrain.header.scale">Escala</span><span data-i18n="world_builder.terrain.header.bias">Viés</span>',
+                        [
+                            createTerrainGroupRow('Moisture', nauvis, createTerrainSlider(), createBiasSlider()),
+                            createTerrainGroupRow('Terrain', nauvis, createTerrainSlider(), createBiasSlider())
+                        ].join('')
+                    )}`;
             }
 
             if (enemyPanel) {

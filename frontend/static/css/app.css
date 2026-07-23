@@ -47,6 +47,8 @@
 
     /* World Builder table grid */
     --wb-table-grid: 28px minmax(160px, 220px) 28px minmax(100px, 1fr) minmax(100px, 1fr) minmax(100px, 1fr);
+    --wb-terrain-grid: 200px 48px 160px 160px;
+    --wb-terrain-column-gap: var(--spacing-md);
 
     color-scheme: dark;
     --surface-strong: #1f2937;
@@ -2801,6 +2803,10 @@ pre {
     min-width: 0;
 }
 
+.wb-tab-panel[data-wb-tab-panel="resources"] .wb-table-header > :nth-child(n + 4) {
+    text-align: center;
+}
+
 .wb-table-body {
     overflow-y: auto;
     flex: 1;
@@ -2872,63 +2878,10 @@ pre {
     accent-color: var(--accent);
 }
 
-.wb-terrain-table-wrapper {
-    display: flex;
-    flex-direction: column;
-}
-
-.wb-terrain-header {
-    display: grid;
-    grid-template-columns: 1.5fr 1fr 1fr;
-    gap: var(--spacing-md);
-    padding: var(--spacing-sm) 0;
-    font-size: var(--font-xs);
-    font-weight: 700;
-    color: var(--subtext);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    border-bottom: 1px solid rgba(148, 163, 184, 0.18);
-}
-
-.wb-terrain-subheader {
-    display: grid;
-    grid-template-columns: 1.5fr 1fr 1fr;
-    gap: var(--spacing-md);
-    padding: var(--spacing-xs) 0;
-    font-size: var(--font-xs);
-    font-weight: 700;
-    color: var(--subtext);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    border-bottom: 1px solid rgba(148, 163, 184, 0.12);
-}
-
-.wb-terrain-row {
-    display: grid;
-    grid-template-columns: 1.5fr 1fr 1fr;
-    gap: var(--spacing-md);
-    align-items: center;
-    padding: var(--spacing-sm) 0;
-    border-bottom: 1px solid rgba(148, 163, 184, 0.08);
-}
-
-.wb-terrain-row:last-child {
-    border-bottom: none;
-}
-
 .wb-terrain-divider {
     height: 1px;
     background: rgba(148, 163, 184, 0.12);
     margin: var(--spacing-xs) 0;
-}
-
-.wb-terrain-full-width {
-    padding: var(--spacing-sm) 0;
-}
-
-.wb-terrain-label {
-    font-weight: 600;
-    color: var(--text);
 }
 
 .wb-enemy-table-wrapper {
@@ -3036,13 +2989,6 @@ pre {
         gap: var(--spacing-sm);
     }
 
-    .wb-terrain-header,
-    .wb-terrain-subheader,
-    .wb-terrain-row {
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: var(--spacing-sm);
-    }
-
     .wb-enemy-row {
         grid-template-columns: 1fr 1fr 1fr;
         gap: var(--spacing-sm);
@@ -3058,3 +3004,126 @@ pre {
     }
 }
 
+/* Terrain tab - Map type row */
+.wb-map-type-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm) 0;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.wb-map-type-label {
+    font-size: var(--font-sm);
+    font-weight: 700;
+    color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+}
+
+.wb-map-type-select {
+    padding: 0.35rem var(--spacing-md);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text);
+    font-size: var(--font-sm);
+    font-weight: 600;
+    cursor: pointer;
+    width: 300px;
+}
+
+/* Terrain tab - Groups */
+.wb-terrain-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    border: none;
+}
+
+.wb-terrain-group + .wb-terrain-group {
+    margin-top: var(--spacing-xs);
+}
+
+.wb-terrain-group + .wb-terrain-group::before {
+    content: '';
+    height: 1px;
+    flex: 0 0 1px;
+    margin-bottom: var(--spacing-xs);
+    background: rgba(148, 163, 184, 0.18);
+}
+
+.wb-terrain-table {
+    --wb-table-grid: var(--wb-terrain-grid);
+}
+
+.wb-terrain-table-header {
+    display: grid;
+    grid-template-columns: var(--wb-terrain-grid);
+    column-gap: var(--wb-terrain-column-gap);
+    padding: var(--spacing-xs) 0;
+    font-size: var(--font-xs);
+    font-weight: 700;
+    color: var(--subtext);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+    min-width: 0;
+}
+
+.wb-terrain-table-header > span {
+    text-align: center;
+}
+
+.wb-terrain-table .wb-table-row {
+    column-gap: var(--wb-terrain-column-gap);
+    padding: var(--spacing-xs) 0;
+}
+
+.wb-terrain-table .wb-table-slider input[type="range"] {
+    width: 100%;
+}
+
+.wb-terrain-name {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    min-width: 0;
+}
+
+.wb-terrain-name .wb-table-label {
+    flex: 1;
+}
+
+.wb-tab-panel[data-wb-tab-panel="terrain"] {
+    gap: var(--spacing-xs);
+}
+
+/* Bias slider */
+.wb-bias-slider {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    align-items: center;
+    min-width: 0;
+}
+
+.wb-bias-slider input[type="range"] {
+    width: 100%;
+    accent-color: var(--accent);
+}
+
+.wb-bias-value {
+    font-size: var(--font-xs);
+    color: var(--subtext);
+    font-variant-numeric: tabular-nums;
+    min-width: 2.5rem;
+    text-align: center;
+}
+
+/* Terrain planet cell reuses existing .wb-table-planet */
