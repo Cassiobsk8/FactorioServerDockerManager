@@ -414,3 +414,97 @@ def test_language_change_invalidates_cache():
     i18n_path = Path(__file__).resolve().parent.parent.parent / "frontend" / "static" / "js" / "i18n.js"
     js = i18n_path.read_text(encoding="utf-8")
     assert "BootstrapCache.invalidate('app-settings')" in js
+
+
+def test_world_builder_preview_image_uses_intrinsic_size():
+    css_path = Path(__file__).resolve().parent.parent.parent / "frontend" / "static" / "css" / "app.css"
+    css = css_path.read_text(encoding="utf-8")
+
+    preview_image_start = css.index(".world-builder-preview-image")
+    preview_image_block = css[preview_image_start:]
+    preview_image_block = preview_image_block.split("}")[0] + "}"
+
+    assert "max-width: 100%" not in preview_image_block, "Preview image must not be constrained by max-width so overflow triggers scroll"
+    assert "max-height: 100%" not in preview_image_block, "Preview image must not be constrained by max-height so overflow triggers scroll"
+    assert "object-fit:" not in preview_image_block, "Preview image must not use object-fit when native scroll is expected"
+
+
+def test_world_builder_preview_card_is_fixed_height():
+    css_path = Path(__file__).resolve().parent.parent.parent / "frontend" / "static" / "css" / "app.css"
+    css = css_path.read_text(encoding="utf-8")
+
+    preview_card_start = css.index(".world-builder-preview-card")
+    preview_card_block = css[preview_card_start:]
+    preview_card_block = preview_card_block.split("}")[0] + "}"
+
+    assert "height: 100%" in preview_card_block, "Preview card must have fixed height to prevent growth from large images"
+    assert "overflow: hidden" in preview_card_block, "Preview card must hide overflow so scroll only happens inside inner container"
+
+
+def test_world_builder_config_card_has_internal_scroll():
+    css_path = Path(__file__).resolve().parent.parent.parent / "frontend" / "static" / "css" / "app.css"
+    css = css_path.read_text(encoding="utf-8")
+
+    wb_config_start = css.index(".world-builder-config {")
+    wb_config_block = css[wb_config_start:]
+    wb_config_block = wb_config_block.split("}")[0] + "}"
+
+    assert "height: 100%" in wb_config_block, "World builder config card must have fixed height to avoid growing layout"
+    assert "overflow-y: auto" in wb_config_block, "World builder config card must support internal scrolling"
+    assert "min-height: 0" in wb_config_block, "World builder config card must have min-height: 0 to shrink inside flex/grid"
+
+
+def test_world_builder_layout_has_fixed_height():
+    css_path = Path(__file__).resolve().parent.parent.parent / "frontend" / "static" / "css" / "app.css"
+    css = css_path.read_text(encoding="utf-8")
+
+    layout_start = css.index(".world-builder-layout {")
+    layout_block = css[layout_start:]
+    layout_block = layout_block.split("}")[0] + "}"
+
+    assert "height: 100%" in layout_block, "World builder layout must have fixed height so preview card does not grow"
+    assert "flex: 1" in layout_block, "World builder layout must remain flexible to fill available space"
+    assert "min-height: 0" in layout_block, "World builder layout must allow shrinking inside flex/grid parents"
+
+
+def test_world_builder_preview_container_allows_scrolling():
+    css_path = Path(__file__).resolve().parent.parent.parent / "frontend" / "static" / "css" / "app.css"
+    css = css_path.read_text(encoding="utf-8")
+
+    preview_start = css.index(".world-builder-preview {")
+    preview_block = css[preview_start:]
+    preview_block = preview_block.split("}")[0] + "}"
+
+    assert "overflow: auto" in preview_block or "overflow: scroll" in preview_block, "Preview container must allow scrolling when image exceeds container"
+
+
+def test_app_shell_uses_full_viewport_without_overflow():
+    css_path = Path(__file__).resolve().parent.parent.parent / "frontend" / "static" / "css" / "app.css"
+    css = css_path.read_text(encoding="utf-8")
+
+    app_shell_start = css.index(".app-shell {")
+    app_shell_block = css[app_shell_start:]
+    app_shell_block = app_shell_block.split("}")[0] + "}"
+
+    assert "height: 100vh" in app_shell_block, "App shell must use full viewport height"
+    assert "overflow: hidden" in app_shell_block, "App shell must hide outer overflow so page never grows beyond viewport"
+
+
+def test_content_and_tab_panel_have_fixed_height():
+    css_path = Path(__file__).resolve().parent.parent.parent / "frontend" / "static" / "css" / "app.css"
+    css = css_path.read_text(encoding="utf-8")
+
+    content_start = css.index(".content {")
+    content_block = css[content_start:]
+    content_block = content_block.split("}")[0] + "}"
+
+    assert "height: 100%" in content_block, "Content must have fixed height to constrain world builder layout"
+    assert "overflow: hidden" in content_block, "Content must hide overflow so page never grows beyond viewport"
+
+    tab_start = css.index(".tab-panel.active {")
+    tab_block = css[tab_start:]
+    tab_block = tab_block.split("}")[0] + "}"
+
+    assert "height: 100%" in tab_block, "Active tab panel must have fixed height to constrain world builder layout"
+    assert "overflow: hidden" in tab_block, "Active tab panel must hide overflow so page never grows beyond viewport"
+

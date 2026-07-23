@@ -298,7 +298,7 @@ def test_generate_preview_uses_official_parameters(tmp_path, monkeypatch):
     assert "preview.png" in captured_cmd
     assert any(arg.startswith("--map-gen-seed=") for arg in captured_cmd)
     assert "--map-preview-size" in captured_cmd
-    assert "1024" in captured_cmd
+    assert "2048" in captured_cmd
     assert any(arg.startswith("--map-preview-planet=") for arg in captured_cmd)
 
 

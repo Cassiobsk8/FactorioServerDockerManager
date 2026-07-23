@@ -535,11 +535,13 @@
                 const data = await res.json();
 
                 const fields = (data.fields || []).filter(f => {
+                    const category = f.category || '';
+                    const isResource = category === 'Resources';
                     const id = f.id || '';
                     const isAutoplaceControl = id.startsWith('autoplace_controls.');
                     const byOriginalType = f.original_type === 'AutoplaceControl';
                     const byFormType = f.type === 'AutoplaceControl' || (f.type === 'group' && byOriginalType);
-                    return isAutoplaceControl || byFormType;
+                    return isResource && (isAutoplaceControl || byFormType);
                 });
 
                 fields.sort((a, b) => {
@@ -606,12 +608,14 @@
 
                 const canBeDisabled = field.can_be_disabled !== false;
 
+                const i18nKey = `world_builder.resource.${resourceId.replace(/-/g, '_')}`;
+
                 return `<div class="wb-resource-row" data-resource="${resourceId}">
-                    <span class="wb-resource-label">${field.label || resourceId}</span>
-                    <span class="wb-resource-planet">${formatPlanet(field)}</span>
                     <label class="wb-resource-checkbox-wrapper">
                         ${canBeDisabled ? `<input type="checkbox" class="wb-resource-checkbox" data-control="enabled" ${isDisabled ? '' : 'checked'} />` : ''}
                     </label>
+                    <span class="wb-resource-label" data-i18n="${i18nKey}">${field.label || resourceId}</span>
+                    <span class="wb-resource-planet">${formatPlanet(field)}</span>
                     <label class="wb-resource-slider">
                         ${createDiscreteSlider('frequency', factorioValueToIndex(freq), isDisabled)}
                     </label>
@@ -670,9 +674,9 @@
             if (resourcesPanel) {
                 resourcesPanel.innerHTML = `<div class="wb-resources-table-wrapper">
                     <div class="wb-resources-header">
+                        <span class="wb-resource-checkbox-header"></span>
                         <span data-i18n="world_builder.resource.header.resource">Resource</span>
                         <span data-i18n="world_builder.resource.header.planet">Planet</span>
-                        <span class="wb-resource-checkbox-header"></span>
                         <span data-i18n="world_builder.resource.header.frequency">Frequency</span>
                         <span data-i18n="world_builder.resource.header.size">Size</span>
                         <span data-i18n="world_builder.resource.header.richness">Richness</span>

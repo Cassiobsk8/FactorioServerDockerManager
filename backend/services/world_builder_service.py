@@ -188,7 +188,7 @@ def generate_preview(config: WorldConfig) -> dict[str, Any]:
             cmd.append(f"--map-settings={map_settings_path.name}")
         if config.seed and not config.random_seed:
             cmd.append(f"--map-gen-seed={config.seed}")
-        cmd.extend(["--map-preview-size", "1024"])
+        cmd.extend(["--map-preview-size", "2048"])
         if config.planet:
             cmd.append(f"--map-preview-planet={config.planet}")
 
