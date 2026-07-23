@@ -47,23 +47,27 @@
         }
 
         const PLANET_ICONS = {
-            'nauvis': '🌍',
+            'nauvis': '🌎',
             'vulcanus': '🌋',
             'gleba': '🌿',
-            'fulgora': '🔴',
-            'aquilo': '❄'
+            'fulgora': '⚡',
+            'aquilo': '🧊'
         };
 
-        function formatPlanet(field) {
+        function getPlanetDisplay(field) {
             const planets = field.planet_exclusive;
             if (planets && planets.length > 0) {
                 const planet = planets[0];
                 const icon = PLANET_ICONS[planet] || '';
                 const name = planet.charAt(0).toUpperCase() + planet.slice(1);
-                return `${icon} ${name}`;
+                return { icon, name };
             }
-            const icon = PLANET_ICONS['nauvis'] || '';
-            return `${icon} Nauvis`;
+            return { icon: PLANET_ICONS['nauvis'] || '🌎', name: 'Nauvis' };
+        }
+
+        function formatPlanet(field) {
+            const { icon, name } = getPlanetDisplay(field);
+            return `${icon} ${name}`;
         }
 
         let worldBuilderInitialized = false;
@@ -600,6 +604,7 @@
 
             body.innerHTML = fields.map(field => {
                 const resourceId = field.id.replace('autoplace_controls.', '');
+                const planetDisplay = getPlanetDisplay(field);
                 const rawDefaults = field.default || {};
                 const controlDefaults = (rawDefaults && typeof rawDefaults === 'object' && !Array.isArray(rawDefaults))
                     ? rawDefaults
@@ -625,7 +630,7 @@
                         ${canBeDisabled ? `<input type="checkbox" class="wb-table-checkbox" data-control="enabled" ${isDisabled ? '' : 'checked'} />` : ''}
                     </label>
                     <span class="wb-table-label" data-i18n="${i18nKey}">${field.label || resourceId}</span>
-                    <span class="wb-table-planet">${formatPlanet(field)}</span>
+                    <span class="wb-table-planet" title="${planetDisplay.name}">${planetDisplay.icon}</span>
                     <label class="wb-table-slider">
                         ${createDiscreteSlider('frequency', factorioValueToIndex(freq), isDisabled)}
                     </label>
@@ -686,7 +691,7 @@
                     <div class="wb-table-header">
                         <span class="wb-table-checkbox-header"></span>
                         <span data-i18n="world_builder.resource.header.resource">Resource</span>
-                        <span data-i18n="world_builder.resource.header.planet">Planet</span>
+                        <span></span>
                         <span data-i18n="world_builder.resource.header.frequency">Frequency</span>
                         <span data-i18n="world_builder.resource.header.size">Size</span>
                         <span data-i18n="world_builder.resource.header.richness">Richness</span>
