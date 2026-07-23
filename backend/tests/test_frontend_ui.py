@@ -476,6 +476,19 @@ def test_world_builder_preview_container_allows_scrolling():
     preview_block = preview_block.split("}")[0] + "}"
 
     assert "overflow: auto" in preview_block or "overflow: scroll" in preview_block, "Preview container must allow scrolling when image exceeds container"
+    assert "align-items: center" not in preview_block, "Preview container must not force center alignment so large images can scroll from top-left"
+    assert "justify-content: center" not in preview_block, "Preview container must not force center alignment so large images can scroll from top-left"
+
+
+def test_world_builder_preview_image_centers_when_smaller():
+    css_path = Path(__file__).resolve().parent.parent.parent / "frontend" / "static" / "css" / "app.css"
+    css = css_path.read_text(encoding="utf-8")
+
+    preview_image_start = css.index(".world-builder-preview-image")
+    preview_image_block = css[preview_image_start:]
+    preview_image_block = preview_image_block.split("}")[0] + "}"
+
+    assert "margin: auto" in preview_image_block, "Preview image must use margin:auto so smaller images remain centered inside the scroll container"
 
 
 def test_app_shell_uses_full_viewport_without_overflow():
