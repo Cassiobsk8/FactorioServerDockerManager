@@ -5,7 +5,6 @@
   "menu.console": "Console",
   "menu.server_settings": "Server Settings",
   "menu.about": "About",
-  "menu.schema_config": "Schema Config",
   "dashboard.title": "Dashboard",
   "settings.group.world": "World",
   "settings.group.access_control": "Access Control",
@@ -367,11 +366,5 @@
   "world_builder.advanced.replay": "Replay",
   "world_builder.placeholder.frequency": "Frequency",
   "world_builder.placeholder.size": "Size",
-  "world_builder.placeholder.richness": "Richness",
-  "schema_config.categories": "Categories",
-  "schema_config.fields": "Fields",
-  "schema_config.all_files": "All files",
-  "schema_config.load_defaults": "Load Defaults",
-  "schema_config.serialize": "Serialize",
-  "schema_config.deserialize": "Deserialize"
+  "world_builder.placeholder.richness": "Richness"
 }

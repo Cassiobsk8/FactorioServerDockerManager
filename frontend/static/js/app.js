@@ -29,11 +29,6 @@
                         checkWorldBuilderStatus();
                     }
                 }
-                if (button.dataset.tab === 'schema-config') {
-                    if (typeof initSchemaConfigPage === 'function') {
-                        initSchemaConfigPage();
-                    }
-                }
             });
         });
 

@@ -5,7 +5,6 @@
   "menu.console": "控制台",
   "menu.server_settings": "服务器设置",
   "menu.about": "关于",
-  "menu.schema_config": "Schema Config",
   "settings.group.world": "世界",
   "settings.group.access_control": "访问控制",
   "settings.group.factorio_account": "Factorio 账户",
@@ -367,11 +366,5 @@
   "world_builder.advanced.replay": "Replay",
   "world_builder.placeholder.frequency": "频率",
   "world_builder.placeholder.size": "规模",
-  "world_builder.placeholder.richness": "丰富度",
-  "schema_config.categories": "分类",
-  "schema_config.fields": "字段",
-  "schema_config.all_files": "所有文件",
-  "schema_config.load_defaults": "加载默认值",
-  "schema_config.serialize": "序列化",
-  "schema_config.deserialize": "反序列化"
+  "world_builder.placeholder.richness": "丰富度"
 }

@@ -5,7 +5,6 @@
   "menu.console": "Console",
   "menu.server_settings": "Configurações",
   "menu.about": "Sobre",
-  "menu.schema_config": "Schema Config",
   "settings.group.world": "Mundo",
   "settings.group.access_control": "Controle de Acesso",
   "settings.group.factorio_account": "Conta Factorio",
@@ -367,11 +366,5 @@
   "world_builder.advanced.replay": "Replay",
   "world_builder.placeholder.frequency": "Frequência",
   "world_builder.placeholder.size": "Tamanho",
-  "world_builder.placeholder.richness": "Riqueza",
-  "schema_config.categories": "Categorias",
-  "schema_config.fields": "Campos",
-  "schema_config.all_files": "Todos os arquivos",
-  "schema_config.load_defaults": "Carregar Padrões",
-  "schema_config.serialize": "Serializar",
-  "schema_config.deserialize": "Desserializar"
+  "world_builder.placeholder.richness": "Riqueza"
 }

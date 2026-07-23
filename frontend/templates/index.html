@@ -25,7 +25,6 @@
                 <button class="tab-button active" data-tab="dashboard" data-i18n="menu.dashboard">Dashboard</button>
                 <button class="tab-button" data-tab="saves" data-i18n="menu.saves">Saves</button>
                 <button class="tab-button" data-tab="world-builder" data-i18n="menu.world_builder">World Builder</button>
-                <button class="tab-button" data-tab="schema-config" data-i18n="menu.schema_config">Schema Config</button>
                 <button class="tab-button" data-tab="console" data-i18n="menu.console">Console</button>
                 <button class="tab-button" data-tab="server-settings" data-i18n="menu.server_settings">Server Settings</button>
                 <button class="tab-button" data-tab="about" data-i18n="menu.about">About</button>
@@ -378,33 +377,6 @@
                             <p class="preview-placeholder" data-i18n="world_builder.preview.placeholder">No preview generated yet</p>
                             <img id="wb-preview-image" class="world-builder-preview-image" style="display:none;" alt="World preview" />
                         </div>
-                    </section>
-                </div>
-            </div>
-            <div class="tab-panel" id="schema-config-panel">
-                <div class="schema-config-layout">
-                    <section class="panel card config-card schema-config-sidebar">
-                        <div class="panel-header">
-                            <h2 data-i18n="schema_config.categories">Categories</h2>
-                        </div>
-                        <div id="schema-config-categories"></div>
-                    </section>
-                    <section class="panel card config-card schema-config-main">
-                        <div class="panel-header">
-                            <h2 data-i18n="schema_config.fields">Fields</h2>
-                            <select id="schema-config-source">
-                                <option value="" data-i18n="schema_config.all_files">All files</option>
-                                <option value="map-gen-settings.json">map-gen-settings.json</option>
-                                <option value="map-settings.json">map-settings.json</option>
-                            </select>
-                        </div>
-                        <div id="schema-config-fields"></div>
-                        <div class="schema-config-actions">
-                            <button type="button" class="secondary-button" id="schema-config-load-defaults" data-i18n="schema_config.load_defaults">Load Defaults</button>
-                            <button type="button" class="secondary-button" id="schema-config-serialize" data-i18n="schema_config.serialize">Serialize</button>
-                            <button type="button" class="secondary-button" id="schema_config-deserialize" data-i18n="schema_config.deserialize">Deserialize</button>
-                        </div>
-                        <pre class="schema-config-output" id="schema-config-output"></pre>
                     </section>
                 </div>
             </div>
@@ -843,7 +815,6 @@
     <script src="{{ url_for('static', filename='js/saves.js') }}"></script>
     <script src="{{ url_for('static', filename='js/config.js') }}"></script>
     <script src="{{ url_for('static', filename='js/world_builder.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/schema_config.js') }}"></script>
     <script src="{{ url_for('static', filename='js/rcon.js') }}"></script>
     <script src="{{ url_for('static', filename='js/access_control.js') }}"></script>
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
