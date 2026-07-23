@@ -393,22 +393,22 @@
 
         function createDiscreteSlider(name, currentIndex, disabled) {
             const index = Math.max(0, Math.min(11, Math.round(currentIndex)));
-            return `<input type="range" class="wb-resource-discrete-input" data-control="${name}" min="0" max="11" step="1" value="${index}" ${disabled ? 'disabled' : ''} /><span class="wb-resource-value" data-control="${name}">${factorioIndexToLabel(index)}</span>`;
+            return `<input type="range" class="wb-table-discrete-input" data-control="${name}" min="0" max="11" step="1" value="${index}" ${disabled ? 'disabled' : ''} /><span class="wb-table-value" data-control="${name}">${factorioIndexToLabel(index)}</span>`;
         }
 
         function createResourceCheckbox(name, checked, disabled) {
-            return `<input type="checkbox" class="wb-resource-checkbox" data-control="${name}" ${checked ? 'checked' : ''} ${disabled ? 'disabled' : ''} />`;
+            return `<input type="checkbox" class="wb-table-checkbox" data-control="${name}" ${checked ? 'checked' : ''} ${disabled ? 'disabled' : ''} />`;
         }
 
         function handleResourceEnableChange(e) {
             const input = e.target;
-            const row = input.closest('.wb-resource-row');
+            const row = input.closest('.wb-table-row');
             if (!row) return;
 
             const resourceId = row.dataset.resource;
             const enabled = input.checked;
-            const sliders = row.querySelectorAll('.wb-resource-discrete-input');
-            const valueSpans = row.querySelectorAll('.wb-resource-value');
+            const sliders = row.querySelectorAll('.wb-table-discrete-input');
+            const valueSpans = row.querySelectorAll('.wb-table-value');
 
             if (enabled) {
                 const prev = wbState.resourcePreviousValues[resourceId] || {frequency: 1, size: 1, richness: 1};
@@ -419,7 +419,7 @@
                     const control = slider.dataset.control;
                     const val = prev[control] != null ? prev[control] : 1;
                     slider.value = factorioValueToIndex(val);
-                    const span = slider.parentElement.querySelector(`.wb-resource-value[data-control="${control}"]`);
+                    const span = slider.parentElement.querySelector(`.wb-table-value[data-control="${control}"]`);
                     if (span) span.textContent = factorioIndexToLabel(factorioValueToIndex(val));
                 });
             } else {
@@ -454,7 +454,7 @@
         }
 
         function createResourceRow(name) {
-            return `<div class="wb-resource-row">
+            return `<div class="wb-table-row">
                 ${createCheckboxPlaceholder(name)}
                 ${createSliderPlaceholder('Frequency')}
                 ${createSliderPlaceholder('Size')}
@@ -583,16 +583,19 @@
         }
 
         function renderResourcesError(message) {
-            const body = document.querySelector('#wb-tab-resources .wb-resources-body');
+            const panel = document.getElementById('wb-tab-resources');
+            if (!panel) return;
+            const table = panel.querySelector('.wb-table');
+            const body = table ? table.querySelector('.wb-table-body') : null;
             if (!body) return;
-            body.innerHTML = `<div class="wb-resource-error">${message}</div>`;
+            body.innerHTML = `<div class="wb-table-error">${message}</div>`;
         }
 
         function renderResources(fields) {
             const panel = document.getElementById('wb-tab-resources');
             if (!panel || !fields.length) return;
 
-            const body = panel.querySelector('.wb-resources-body');
+            const body = panel.querySelector('.wb-table-body');
             if (!body) return;
 
             body.innerHTML = fields.map(field => {
@@ -617,37 +620,37 @@
 
                 const i18nKey = `world_builder.resource.${resourceId.replace(/-/g, '_')}`;
 
-                return `<div class="wb-resource-row" data-resource="${resourceId}">
-                    <label class="wb-resource-checkbox-wrapper">
-                        ${canBeDisabled ? `<input type="checkbox" class="wb-resource-checkbox" data-control="enabled" ${isDisabled ? '' : 'checked'} />` : ''}
+                return `<div class="wb-table-row" data-resource="${resourceId}">
+                    <label class="wb-table-checkbox-wrapper">
+                        ${canBeDisabled ? `<input type="checkbox" class="wb-table-checkbox" data-control="enabled" ${isDisabled ? '' : 'checked'} />` : ''}
                     </label>
-                    <span class="wb-resource-label" data-i18n="${i18nKey}">${field.label || resourceId}</span>
-                    <span class="wb-resource-planet">${formatPlanet(field)}</span>
-                    <label class="wb-resource-slider">
+                    <span class="wb-table-label" data-i18n="${i18nKey}">${field.label || resourceId}</span>
+                    <span class="wb-table-planet">${formatPlanet(field)}</span>
+                    <label class="wb-table-slider">
                         ${createDiscreteSlider('frequency', factorioValueToIndex(freq), isDisabled)}
                     </label>
-                    <label class="wb-resource-slider">
+                    <label class="wb-table-slider">
                         ${createDiscreteSlider('size', factorioValueToIndex(size), isDisabled)}
                     </label>
-                    <label class="wb-resource-slider">
+                    <label class="wb-table-slider">
                         ${createDiscreteSlider('richness', factorioValueToIndex(richness), isDisabled)}
                     </label>
                 </div>`;
             }).join('');
 
-            body.querySelectorAll('.wb-resource-discrete-input').forEach(input => {
+            body.querySelectorAll('.wb-table-discrete-input').forEach(input => {
                 input.addEventListener('input', handleResourceChange);
                 input.addEventListener('change', handleResourceChange);
             });
 
-            body.querySelectorAll('.wb-resource-checkbox').forEach(input => {
+            body.querySelectorAll('.wb-table-checkbox').forEach(input => {
                 input.addEventListener('change', handleResourceEnableChange);
             });
         }
 
         function handleResourceChange(e) {
             const input = e.target;
-            const row = input.closest('.wb-resource-row');
+            const row = input.closest('.wb-table-row');
             if (!row) return;
 
             const resourceId = row.dataset.resource;
@@ -655,7 +658,7 @@
             const index = parseInt(input.value, 10);
             const value = factorioIndexToValue(index);
 
-            const valueSpan = input.parentElement.querySelector(`.wb-resource-value[data-control="${control}"]`);
+            const valueSpan = input.parentElement.querySelector(`.wb-table-value[data-control="${control}"]`);
             if (valueSpan) valueSpan.textContent = factorioIndexToLabel(index);
 
             if (!wbState.worldConfig.settings) {
@@ -679,16 +682,16 @@
             const advancedPanel = document.getElementById('wb-tab-advanced');
 
             if (resourcesPanel) {
-                resourcesPanel.innerHTML = `<div class="wb-resources-table-wrapper">
-                    <div class="wb-resources-header">
-                        <span class="wb-resource-checkbox-header"></span>
+                resourcesPanel.innerHTML = `<div class="wb-table">
+                    <div class="wb-table-header">
+                        <span class="wb-table-checkbox-header"></span>
                         <span data-i18n="world_builder.resource.header.resource">Resource</span>
                         <span data-i18n="world_builder.resource.header.planet">Planet</span>
                         <span data-i18n="world_builder.resource.header.frequency">Frequency</span>
                         <span data-i18n="world_builder.resource.header.size">Size</span>
                         <span data-i18n="world_builder.resource.header.richness">Richness</span>
                     </div>
-                    <div class="wb-resources-body"></div>
+                    <div class="wb-table-body"></div>
                 </div>`;
             }
 
