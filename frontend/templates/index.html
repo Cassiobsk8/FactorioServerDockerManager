@@ -322,13 +322,10 @@
                         <div class="wb-scroll-area">
                             <form id="world-builder-form" class="stacked-form">
                                 <div class="wb-header">
-                                    <label class="wb-preset-label">
-                                        <span data-i18n="world_builder.preset">Preset</span>
-                                        <select id="wb-preset" disabled>
-                                            <option value="" data-i18n="world_builder.preset_placeholder">--</option>
-                                        </select>
+                                    <label class="wb-world-name-label">
+                                        <span data-i18n="world_builder.world_name">World Name</span>
+                                        <input type="text" id="wb-world-name" placeholder="meu_mundo" required />
                                     </label>
-                                    <button type="button" class="text-button wb-reset-button" id="wb-reset" disabled data-i18n="world_builder.reset">Reset</button>
                                     <label class="wb-seed-label">
                                         <span data-i18n="world_builder.seed">Seed</span>
                                         <div class="seed-row">
@@ -336,16 +333,13 @@
                                             <button type="button" class="text-button" id="wb-generate-seed" data-i18n="world_builder.generate_seed">🎲 Generate</button>
                                         </div>
                                     </label>
-                                </div>
-                                <div class="wb-meta-row">
-                                    <label class="wb-world-name-label">
-                                        <span data-i18n="world_builder.world_name">World Name</span>
-                                        <input type="text" id="wb-world-name" placeholder="meu_mundo" required />
+                                    <label class="wb-preset-label">
+                                        <span data-i18n="world_builder.preset">Preset</span>
+                                        <select id="wb-preset" disabled>
+                                            <option value="" data-i18n="world_builder.preset_placeholder">--</option>
+                                        </select>
                                     </label>
-                                    <label class="wb-planet-label">
-                                        <span data-i18n="world_builder.planet">Planet</span>
-                                        <select id="wb-planet"></select>
-                                    </label>
+                                    <button type="button" class="text-button wb-reset-button" id="wb-reset" disabled data-i18n="world_builder.reset">Reset</button>
                                 </div>
                                 <div class="wb-description">
                                     <p data-i18n="world_builder.description_placeholder">Preset description will appear here.</p>
@@ -375,6 +369,10 @@
                     <section class="panel card config-card world-builder-preview-card">
                         <div class="panel-header">
                             <h2 data-i18n="world_builder.preview">Preview</h2>
+                            <label class="wb-planet-label wb-planet-inline">
+                                <span data-i18n="world_builder.planet">Planet</span>
+                                <select id="wb-planet"></select>
+                            </label>
                             <span class="badge badge-inactive" id="wb-preview-status" data-i18n="world_builder.preview.status.outdated">Preview outdated</span>
                         </div>
                         <div class="world-builder-preview" id="wb-preview-container">

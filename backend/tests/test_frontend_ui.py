@@ -464,8 +464,21 @@ def test_world_builder_config_card_has_internal_scroll():
     wb_config_block = wb_config_block.split("}")[0] + "}"
 
     assert "height: 100%" in wb_config_block, "World builder config card must have fixed height to avoid growing layout"
-    assert "overflow-y: auto" in wb_config_block, "World builder config card must support internal scrolling"
+    assert "overflow: hidden" in wb_config_block, "World builder config card must hide outer overflow so only inner resource list scrolls"
+    assert "overflow-y: auto" not in wb_config_block, "World builder config card must not have its own vertical scrollbar"
     assert "min-height: 0" in wb_config_block, "World builder config card must have min-height: 0 to shrink inside flex/grid"
+
+    scroll_area_start = css.index(".wb-scroll-area {")
+    scroll_area_block = css[scroll_area_start:]
+    scroll_area_block = scroll_area_block.split("}")[0] + "}"
+
+    assert "overflow: hidden" in scroll_area_block, "World builder scroll area must hide outer overflow so only inner resource list scrolls"
+
+    resources_body_start = css.index(".wb-resources-body {")
+    resources_body_block = css[resources_body_start:]
+    resources_body_block = resources_body_block.split("}")[0] + "}"
+
+    assert "overflow-y: auto" in resources_body_block, "World builder resource list must provide the only vertical scrollbar"
 
 
 def test_world_builder_layout_has_fixed_height():
