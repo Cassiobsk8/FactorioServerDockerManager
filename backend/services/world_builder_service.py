@@ -9,12 +9,14 @@ import subprocess
 import tempfile
 import time
 import uuid
+from copy import deepcopy
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
 
 from backend.config import BASE_DIR, INSTALL_DIR, SAVE_DIR
 from backend.services.world_config import WorldConfig
+from backend.services.world_builder_schema import get_field_by_id
 
 logger = logging.getLogger("fsm.world_builder")
 
@@ -84,10 +86,35 @@ def _write_map_gen_settings(config: WorldConfig, directory: Path) -> Optional[Pa
     if not config.settings:
         return None
 
+    normalized_settings = deepcopy(config.settings)
+    autoplace_controls = normalized_settings.get("autoplace_controls")
+    if isinstance(autoplace_controls, dict):
+        water_control = autoplace_controls.pop("water", None)
+        for control_id, values in autoplace_controls.items():
+            field = get_field_by_id(f"autoplace_controls.{control_id}")
+            defaults = field.get("default") if field else None
+            if isinstance(defaults, dict) and isinstance(values, dict):
+                autoplace_controls[control_id] = {
+                    **defaults,
+                    **{key: value for key, value in values.items() if value is not None},
+                }
+
+        if isinstance(water_control, dict):
+            frequency = water_control.get("frequency")
+            size = water_control.get("size")
+            is_disabled = frequency in (0, "none") and size in (0, "none")
+            if is_disabled:
+                normalized_settings["water"] = "none"
+            else:
+                if frequency is not None:
+                    normalized_settings["terrain_segmentation"] = frequency
+                if size is not None:
+                    normalized_settings["water"] = size
+
     settings = {
         "seed": int(config.seed) if (config.seed and not config.random_seed) else None,
         "planet": config.planet,
-        **config.settings,
+        **normalized_settings,
     }
     settings = {k: v for k, v in settings.items() if v is not None}
 
@@ -205,6 +232,24 @@ def generate_preview(config: WorldConfig) -> dict[str, Any]:
             logger.debug("Preview stderr: %s", exec_info["stderr"])
 
         generated = tmpdir / "preview.png"
+        if exec_info["return_code"] != 0:
+            files = _list_directory(tmpdir)
+            pngs = _png_files(tmpdir)
+            details = (
+                f"Comando: {' '.join(exec_info['command'])}\n"
+                f"cwd: {tmpdir}\n"
+                f"stdout: {exec_info['stdout']}\n"
+                f"stderr: {exec_info['stderr']}\n"
+                f"return code: {exec_info['return_code']}\n"
+                f"tempo: {exec_info['elapsed_seconds']}s\n"
+                f"preview.png existe: {generated.exists()}\n"
+                f"PNGs encontrados: {pngs if pngs else 'nenhum'}\n"
+                f"arquivos no diretório temporário:\n"
+                + "\n".join(f"  {f}" for f in files)
+            )
+            logger.error("Factorio failed to generate preview. Details:\n%s", details)
+            raise RuntimeError("Factorio falhou ao gerar preview.\n" + details)
+
         if not generated.exists():
             files = _list_directory(tmpdir)
             pngs = _png_files(tmpdir)

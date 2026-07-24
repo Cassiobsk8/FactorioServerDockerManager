@@ -13,6 +13,7 @@
                 isLoading: false,
             },
             resourceFields: [],
+            terrainFeatureFields: [],
             resourcePreviousValues: {},
             ui: {
                 factorioValid: true,
@@ -68,6 +69,19 @@
         function formatPlanet(field) {
             const { icon, name } = getPlanetDisplay(field);
             return `${icon} ${name}`;
+        }
+
+        function getAutoplaceControlDefaults(resourceId) {
+            const field = [...wbState.resourceFields, ...wbState.terrainFeatureFields, ...wbState.cliffFields]
+                .find(candidate => candidate.id === `autoplace_controls.${resourceId}`);
+            const defaults = field && field.default;
+            return defaults && typeof defaults === 'object' && !Array.isArray(defaults)
+                ? { ...defaults }
+                : {};
+        }
+
+        function isAutoplaceControlDisabled(values, controls) {
+            return controls.every(control => values && [0, 'none'].includes(values[control]));
         }
 
         let worldBuilderInitialized = false;
@@ -413,9 +427,11 @@
             const enabled = input.checked;
             const sliders = row.querySelectorAll('.wb-table-discrete-input');
             const valueSpans = row.querySelectorAll('.wb-table-value');
+            const controls = Array.from(sliders).map(slider => slider.dataset.control);
+            const defaultValues = Object.fromEntries(controls.map(control => [control, 1]));
 
             if (enabled) {
-                const prev = wbState.resourcePreviousValues[resourceId] || {frequency: 1, size: 1, richness: 1};
+                const prev = wbState.resourcePreviousValues[resourceId] || defaultValues;
                 wbState.worldConfig.settings.autoplace_controls[resourceId] = { ...prev };
 
                 sliders.forEach(slider => {
@@ -427,10 +443,12 @@
                     if (span) span.textContent = factorioIndexToLabel(factorioValueToIndex(val));
                 });
             } else {
-                const current = wbState.worldConfig.settings.autoplace_controls[resourceId] || {frequency: 1, size: 1, richness: 1};
+                const current = wbState.worldConfig.settings.autoplace_controls[resourceId] || defaultValues;
                 wbState.resourcePreviousValues[resourceId] = { ...current };
 
-                wbState.worldConfig.settings.autoplace_controls[resourceId] = { frequency: 0, size: 0, richness: 0 };
+                wbState.worldConfig.settings.autoplace_controls[resourceId] = Object.fromEntries(
+                    controls.map(control => [control, 'none'])
+                );
 
                 sliders.forEach(slider => {
                     slider.disabled = true;
@@ -477,15 +495,8 @@
             </div>`;
         }
 
-        function createBiasSlider(name) {
-            return `<label class="wb-bias-slider">
-                <input type="range" min="-0.50" max="0.50" step="0.05" value="0.00" disabled />
-                <span class="wb-bias-value">0.00</span>
-            </label>`;
-        }
-
-        function createTerrainGroup(headerHtml, rowsHtml) {
-            return `<div class="wb-terrain-group">
+        function createTerrainGroup(headerHtml, rowsHtml, groupClass = '') {
+            return `<div class="wb-terrain-group ${groupClass}">
                 <div class="wb-terrain-table wb-table">
                     <div class="wb-terrain-table-header">${headerHtml}</div>
                     <div class="wb-table-body">${rowsHtml}</div>
@@ -493,20 +504,9 @@
             </div>`;
         }
 
-        function createTerrainGroupRowWithCheckbox(name, planetHtml, slider1, slider2) {
-            return `<div class="wb-table-row">
-                <div class="wb-terrain-name">
-                    <input type="checkbox" class="wb-table-checkbox" disabled />
-                    <span class="wb-table-label">${name}</span>
-                </div>
-                <span class="wb-table-planet" title="${planetHtml.name}">${planetHtml.icon}</span>
-                <label class="wb-table-slider">${slider1}</label>
-                <label class="wb-table-slider">${slider2}</label>
-            </div>`;
-        }
-
-        function createTerrainGroupRow(name, planetHtml, slider1, slider2) {
-            return `<div class="wb-table-row">
+        function createTerrainGroupRow(name, planetHtml, slider1, slider2, dataField) {
+            const rowAttrs = dataField ? ` data-field="${dataField}"` : '';
+            return `<div class="wb-table-row"${rowAttrs}>
                 <div class="wb-terrain-name">
                     <span class="wb-table-label">${name}</span>
                 </div>
@@ -516,14 +516,14 @@
             </div>`;
         }
 
-        function createTerrainSlider() {
-            return `<input type="range" class="wb-table-discrete-input" min="0" max="11" step="1" value="5" disabled />
-                    <span class="wb-table-value">100%</span>`;
+        function createTerrainSlider(name) {
+            return `<input type="range" class="wb-table-discrete-input" data-control="${name}" min="0" max="11" step="1" value="5" disabled />
+                    <span class="wb-table-value" data-control="${name}">100%</span>`;
         }
 
-        function createBiasSlider() {
-            return `<input type="range" min="-0.50" max="0.50" step="0.05" value="0.00" disabled />
-                    <span class="wb-bias-value">0.00</span>`;
+        function createBiasSlider(name) {
+            return `<input type="range" class="wb-bias-input" data-control="${name}" min="-0.50" max="0.50" step="0.05" value="0.00" disabled />
+                    <span class="wb-bias-value" data-control="${name}">0.00</span>`;
         }
 
         function createTerrainDivider() {
@@ -559,7 +559,7 @@
         }
 
         async function loadResourceFields() {
-            if (wbState.resourceFields && wbState.resourceFields.length > 0) return;
+            if (wbState.resourceFields.length > 0 && wbState.terrainFeatureFields.length > 0) return;
 
             try {
                 const res = await fetch('/api/world-builder/config-engine?source_file=map-gen-settings.json');
@@ -569,15 +569,49 @@
                 }
                 const data = await res.json();
 
-                const fields = (data.fields || []).filter(f => {
-                    const category = f.category || '';
-                    const isResource = category === 'Resources';
+                const autoplaceFields = (data.fields || []).filter(f => {
                     const id = f.id || '';
                     const isAutoplaceControl = id.startsWith('autoplace_controls.');
                     const byOriginalType = f.original_type === 'AutoplaceControl';
                     const byFormType = f.type === 'AutoplaceControl' || (f.type === 'group' && byOriginalType);
-                    return isResource && (isAutoplaceControl || byFormType);
+                    return isAutoplaceControl || byFormType;
                 });
+                const fields = autoplaceFields.filter(f => {
+                    const category = f.category || '';
+                    const isResource = category === 'Resources';
+                    return isResource;
+                });
+
+                const terrainFeatureIds = [
+                    'water',
+                    'trees',
+                    'rocks',
+                    'starting_area_moisture',
+                    'vulcanus_volcanism',
+                    'gleba_water',
+                    'gleba_plants',
+                    'fulgora_islands',
+                ];
+                const terrainFieldsById = new Map(autoplaceFields.map(field => [
+                    field.id.replace('autoplace_controls.', ''),
+                    field,
+                ]));
+                const terrainFields = terrainFeatureIds
+                    .map(id => terrainFieldsById.get(id))
+                    .filter(Boolean);
+
+                const cliffIds = [
+                    'nauvis_cliff',
+                    'gleba_cliff',
+                    'fulgora_cliff',
+                ];
+                const cliffFieldsById = new Map(autoplaceFields.map(field => [
+                    field.id.replace('autoplace_controls.', ''),
+                    field,
+                ]));
+                const cliffFields = cliffIds
+                    .map(id => cliffFieldsById.get(id))
+                    .filter(Boolean);
 
                 fields.sort((a, b) => {
                     const orderA = a.order || '';
@@ -595,6 +629,8 @@
                 }
 
                 wbState.resourceFields = fields;
+                wbState.terrainFeatureFields = terrainFields;
+                wbState.cliffFields = cliffFields;
 
                 if (!wbState.worldConfig.settings) {
                     wbState.worldConfig.settings = {};
@@ -604,6 +640,9 @@
                 }
 
                 renderResources(fields);
+                renderTerrainFeatures(terrainFields);
+                renderCliffs(cliffFields);
+                renderMoistureTerrain();
             } catch (err) {
                 renderResourcesError('Failed to load resources');
                 console.warn('[WorldBuilder] Error loading resource fields:', err);
@@ -635,7 +674,7 @@
                     : {frequency: 1, size: 1, richness: 1};
                 const current = (wbState.worldConfig.settings && wbState.worldConfig.settings.autoplace_controls && wbState.worldConfig.settings.autoplace_controls[resourceId]) || controlDefaults;
 
-                const isDisabled = current && current.frequency === 0 && current.size === 0 && current.richness === 0;
+                const isDisabled = isAutoplaceControlDisabled(current, ['frequency', 'size', 'richness']);
                 const displayValues = (isDisabled && wbState.resourcePreviousValues[resourceId])
                     ? wbState.resourcePreviousValues[resourceId]
                     : current;
@@ -677,6 +716,190 @@
             });
         }
 
+        function renderTerrainFeatures(fields) {
+            const panel = document.getElementById('wb-tab-terrain');
+            if (!panel || !fields.length) return;
+
+            const body = panel.querySelector('.wb-terrain-features .wb-table-body');
+            if (!body) return;
+
+            body.innerHTML = fields.map(field => {
+                const resourceId = field.id.replace('autoplace_controls.', '');
+                const planetDisplay = getPlanetDisplay(field);
+                const rawDefaults = field.default || {};
+                const controlDefaults = (rawDefaults && typeof rawDefaults === 'object' && !Array.isArray(rawDefaults))
+                    ? rawDefaults
+                    : {frequency: 1, size: 1};
+                const current = (wbState.worldConfig.settings && wbState.worldConfig.settings.autoplace_controls && wbState.worldConfig.settings.autoplace_controls[resourceId]) || controlDefaults;
+                const canBeDisabled = field.can_be_disabled !== false;
+                const isDisabled = canBeDisabled && isAutoplaceControlDisabled(current, ['frequency', 'size']);
+                const displayValues = (isDisabled && wbState.resourcePreviousValues[resourceId])
+                    ? wbState.resourcePreviousValues[resourceId]
+                    : current;
+                const effective = displayValues || controlDefaults;
+                const frequency = effective.frequency != null ? effective.frequency : controlDefaults.frequency;
+                const size = effective.size != null ? effective.size : controlDefaults.size;
+
+                return `<div class="wb-table-row" data-resource="${resourceId}">
+                    <label class="wb-terrain-name">
+                        ${canBeDisabled ? `<input type="checkbox" class="wb-table-checkbox" data-control="enabled" ${isDisabled ? '' : 'checked'} />` : ''}
+                        <span class="wb-table-label">${field.label || resourceId}</span>
+                    </label>
+                    <span class="wb-table-planet" title="${planetDisplay.name}">${planetDisplay.icon}</span>
+                    <label class="wb-table-slider">
+                        ${createDiscreteSlider('frequency', factorioValueToIndex(frequency), isDisabled)}
+                    </label>
+                    <label class="wb-table-slider">
+                        ${createDiscreteSlider('size', factorioValueToIndex(size), isDisabled)}
+                    </label>
+                </div>`;
+            }).join('');
+
+            body.querySelectorAll('.wb-table-discrete-input').forEach(input => {
+                input.addEventListener('input', handleResourceChange);
+                input.addEventListener('change', handleResourceChange);
+            });
+            body.querySelectorAll('.wb-table-checkbox').forEach(input => {
+                input.addEventListener('change', handleResourceEnableChange);
+            });
+        }
+
+        function renderCliffs(fields) {
+            const panel = document.getElementById('wb-tab-terrain');
+            if (!panel || !fields.length) return;
+
+            const body = panel.querySelector('.wb-terrain-elevation .wb-table-body');
+            if (!body) return;
+
+            body.innerHTML = fields.map(field => {
+                const resourceId = field.id.replace('autoplace_controls.', '');
+                const planetDisplay = getPlanetDisplay(field);
+                const rawDefaults = field.default || {};
+                const controlDefaults = (rawDefaults && typeof rawDefaults === 'object' && !Array.isArray(rawDefaults))
+                    ? rawDefaults
+                    : {frequency: 1, size: 2, richness: 0};
+                const current = (wbState.worldConfig.settings && wbState.worldConfig.settings.autoplace_controls && wbState.worldConfig.settings.autoplace_controls[resourceId]) || controlDefaults;
+                const canBeDisabled = field.can_be_disabled !== false;
+                const isDisabled = canBeDisabled && isAutoplaceControlDisabled(current, ['frequency', 'richness']);
+                const displayValues = (isDisabled && wbState.resourcePreviousValues[resourceId])
+                    ? wbState.resourcePreviousValues[resourceId]
+                    : current;
+                const effective = displayValues || controlDefaults;
+                const frequency = effective.frequency != null ? effective.frequency : controlDefaults.frequency;
+                const continuity = effective.richness != null ? effective.richness : controlDefaults.richness;
+
+                return `<div class="wb-table-row" data-resource="${resourceId}">
+                    <label class="wb-terrain-name">
+                        ${canBeDisabled ? `<input type="checkbox" class="wb-table-checkbox" data-control="enabled" ${isDisabled ? '' : 'checked'} />` : ''}
+                        <span class="wb-table-label">${field.label || resourceId}</span>
+                    </label>
+                    <span class="wb-table-planet" title="${planetDisplay.name}">${planetDisplay.icon}</span>
+                    <label class="wb-table-slider">
+                        ${createDiscreteSlider('frequency', factorioValueToIndex(frequency), isDisabled)}
+                    </label>
+                    <label class="wb-table-slider">
+                        ${createDiscreteSlider('richness', factorioValueToIndex(continuity), isDisabled)}
+                    </label>
+                </div>`;
+            }).join('');
+
+            body.querySelectorAll('.wb-table-discrete-input').forEach(input => {
+                input.addEventListener('input', handleResourceChange);
+                input.addEventListener('change', handleResourceChange);
+            });
+            body.querySelectorAll('.wb-table-checkbox').forEach(input => {
+                input.addEventListener('change', handleResourceEnableChange);
+            });
+        }
+
+        function renderMoistureTerrain() {
+            const panel = document.getElementById('wb-tab-terrain');
+            if (!panel) return;
+
+            const moistureRow = panel.querySelector('.wb-table-row[data-field="moisture"]');
+            const terrainRow = panel.querySelector('.wb-table-row[data-field="terrain"]');
+            if (!moistureRow || !terrainRow) return;
+
+            const expr = (wbState.worldConfig.settings && wbState.worldConfig.settings.property_expression_names) || {};
+
+            [moistureRow, terrainRow].forEach(row => {
+                const field = row.dataset.field;
+                const freqKey = field === 'moisture' ? 'control:moisture:frequency' : 'control:aux:frequency';
+                const biasKey = field === 'moisture' ? 'control:moisture:bias' : 'control:aux:bias';
+
+                const freqStr = expr[freqKey] || '1';
+                const biasStr = expr[biasKey] || '0';
+
+                const freqVal = parseFloat(freqStr);
+                const biasVal = parseFloat(biasStr);
+
+                const freqSlider = row.querySelector('.wb-table-discrete-input');
+                const freqValue = row.querySelector('.wb-table-value');
+                const biasSlider = row.querySelector('.wb-bias-input');
+                const biasValue = row.querySelector('.wb-bias-value');
+
+                if (freqSlider) {
+                    freqSlider.value = factorioValueToIndex(freqVal);
+                    freqSlider.disabled = false;
+                }
+                if (freqValue) {
+                    freqValue.textContent = factorioIndexToLabel(factorioValueToIndex(freqVal));
+                }
+
+                if (biasSlider) {
+                    biasSlider.value = biasVal;
+                    biasSlider.disabled = false;
+                }
+                if (biasValue) {
+                    biasValue.textContent = biasVal.toFixed(2);
+                }
+            });
+
+            panel.querySelectorAll('.wb-table-discrete-input').forEach(input => {
+                input.addEventListener('input', handleMoistureTerrainChange);
+                input.addEventListener('change', handleMoistureTerrainChange);
+            });
+            panel.querySelectorAll('.wb-bias-input').forEach(input => {
+                input.addEventListener('input', handleMoistureTerrainChange);
+                input.addEventListener('change', handleMoistureTerrainChange);
+            });
+        }
+
+        function handleMoistureTerrainChange(e) {
+            const input = e.target;
+            const row = input.closest('.wb-table-row');
+            if (!row) return;
+
+            const field = row.dataset.field;
+            const control = input.dataset.control;
+
+            const prop = field === 'moisture' ? 'control:moisture' : 'control:aux';
+            const fullKey = `${prop}:${control}`;
+
+            let value;
+            if (control === 'frequency') {
+                const index = parseInt(input.value, 10);
+                value = factorioIndexToValue(index).toString();
+                const valueSpan = input.parentElement.querySelector(`.wb-table-value[data-control="${control}"]`);
+                if (valueSpan) valueSpan.textContent = factorioIndexToLabel(index);
+            } else if (control === 'bias') {
+                const num = parseFloat(input.value);
+                value = num.toFixed(2);
+                const valueSpan = input.parentElement.querySelector(`.wb-bias-value[data-control="${control}"]`);
+                if (valueSpan) valueSpan.textContent = num.toFixed(2);
+            }
+
+            if (!wbState.worldConfig.settings) {
+                wbState.worldConfig.settings = {};
+            }
+            if (!wbState.worldConfig.settings.property_expression_names) {
+                wbState.worldConfig.settings.property_expression_names = {};
+            }
+            wbState.worldConfig.settings.property_expression_names[fullKey] = value;
+
+            markPreviewOutdated();
+        }
+
         function handleResourceChange(e) {
             const input = e.target;
             const row = input.closest('.wb-table-row');
@@ -697,9 +920,13 @@
                 wbState.worldConfig.settings.autoplace_controls = {};
             }
             if (!wbState.worldConfig.settings.autoplace_controls[resourceId]) {
-                wbState.worldConfig.settings.autoplace_controls[resourceId] = {};
+                wbState.worldConfig.settings.autoplace_controls[resourceId] = getAutoplaceControlDefaults(resourceId);
             }
-            wbState.worldConfig.settings.autoplace_controls[resourceId][control] = value;
+            wbState.worldConfig.settings.autoplace_controls[resourceId] = {
+                ...getAutoplaceControlDefaults(resourceId),
+                ...wbState.worldConfig.settings.autoplace_controls[resourceId],
+                [control]: value,
+            };
 
             markPreviewOutdated();
         }
@@ -730,22 +957,19 @@
                 terrainPanel.innerHTML = `${createMapTypeSelect()}
                     ${createTerrainGroup(
                         '<span></span><span></span><span data-i18n="world_builder.terrain.header.scale">Escala</span><span data-i18n="world_builder.terrain.header.coverage">Cobertura</span>',
-                        [
-                            createTerrainGroupRowWithCheckbox('Water', nauvis, createTerrainSlider(), createTerrainSlider()),
-                            createTerrainGroupRowWithCheckbox('Trees', nauvis, createTerrainSlider(), createTerrainSlider())
-                        ].join('')
+                        '',
+                        'wb-terrain-features'
                     )}
                     ${createTerrainGroup(
                         '<span></span><span></span><span data-i18n="world_builder.terrain.header.frequency">Frequência</span><span data-i18n="world_builder.terrain.header.continuity">Continuidade</span>',
-                        [
-                            createTerrainGroupRowWithCheckbox('Cliffs', nauvis, createTerrainSlider(), createTerrainSlider())
-                        ].join('')
+                        '',
+                        'wb-terrain-elevation'
                     )}
                     ${createTerrainGroup(
                         '<span></span><span></span><span data-i18n="world_builder.terrain.header.scale">Escala</span><span data-i18n="world_builder.terrain.header.bias">Viés</span>',
                         [
-                            createTerrainGroupRow('Moisture', nauvis, createTerrainSlider(), createBiasSlider()),
-                            createTerrainGroupRow('Terrain', nauvis, createTerrainSlider(), createBiasSlider())
+                            createTerrainGroupRow('Moisture', nauvis, createTerrainSlider('frequency'), createBiasSlider('bias'), 'moisture'),
+                            createTerrainGroupRow('Terrain', nauvis, createTerrainSlider('frequency'), createBiasSlider('bias'), 'terrain')
                         ].join('')
                     )}`;
             }

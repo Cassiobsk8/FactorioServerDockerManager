@@ -457,6 +457,27 @@ def test_generate_preview_diagnostics_on_missing_png(tmp_path, monkeypatch):
     assert "return code:" in message
 
 
+def test_generate_preview_reports_factorio_process_failure(tmp_path, monkeypatch):
+    previews_dir = tmp_path / "previews"
+    previews_dir.mkdir(parents=True, exist_ok=True)
+    monkeypatch.setattr(world_builder_service, "PREVIEWS_DIR", previews_dir)
+    monkeypatch.setattr(world_builder_service, "INSTALL_DIR", tmp_path / "factorio")
+
+    factorio_bin = tmp_path / "factorio" / "bin" / "x64" / "factorio"
+    _write_fake_elf(factorio_bin)
+
+    def mock_run(cmd, **kwargs):
+        return subprocess.CompletedProcess(cmd, 1, stdout="Factorio failure", stderr="noise expression failed")
+
+    monkeypatch.setattr(world_builder_service.subprocess, "run", mock_run)
+
+    with pytest.raises(RuntimeError, match="Factorio falhou ao gerar preview") as exc_info:
+        generate_preview(DummyWorldConfig(world_name="TestWorld", planet="nauvis"))
+
+    assert "return code: 1" in str(exc_info.value)
+    assert "noise expression failed" in str(exc_info.value)
+
+
 def test_generate_preview_diagnostics_lists_any_png(tmp_path, monkeypatch):
     previews_dir = tmp_path / "previews"
     previews_dir.mkdir(parents=True, exist_ok=True)
@@ -904,6 +925,49 @@ def test_write_map_gen_settings_with_autoplace_controls(tmp_path):
     assert data["autoplace_controls"]["coal"]["size"] == 3
     assert data["autoplace_controls"]["coal"]["richness"] == 4
     assert data["seed"] == 123
+
+
+def test_write_map_gen_settings_completes_partial_autoplace_controls(tmp_path):
+    config = DummyWorldConfig(
+        world_name="Test",
+        settings={"autoplace_controls": {"coal": {"frequency": 2}}},
+    )
+
+    result = _write_map_gen_settings(config, tmp_path)
+
+    data = json.loads(result.read_text(encoding="utf-8"))
+    assert data["autoplace_controls"]["coal"] == {
+        "frequency": 2,
+        "size": 1.0,
+        "richness": 1.0,
+    }
+
+
+def test_write_map_gen_settings_converts_disabled_water_to_factorio_setting(tmp_path):
+    config = DummyWorldConfig(
+        world_name="Test",
+        settings={"autoplace_controls": {"water": {"frequency": "none", "size": "none"}}},
+    )
+
+    result = _write_map_gen_settings(config, tmp_path)
+
+    data = json.loads(result.read_text(encoding="utf-8"))
+    assert data["water"] == "none"
+    assert "water" not in data["autoplace_controls"]
+
+
+def test_write_map_gen_settings_converts_water_sliders_to_factorio_settings(tmp_path):
+    config = DummyWorldConfig(
+        world_name="Test",
+        settings={"autoplace_controls": {"water": {"frequency": 2, "size": 3}}},
+    )
+
+    result = _write_map_gen_settings(config, tmp_path)
+
+    data = json.loads(result.read_text(encoding="utf-8"))
+    assert data["terrain_segmentation"] == 2
+    assert data["water"] == 3
+    assert "water" not in data["autoplace_controls"]
 
 
 def test_write_map_settings_creates_file(tmp_path):
