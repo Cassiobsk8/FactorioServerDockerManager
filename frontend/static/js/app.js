@@ -10,11 +10,19 @@
 
         tabButtons.forEach((button) => {
             button.addEventListener('click', () => {
+                const previousTab = document.querySelector('.tab-button.active');
+                const previousTabName = previousTab ? previousTab.dataset.tab : null;
+
                 tabButtons.forEach((btn) => btn.classList.remove('active'));
                 panels.forEach((panel) => panel.classList.remove('active'));
 
                 button.classList.add('active');
                 document.getElementById(`${button.dataset.tab}-panel`).classList.add('active');
+
+                if (previousTabName === 'world-builder' && button.dataset.tab !== 'world-builder') {
+                    clearWorldBuilderPreviewCache();
+                }
+
                 if (button.dataset.tab === 'server-settings') {
                     fetchAndRenderSettings();
                 }
@@ -27,6 +35,9 @@
                     }
                     if (typeof checkWorldBuilderStatus === 'function') {
                         checkWorldBuilderStatus();
+                    }
+                    if (typeof clearWorldBuilderPreviewCache === 'function') {
+                        clearWorldBuilderPreviewCache();
                     }
                 }
             });
@@ -167,9 +178,29 @@
             });
         }
 
+        async function clearWorldBuilderPreviewCache() {
+            try {
+                const res = await fetch('/api/world-builder/preview-cache/clear', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                });
+                if (res.ok) {
+                    console.log('[WorldBuilder] Preview session cleared.');
+                } else {
+                    console.warn('[WorldBuilder] Failed to clear preview cache:', res.status);
+                }
+            } catch (err) {
+                console.warn('[WorldBuilder] Error clearing preview cache:', err);
+            }
+        }
+
         if (closeModal) {
             closeModal.addEventListener('click', closeInstallModal);
         }
+
+        window.addEventListener('beforeunload', () => {
+            clearWorldBuilderPreviewCache();
+        });
 
         initLanguage();
 

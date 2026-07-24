@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import logging
 import os
 import shutil
 import stat
@@ -15,10 +16,13 @@ from backend.services import world_builder_service
 from backend.services.world_builder_service import (
     _cleanup_tempdir,
     _compute_config_hash,
+    _get_map_gen_settings_defaults,
+    _get_map_settings_defaults,
     _move_generated_file,
     _run_factorio,
     _write_map_gen_settings,
     _write_map_settings,
+    clear_preview_cache,
     create_world,
     generate_preview,
     list_planets,
@@ -1038,6 +1042,65 @@ def test_write_map_gen_settings_deep_merges_nested_objects(tmp_path):
     assert data["property_expression_names"]["control:moisture:frequency"] == "2"
 
 
+def test_write_map_gen_settings_maps_cliff_continuity_to_cliff_settings(tmp_path):
+    config = DummyWorldConfig(
+        world_name="Test",
+        settings={"autoplace_controls": {"nauvis_cliff": {"frequency": 1, "size": 2, "richness": 3}}},
+    )
+    result = _write_map_gen_settings(config, tmp_path)
+
+    data = json.loads(result.read_text(encoding="utf-8"))
+    assert "nauvis_cliff" not in data["autoplace_controls"]
+    assert data["cliff_settings"]["richness"] == 3
+
+
+def test_write_map_gen_settings_maps_all_cliff_types_continuity(tmp_path):
+    config = DummyWorldConfig(
+        world_name="Test",
+        settings={
+            "autoplace_controls": {
+                "nauvis_cliff": {"richness": 2},
+                "gleba_cliff": {"richness": 4},
+                "fulgora_cliff": {"richness": 6},
+            }
+        },
+    )
+    result = _write_map_gen_settings(config, tmp_path)
+
+    data = json.loads(result.read_text(encoding="utf-8"))
+    assert "nauvis_cliff" not in data["autoplace_controls"]
+    assert "gleba_cliff" not in data["autoplace_controls"]
+    assert "fulgora_cliff" not in data["autoplace_controls"]
+    assert data["cliff_settings"]["richness"] == 6
+
+
+def test_write_map_gen_settings_does_not_affect_non_cliff_controls(tmp_path):
+    config = DummyWorldConfig(
+        world_name="Test",
+        settings={"autoplace_controls": {"coal": {"richness": 5}, "iron-ore": {"frequency": 2}}},
+    )
+    result = _write_map_gen_settings(config, tmp_path)
+
+    data = json.loads(result.read_text(encoding="utf-8"))
+    assert data["autoplace_controls"]["coal"]["richness"] == 5
+    assert data["autoplace_controls"]["iron-ore"]["frequency"] == 2
+    assert data["cliff_settings"]["richness"] == 1
+
+
+def test_write_map_gen_settings_removes_cliff_controls_from_autoplace(tmp_path):
+    config = DummyWorldConfig(
+        world_name="Test",
+        settings={"autoplace_controls": {"nauvis_cliff": {"frequency": 1, "size": 2, "richness": 3}}},
+    )
+    result = _write_map_gen_settings(config, tmp_path)
+
+    data = json.loads(result.read_text(encoding="utf-8"))
+    assert "nauvis_cliff" not in data.get("autoplace_controls", {})
+    assert "gleba_cliff" not in data.get("autoplace_controls", {})
+    assert "fulgora_cliff" not in data.get("autoplace_controls", {})
+    assert data["cliff_settings"]["richness"] == 3
+
+
 def test_write_map_settings_creates_file(tmp_path):
     config = DummyWorldConfig(
         world_name="Test",
@@ -1074,7 +1137,8 @@ def test_write_map_settings_returns_defaults_when_empty(tmp_path):
 
 
 def test_write_map_settings_uses_fallback_when_defaults_empty(tmp_path, monkeypatch):
-    monkeypatch.setattr(world_builder_service, "_MAP_SETTINGS_DEFAULTS", {})
+    monkeypatch.setattr(world_builder_service, "is_server_installed", lambda: False)
+    monkeypatch.setattr(world_builder_service, "_factorio_paths_logged", True)
 
     config = DummyWorldConfig(world_name="Test")
     result = _write_map_settings(config, tmp_path)
@@ -1095,7 +1159,8 @@ def test_write_map_settings_uses_fallback_when_defaults_empty(tmp_path, monkeypa
 
 
 def test_write_map_settings_merges_user_settings_into_fallback(tmp_path, monkeypatch):
-    monkeypatch.setattr(world_builder_service, "_MAP_SETTINGS_DEFAULTS", {})
+    monkeypatch.setattr(world_builder_service, "is_server_installed", lambda: False)
+    monkeypatch.setattr(world_builder_service, "_factorio_paths_logged", True)
 
     config = DummyWorldConfig(
         world_name="Test",
@@ -1181,6 +1246,140 @@ def test_run_factorio_captures_execution_details(tmp_path):
     assert "ok" in exec_info["stdout"]
     assert exec_info["elapsed_seconds"] >= 0
     assert len(exec_info["command"]) == 1
+
+
+def test_run_factorio_logs_cliff_continuity(tmp_path, capsys):
+    factorio_bin = tmp_path / "factorio" / "bin" / "x64" / "factorio"
+    factorio_bin.parent.mkdir(parents=True, exist_ok=True)
+    factorio_bin.write_text("#!/bin/sh\necho ok\n", encoding="utf-8")
+    factorio_bin.chmod(0o755)
+
+    map_settings = tmp_path / "map-settings.json"
+    map_settings.write_text(json.dumps({"cliff_settings": {"richness": 7}}, indent=2), encoding="utf-8")
+
+    _run_factorio([str(factorio_bin)], tmp_path)
+
+    captured = capsys.readouterr()
+    assert "CLIFF_CONTINUITY=7" in captured.out
+
+
+def test_run_factorio_skips_cliff_log_when_missing(tmp_path, capsys):
+    factorio_bin = tmp_path / "factorio" / "bin" / "x64" / "factorio"
+    factorio_bin.parent.mkdir(parents=True, exist_ok=True)
+    factorio_bin.write_text("#!/bin/sh\necho ok\n", encoding="utf-8")
+    factorio_bin.chmod(0o755)
+
+    _run_factorio([str(factorio_bin)], tmp_path)
+
+    captured = capsys.readouterr()
+    assert "CLIFF_CONTINUITY" not in captured.out
+
+
+def test_clear_preview_cache_removes_files(tmp_path, monkeypatch):
+    previews_dir = tmp_path / "previews"
+    previews_dir.mkdir(parents=True, exist_ok=True)
+    (previews_dir / "old1.png").write_text("png1", encoding="utf-8")
+    (previews_dir / "old2.png").write_text("png2", encoding="utf-8")
+    subdir = previews_dir / "sub"
+    subdir.mkdir(parents=True, exist_ok=True)
+    (subdir / "nested.txt").write_text("nested", encoding="utf-8")
+
+    monkeypatch.setattr(world_builder_service, "PREVIEWS_DIR", previews_dir)
+
+    result = world_builder_service.clear_preview_cache()
+
+    assert result["status"] == "cleared"
+    assert result["removed"] == 3
+    assert not previews_dir.exists() or not any(previews_dir.iterdir())
+
+
+def test_clear_preview_cache_handles_missing_directory(tmp_path, monkeypatch):
+    previews_dir = tmp_path / "missing_previews"
+    monkeypatch.setattr(world_builder_service, "PREVIEWS_DIR", previews_dir)
+
+    result = world_builder_service.clear_preview_cache()
+
+    assert result["status"] == "cleared"
+    assert result["removed"] == 0
+    assert result["previews_dir"] == str(previews_dir)
+
+
+def test_official_defaults_skipped_when_server_not_installed(tmp_path, monkeypatch, caplog):
+    monkeypatch.setattr(world_builder_service, "INSTALL_DIR", tmp_path / "factorio")
+    monkeypatch.setattr(world_builder_service, "is_server_installed", lambda: False)
+    monkeypatch.setattr(world_builder_service, "_factorio_paths_logged", False)
+
+    caplog.set_level(logging.INFO, logger="fsm.world_builder")
+
+    map_gen = _get_map_gen_settings_defaults()
+    map_settings = _get_map_settings_defaults()
+
+    assert map_gen == {}
+    assert map_settings == {}
+    assert "Factorio installation not found." in caplog.text
+    assert "Official defaults not loaded." in caplog.text
+    assert "Failed to load official defaults" not in caplog.text
+
+
+def test_official_defaults_loaded_when_server_installed(tmp_path, monkeypatch, caplog):
+    install_dir = tmp_path / "factorio"
+    install_dir.mkdir(parents=True, exist_ok=True)
+    data_dir = install_dir / "data"
+    data_dir.mkdir(parents=True, exist_ok=True)
+    bin_dir = install_dir / "bin" / "x64"
+    bin_dir.mkdir(parents=True, exist_ok=True)
+    factorio_bin = bin_dir / "factorio"
+    factorio_bin.write_text("#!/bin/sh\necho ok\n", encoding="utf-8")
+    factorio_bin.chmod(0o755)
+
+    map_gen_path = data_dir / "map-gen-settings.example.json"
+    map_gen_path.write_text(json.dumps({"autoplace_controls": {"coal": {"frequency": 1}}}, indent=2), encoding="utf-8")
+    map_settings_path = data_dir / "map-settings.example.json"
+    map_settings_path.write_text(json.dumps({"difficulty_settings": {"technology_price_multiplier": 1}}, indent=2), encoding="utf-8")
+
+    monkeypatch.setattr(world_builder_service, "INSTALL_DIR", install_dir)
+    monkeypatch.setattr(world_builder_service, "_MAP_GEN_SETTINGS_DEFAULTS_PATH", map_gen_path)
+    monkeypatch.setattr(world_builder_service, "_MAP_SETTINGS_DEFAULTS_PATH", map_settings_path)
+    monkeypatch.setattr(world_builder_service, "is_server_installed", lambda: True)
+    monkeypatch.setattr(world_builder_service, "_factorio_paths_logged", False)
+
+    caplog.set_level(logging.INFO, logger="fsm.world_builder")
+
+    map_gen = _get_map_gen_settings_defaults()
+    map_settings = _get_map_settings_defaults()
+
+    assert map_gen == {"autoplace_controls": {"coal": {"frequency": 1}}}
+    assert map_settings == {"difficulty_settings": {"technology_price_multiplier": 1}}
+    assert "Factorio installation found." in caplog.text
+    assert "map-gen-settings.example.json loaded." in caplog.text
+    assert "map-settings.example.json loaded." in caplog.text
+
+
+def test_official_defaults_error_when_installation_incomplete(tmp_path, monkeypatch, caplog):
+    install_dir = tmp_path / "factorio"
+    install_dir.mkdir(parents=True, exist_ok=True)
+    data_dir = install_dir / "data"
+    data_dir.mkdir(parents=True, exist_ok=True)
+    bin_dir = install_dir / "bin" / "x64"
+    bin_dir.mkdir(parents=True, exist_ok=True)
+    factorio_bin = bin_dir / "factorio"
+    factorio_bin.write_text("#!/bin/sh\necho ok\n", encoding="utf-8")
+    factorio_bin.chmod(0o755)
+
+    monkeypatch.setattr(world_builder_service, "INSTALL_DIR", install_dir)
+    monkeypatch.setattr(world_builder_service, "_MAP_GEN_SETTINGS_DEFAULTS_PATH", data_dir / "missing.json")
+    monkeypatch.setattr(world_builder_service, "_MAP_SETTINGS_DEFAULTS_PATH", data_dir / "missing.json")
+    monkeypatch.setattr(world_builder_service, "is_server_installed", lambda: True)
+    monkeypatch.setattr(world_builder_service, "_factorio_paths_logged", False)
+
+    caplog.set_level(logging.ERROR, logger="fsm.world_builder")
+
+    map_gen = _get_map_gen_settings_defaults()
+    map_settings = _get_map_settings_defaults()
+
+    assert map_gen == {}
+    assert map_settings == {}
+    assert "Factorio installation detected, but official example files could not be found." in caplog.text
 
 
 def test_move_generated_file_same_filesystem(tmp_path):

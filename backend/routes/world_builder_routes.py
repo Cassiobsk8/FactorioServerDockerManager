@@ -5,6 +5,7 @@ from pathlib import Path
 
 from backend.config import BASE_DIR
 from backend.services.world_builder_service import (
+    clear_preview_cache,
     create_world,
     generate_preview,
     list_planets,
@@ -120,6 +121,16 @@ def api_world_builder_create():
         return jsonify({"error": str(exc)}), 500
     except Exception as exc:
         logger.exception("World creation failed")
+        return jsonify({"error": str(exc)}), 500
+
+
+@world_builder_bp.route("/api/world-builder/preview-cache/clear", methods=["POST"])
+def api_world_builder_preview_cache_clear():
+    try:
+        result = clear_preview_cache()
+        return jsonify(result)
+    except Exception as exc:
+        logger.exception("Failed to clear preview cache")
         return jsonify({"error": str(exc)}), 500
 
 

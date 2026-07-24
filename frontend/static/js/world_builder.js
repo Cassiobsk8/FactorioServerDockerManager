@@ -315,6 +315,8 @@
                 wbState.preview.hash = data.preview_hash;
                 wbState.preview.config = getCurrentConfig();
 
+                console.log('[WorldBuilder] Preview image generated.');
+
                 const image = document.getElementById('wb-preview-image');
                 const container = document.getElementById('wb-preview-container');
                 const placeholder = container ? container.querySelector('.preview-placeholder') : null;
@@ -793,7 +795,7 @@
                         ${canBeDisabled ? `<input type="checkbox" class="wb-table-checkbox" data-control="enabled" ${isDisabled ? '' : 'checked'} />` : ''}
                         <span class="wb-table-label">${field.label || resourceId}</span>
                     </label>
-                    <span class="wb-table-planet" title="${planetDisplay.name}">${planetDisplay.icon}</span>
+                    <span class="wb-terrain-planet" title="${planetDisplay.name}">${planetDisplay.icon}</span>
                     <label class="wb-table-slider">
                         ${createDiscreteSlider('frequency', factorioValueToIndex(frequency), isDisabled)}
                     </label>
@@ -1045,6 +1047,8 @@
         function initWorldBuilder() {
             if (worldBuilderInitialized) return;
             worldBuilderInitialized = true;
+
+            console.log('[WorldBuilder] Preview cache initialized.');
 
             populateTabs();
             initWbTabs();

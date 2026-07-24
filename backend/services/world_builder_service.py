@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import Any, Optional
 
 from backend.config import BASE_DIR, INSTALL_DIR, SAVE_DIR
+from backend.services.factorio_service import is_server_installed
 from backend.services.world_config import WorldConfig
 from backend.services.world_builder_schema import get_field_by_id
 
@@ -22,7 +23,6 @@ logger = logging.getLogger("fsm.world_builder")
 
 WORLD_BUILDER_DIR = BASE_DIR / "data" / "world-builder"
 PREVIEWS_DIR = WORLD_BUILDER_DIR / "previews"
-MANIFEST_PATH = WORLD_BUILDER_DIR / "manifest.json"
 
 DEFAULT_PLANETS = ["nauvis", "vulcanus", "fulgora", "gleba", "aquilo"]
 
@@ -39,8 +39,56 @@ def _load_official_defaults(path: Path) -> dict[str, Any]:
         return {}
 
 
-_MAP_GEN_SETTINGS_DEFAULTS = _load_official_defaults(_MAP_GEN_SETTINGS_DEFAULTS_PATH)
-_MAP_SETTINGS_DEFAULTS = _load_official_defaults(_MAP_SETTINGS_DEFAULTS_PATH)
+_factorio_paths_logged = False
+
+
+def _log_factorio_paths() -> None:
+    global _factorio_paths_logged
+    if _factorio_paths_logged:
+        return
+    _factorio_paths_logged = True
+
+    factorio_bin = INSTALL_DIR / "bin" / "x64" / "factorio"
+    data_dir = INSTALL_DIR / "data"
+
+    logger.info("Factorio executable: %s", factorio_bin)
+    logger.info("Factorio installation: %s", INSTALL_DIR)
+    logger.info("Factorio data directory: %s", data_dir)
+
+    if not is_server_installed():
+        logger.info("Factorio installation not found.")
+        logger.info("Official defaults not loaded.")
+        return
+
+    logger.info("Factorio installation found.")
+    logger.info("Loading official defaults...")
+    logger.info("Loading official defaults: %s", _MAP_GEN_SETTINGS_DEFAULTS_PATH)
+    logger.info("Loading official defaults: %s", _MAP_SETTINGS_DEFAULTS_PATH)
+
+
+def _get_map_gen_settings_defaults() -> dict[str, Any]:
+    _log_factorio_paths()
+    if not is_server_installed():
+        return {}
+    defaults = _load_official_defaults(_MAP_GEN_SETTINGS_DEFAULTS_PATH)
+    if defaults:
+        logger.info("map-gen-settings.example.json loaded.")
+    else:
+        logger.error("Factorio installation detected, but official example files could not be found.")
+    return defaults
+
+
+def _get_map_settings_defaults() -> dict[str, Any]:
+    _log_factorio_paths()
+    if not is_server_installed():
+        return {}
+    defaults = _load_official_defaults(_MAP_SETTINGS_DEFAULTS_PATH)
+    if defaults:
+        logger.info("map-settings.example.json loaded.")
+    else:
+        logger.error("Factorio installation detected, but official example files could not be found.")
+    return defaults
+
 
 _MAP_SETTINGS_FALLBACK: dict[str, Any] = {
     "difficulty_settings": {
@@ -220,7 +268,7 @@ def _deep_merge(base: dict, override: dict) -> dict:
 
 
 def _write_map_gen_settings(config: WorldConfig, directory: Path) -> Optional[Path]:
-    official_defaults = deepcopy(_MAP_GEN_SETTINGS_DEFAULTS)
+    official_defaults = deepcopy(_get_map_gen_settings_defaults())
 
     user_settings = deepcopy(config.settings) if config.settings else {}
     merged = official_defaults
@@ -250,6 +298,19 @@ def _write_map_gen_settings(config: WorldConfig, directory: Path) -> Optional[Pa
                 merged_values = {**defaults, **{k: v for k, v in values.items() if v is not None}}
                 autoplace_controls[control_id] = merged_values
 
+    if isinstance(merged.get("autoplace_controls"), dict):
+        for control_id, values in merged["autoplace_controls"].items():
+            if isinstance(values, dict) and control_id.endswith("_cliff") and "richness" in values:
+                cliff_settings = merged.setdefault("cliff_settings", {})
+                cliff_settings["richness"] = values["richness"]
+
+    if isinstance(merged.get("autoplace_controls"), dict):
+        merged["autoplace_controls"] = {
+            control_id: values
+            for control_id, values in merged["autoplace_controls"].items()
+            if not (isinstance(values, dict) and control_id.endswith("_cliff"))
+        }
+
     if config.seed and not config.random_seed:
         merged["seed"] = int(config.seed)
 
@@ -259,7 +320,9 @@ def _write_map_gen_settings(config: WorldConfig, directory: Path) -> Optional[Pa
 
 
 def _write_map_settings(config: WorldConfig, directory: Path) -> Optional[Path]:
-    official_defaults = deepcopy(_MAP_SETTINGS_DEFAULTS) if _MAP_SETTINGS_DEFAULTS else deepcopy(_MAP_SETTINGS_FALLBACK)
+    official_defaults = deepcopy(_get_map_settings_defaults())
+    if not official_defaults:
+        official_defaults = deepcopy(_MAP_SETTINGS_FALLBACK)
 
     user_settings = deepcopy(config.map_settings) if config.map_settings else {}
     merged = _deep_merge(official_defaults, user_settings)
@@ -275,6 +338,18 @@ def list_planets() -> list[str]:
 
 def _run_factorio(cmd: list[str], tmpdir: Path) -> dict[str, Any]:
     start = time.time()
+    cliff_continuity = None
+    map_settings_path = tmpdir / "map-settings.json"
+    if map_settings_path.exists():
+        try:
+            with map_settings_path.open(encoding="utf-8") as handle:
+                map_settings_data = json.load(handle)
+            cliff_value = (((map_settings_data.get("cliff_settings") or {}).get("richness")))
+            if cliff_value is not None:
+                cliff_continuity = str(cliff_value)
+        except (OSError, json.JSONDecodeError):
+            pass
+
     result = subprocess.run(
         cmd,
         cwd=str(tmpdir),
@@ -286,6 +361,10 @@ def _run_factorio(cmd: list[str], tmpdir: Path) -> dict[str, Any]:
     stdout = getattr(result, "stdout", "") or ""
     stderr = getattr(result, "stderr", "") or ""
     return_code = getattr(result, "returncode", 0)
+
+    if cliff_continuity is not None:
+        print(f"CLIFF_CONTINUITY={cliff_continuity}", flush=True)
+
     return {
         "command": cmd,
         "stdout": stdout,
@@ -301,6 +380,26 @@ def _cleanup_tempdir(tmpdir: Path) -> None:
             shutil.rmtree(tmpdir)
     except OSError as exc:
         logger.warning("Failed to cleanup temp directory %s: %s", tmpdir, exc)
+
+
+def clear_preview_cache() -> dict[str, Any]:
+    if not PREVIEWS_DIR.exists():
+        return {"status": "cleared", "previews_dir": str(PREVIEWS_DIR), "removed": 0}
+
+    removed = 0
+    for path in PREVIEWS_DIR.iterdir():
+        try:
+            if path.is_file():
+                path.unlink()
+                removed += 1
+            elif path.is_dir():
+                shutil.rmtree(path)
+                removed += 1
+        except OSError as exc:
+            logger.warning("Failed to remove preview cache entry %s: %s", path, exc)
+
+    logger.info("Preview cache cleared. removed=%s dir=%s", removed, PREVIEWS_DIR)
+    return {"status": "cleared", "previews_dir": str(PREVIEWS_DIR), "removed": removed}
 
 
 def _move_generated_file(source: Path, destination: Path) -> None:
@@ -457,8 +556,6 @@ def generate_preview(config: WorldConfig) -> dict[str, Any]:
     finally:
         _cleanup_tempdir(tmpdir)
 
-    _append_manifest(config, config_hash, preview_path)
-
     return {
         "preview_url": f"/api/world-builder/preview-image/{config_hash}.png",
         "preview_hash": config_hash,
@@ -556,26 +653,4 @@ def create_world(config: WorldConfig, preview_hash: str) -> dict[str, Any]:
     }
 
 
-def _append_manifest(config: WorldConfig, config_hash: str, preview_path: Path) -> None:
-    manifest = {"previews": []}
-    if MANIFEST_PATH.exists():
-        try:
-            manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
-        except (json.JSONDecodeError, OSError):
-            manifest = {"previews": []}
 
-    manifest.setdefault("previews", [])
-    manifest["previews"].append(
-        {
-            "hash": config_hash,
-            "world_name": config.world_name,
-            "seed": config.seed,
-            "random_seed": config.random_seed,
-            "planet": config.planet,
-            "created_at": datetime.now(timezone.utc).isoformat(),
-            "file_path": str(preview_path),
-        }
-    )
-
-    MANIFEST_PATH.parent.mkdir(parents=True, exist_ok=True)
-    MANIFEST_PATH.write_text(json.dumps(manifest, indent=2), encoding="utf-8")

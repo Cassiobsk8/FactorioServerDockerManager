@@ -160,26 +160,6 @@ Rotas:
 
 Arquivos estáticos de preview servidos via rota dedicada `/api/world-builder/preview-image/<hash>` com `send_from_directory`. A rota aceita tanto `<hash>` quanto `<hash>.png` na URL, normalizando o parâmetro internamente. Previews não fazem parte do `static_folder` da aplicação.
 
-#### Modelo de Dados: `data/world-builder/manifest.json`
-
-Registra previews gerados para limpeza e auditoria.
-
-Estrutura:
-```json
-{
-  "previews": [
-    {
-      "hash": "<sha256>",
-      "world_name": "...",
-      "seed": "...",
-      "planet": "...",
-      "created_at": "<iso8601>",
-      "file_path": "data/world-builder/previews/<hash>.png"
-    }
-  ]
-}
-```
-
 ### Frontend
 
 #### Template: `world_builder.html`
@@ -640,7 +620,6 @@ versão do World Builder.
 - **Removido `--preset`** do comando do Factorio em `generate_preview()` e `create_world()`.
 - **Removida a chave `presets`** da resposta de `GET /api/world-builder/options`.
 - **Removido o campo Preset** da interface (`frontend/templates/index.html`, `world_builder.js`) e a chave `world_builder.preset` dos arquivos de i18n.
-- **Manifesto** (`data/world-builder/manifest.json`) não recebe mais o campo `preset`.
 
 ### Arquitetura (nova diretriz)
 - Nesta versão o World Builder trabalha diretamente sobre `map-gen-settings.json`,
@@ -655,7 +634,7 @@ versão do World Builder.
 
 ### Arquivos modificados
 - `backend/services/world_config.py` — removido campo `preset` e validação.
-- `backend/services/world_builder_service.py` — removido `PRESETS`, `--preset`, e campo do manifesto/hash.
+- `backend/services/world_builder_service.py` — removido `PRESETS` e `--preset`.
 - `backend/routes/world_builder_routes.py` — removido `presets` da rota `/options` e campo `preset` das rotas.
 - `backend/services/preset_catalog.py` — arquivo removido.
 - `frontend/templates/index.html` — removido select de Preset.
