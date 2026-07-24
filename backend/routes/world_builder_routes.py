@@ -72,6 +72,7 @@ def api_world_builder_preview():
             random_seed=data.get("random_seed", True),
             planet=data.get("planet", "nauvis"),
             settings=data.get("settings", {}),
+            map_settings=data.get("map_settings", {}),
         )
         errors = config.validate()
         if errors:
@@ -98,6 +99,7 @@ def api_world_builder_create():
             random_seed=data.get("random_seed", True),
             planet=data.get("planet", "nauvis"),
             settings=data.get("settings", {}),
+            map_settings=data.get("map_settings", {}),
         )
         preview_hash = data.get("preview_hash")
 

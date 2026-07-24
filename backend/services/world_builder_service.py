@@ -26,6 +26,22 @@ MANIFEST_PATH = WORLD_BUILDER_DIR / "manifest.json"
 
 DEFAULT_PLANETS = ["nauvis", "vulcanus", "fulgora", "gleba", "aquilo"]
 
+_MAP_GEN_SETTINGS_DEFAULTS_PATH = INSTALL_DIR / "data" / "map-gen-settings.example.json"
+_MAP_SETTINGS_DEFAULTS_PATH = INSTALL_DIR / "data" / "map-settings.example.json"
+
+
+def _load_official_defaults(path: Path) -> dict[str, Any]:
+    try:
+        text = path.read_text(encoding="utf-8")
+        return json.loads(text)
+    except (OSError, json.JSONDecodeError) as exc:
+        logger.error("Failed to load official defaults from %s: %s", path, exc)
+        return {}
+
+
+_MAP_GEN_SETTINGS_DEFAULTS = _load_official_defaults(_MAP_GEN_SETTINGS_DEFAULTS_PATH)
+_MAP_SETTINGS_DEFAULTS = _load_official_defaults(_MAP_SETTINGS_DEFAULTS_PATH)
+
 
 def _get_factorio_bin() -> Optional[Path]:
     factorio_bin = INSTALL_DIR / "bin" / "x64" / "factorio"
@@ -82,53 +98,63 @@ def _compute_config_hash(config: WorldConfig) -> str:
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
+def _deep_merge(base: dict, override: dict) -> dict:
+    result = deepcopy(base)
+    for key, value in override.items():
+        if key in result and isinstance(result[key], dict) and isinstance(value, dict):
+            result[key] = _deep_merge(result[key], value)
+        else:
+            result[key] = deepcopy(value)
+    return result
+
+
 def _write_map_gen_settings(config: WorldConfig, directory: Path) -> Optional[Path]:
-    if not config.settings:
-        return None
+    official_defaults = deepcopy(_MAP_GEN_SETTINGS_DEFAULTS)
 
-    normalized_settings = deepcopy(config.settings)
-    autoplace_controls = normalized_settings.get("autoplace_controls")
-    if isinstance(autoplace_controls, dict):
-        water_control = autoplace_controls.pop("water", None)
-        for control_id, values in autoplace_controls.items():
-            field = get_field_by_id(f"autoplace_controls.{control_id}")
-            defaults = field.get("default") if field else None
-            if isinstance(defaults, dict) and isinstance(values, dict):
-                autoplace_controls[control_id] = {
-                    **defaults,
-                    **{key: value for key, value in values.items() if value is not None},
-                }
+    user_settings = deepcopy(config.settings) if config.settings else {}
+    merged = official_defaults
 
-        if isinstance(water_control, dict):
-            frequency = water_control.get("frequency")
-            size = water_control.get("size")
-            is_disabled = frequency in (0, "none") and size in (0, "none")
-            if is_disabled:
-                normalized_settings["water"] = "none"
+    if isinstance(user_settings.get("autoplace_controls"), dict) and isinstance(merged.get("autoplace_controls"), dict):
+        for control_id, values in user_settings["autoplace_controls"].items():
+            if control_id in merged["autoplace_controls"] and isinstance(values, dict):
+                merged["autoplace_controls"][control_id].update(values)
             else:
-                if frequency is not None:
-                    normalized_settings["terrain_segmentation"] = frequency
-                if size is not None:
-                    normalized_settings["water"] = size
+                merged["autoplace_controls"][control_id] = values
+        del user_settings["autoplace_controls"]
 
-    settings = {
-        "seed": int(config.seed) if (config.seed and not config.random_seed) else None,
-        "planet": config.planet,
-        **normalized_settings,
-    }
-    settings = {k: v for k, v in settings.items() if v is not None}
+    for key, value in user_settings.items():
+        if key in merged and isinstance(merged[key], dict) and isinstance(value, dict):
+            merged[key] = _deep_merge(merged[key], value)
+        else:
+            merged[key] = value
+
+    if isinstance(merged.get("autoplace_controls"), dict):
+        autoplace_controls = merged["autoplace_controls"]
+        official_autoplace = official_defaults.get("autoplace_controls", {})
+        for control_id, values in autoplace_controls.items():
+            if not isinstance(values, dict):
+                continue
+            defaults = official_autoplace.get(control_id)
+            if isinstance(defaults, dict):
+                merged_values = {**defaults, **{k: v for k, v in values.items() if v is not None}}
+                autoplace_controls[control_id] = merged_values
+
+    if config.seed and not config.random_seed:
+        merged["seed"] = int(config.seed)
 
     path = directory / "map-gen-settings.json"
-    path.write_text(json.dumps(settings, indent=2), encoding="utf-8")
+    path.write_text(json.dumps(merged, indent=2), encoding="utf-8")
     return path
 
 
 def _write_map_settings(config: WorldConfig, directory: Path) -> Optional[Path]:
-    if not config.map_settings:
-        return None
+    official_defaults = deepcopy(_MAP_SETTINGS_DEFAULTS)
+
+    user_settings = deepcopy(config.map_settings) if config.map_settings else {}
+    merged = _deep_merge(official_defaults, user_settings)
 
     path = directory / "map-settings.json"
-    path.write_text(json.dumps(config.map_settings, indent=2), encoding="utf-8")
+    path.write_text(json.dumps(merged, indent=2), encoding="utf-8")
     return path
 
 

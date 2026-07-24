@@ -388,7 +388,7 @@ def test_create_world_uses_official_parameters(tmp_path, monkeypatch):
 
     assert any(arg.startswith("--create=") for arg in captured_cmd)
     assert "--map-gen-seed=999" in captured_cmd
-    assert any(arg.startswith("--map-gen-settings=") for arg in captured_cmd) is False
+    assert any(arg.startswith("--map-gen-settings=") for arg in captured_cmd)
 
 
 def test_generate_preview_handles_executable_error(tmp_path, monkeypatch):
@@ -887,7 +887,7 @@ def test_write_map_gen_settings_creates_file(tmp_path):
         seed="123",
         random_seed=False,
         planet="nauvis",
-        settings={"water": 0.5},
+        settings={"autoplace_controls": {"water": {"size": 0.5}}},
     )
     result = _write_map_gen_settings(config, tmp_path)
 
@@ -895,13 +895,35 @@ def test_write_map_gen_settings_creates_file(tmp_path):
     assert result.exists()
     data = json.loads(result.read_text(encoding="utf-8"))
     assert data["seed"] == 123
-    assert data["water"] == 0.5
+    assert data["autoplace_controls"]["water"]["size"] == 0.5
+    assert "planet" not in data
 
 
-def test_write_map_gen_settings_returns_none_when_empty(tmp_path):
+def test_write_map_gen_settings_returns_defaults_when_empty(tmp_path):
     config = DummyWorldConfig(world_name="Test")
     result = _write_map_gen_settings(config, tmp_path)
-    assert result is None
+
+    assert result is not None
+    assert result.exists()
+    data = json.loads(result.read_text(encoding="utf-8"))
+    assert data["width"] == 0
+    assert data["height"] == 0
+    assert data["starting_area"] == 1
+    assert data["peaceful_mode"] is False
+    assert data["autoplace_controls"]["coal"] == {"frequency": 1, "size": 1, "richness": 1}
+    assert data["autoplace_controls"]["water"] == {"frequency": 1, "size": 1}
+    assert data["autoplace_controls"]["enemy-base"] == {"frequency": 1, "size": 1}
+    assert data["cliff_settings"]["name"] == "cliff"
+    assert data["property_expression_names"]["control:moisture:frequency"] == "1"
+    assert data["starting_points"] == [{"x": 0, "y": 0}]
+    assert data["seed"] is None
+    assert "_seed_comment" in data
+    assert "_comment_width+height" in data
+    assert "_starting_area_comment" in data
+    assert "_property_expression_names_comment" in data
+    assert "no_enemies_mode" not in data
+    assert "default_enable_all_autoplace_controls" not in data
+    assert "planet" not in data
 
 
 def test_write_map_gen_settings_with_autoplace_controls(tmp_path):
@@ -924,7 +946,9 @@ def test_write_map_gen_settings_with_autoplace_controls(tmp_path):
     assert data["autoplace_controls"]["coal"]["frequency"] == 2
     assert data["autoplace_controls"]["coal"]["size"] == 3
     assert data["autoplace_controls"]["coal"]["richness"] == 4
+    assert data["autoplace_controls"]["enemy-base"] == {"frequency": 1, "size": 1}
     assert data["seed"] == 123
+    assert "planet" not in data
 
 
 def test_write_map_gen_settings_completes_partial_autoplace_controls(tmp_path):
@@ -938,12 +962,12 @@ def test_write_map_gen_settings_completes_partial_autoplace_controls(tmp_path):
     data = json.loads(result.read_text(encoding="utf-8"))
     assert data["autoplace_controls"]["coal"] == {
         "frequency": 2,
-        "size": 1.0,
-        "richness": 1.0,
+        "size": 1,
+        "richness": 1,
     }
 
 
-def test_write_map_gen_settings_converts_disabled_water_to_factorio_setting(tmp_path):
+def test_write_map_gen_settings_keeps_water_inside_autoplace_controls(tmp_path):
     config = DummyWorldConfig(
         world_name="Test",
         settings={"autoplace_controls": {"water": {"frequency": "none", "size": "none"}}},
@@ -952,11 +976,12 @@ def test_write_map_gen_settings_converts_disabled_water_to_factorio_setting(tmp_
     result = _write_map_gen_settings(config, tmp_path)
 
     data = json.loads(result.read_text(encoding="utf-8"))
-    assert data["water"] == "none"
-    assert "water" not in data["autoplace_controls"]
+    assert data["autoplace_controls"]["water"] == {"frequency": "none", "size": "none"}
+    assert "water" not in data
+    assert "terrain_segmentation" not in data
 
 
-def test_write_map_gen_settings_converts_water_sliders_to_factorio_settings(tmp_path):
+def test_write_map_gen_settings_does_not_convert_water_sliders(tmp_path):
     config = DummyWorldConfig(
         world_name="Test",
         settings={"autoplace_controls": {"water": {"frequency": 2, "size": 3}}},
@@ -965,28 +990,87 @@ def test_write_map_gen_settings_converts_water_sliders_to_factorio_settings(tmp_
     result = _write_map_gen_settings(config, tmp_path)
 
     data = json.loads(result.read_text(encoding="utf-8"))
-    assert data["terrain_segmentation"] == 2
-    assert data["water"] == 3
-    assert "water" not in data["autoplace_controls"]
+    assert data["autoplace_controls"]["water"] == {"frequency": 2, "size": 3}
+    assert "water" not in data
+    assert "terrain_segmentation" not in data
+
+
+def test_write_map_gen_settings_supports_extra_official_fields(tmp_path):
+    config = DummyWorldConfig(
+        world_name="Test",
+        settings={
+            "no_enemies_mode": True,
+            "default_enable_all_autoplace_controls": False,
+            "territory_settings": {
+                "enabled": True,
+                "force": 2,
+                "chunk_padding": 5,
+            },
+        },
+    )
+
+    result = _write_map_gen_settings(config, tmp_path)
+
+    data = json.loads(result.read_text(encoding="utf-8"))
+    assert data["no_enemies_mode"] is True
+    assert data["default_enable_all_autoplace_controls"] is False
+    assert data["territory_settings"]["enabled"] is True
+    assert data["territory_settings"]["force"] == 2
+    assert data["territory_settings"]["chunk_padding"] == 5
+
+
+def test_write_map_gen_settings_deep_merges_nested_objects(tmp_path):
+    config = DummyWorldConfig(
+        world_name="Test",
+        settings={
+            "cliff_settings": {"richness": 5},
+            "property_expression_names": {"control:moisture:frequency": "2"},
+        },
+    )
+
+    result = _write_map_gen_settings(config, tmp_path)
+
+    data = json.loads(result.read_text(encoding="utf-8"))
+    assert data["cliff_settings"]["name"] == "cliff"
+    assert data["cliff_settings"]["cliff_elevation_0"] == 10
+    assert data["cliff_settings"]["richness"] == 5
+    assert data["property_expression_names"]["control:moisture:bias"] == "0"
+    assert data["property_expression_names"]["control:moisture:frequency"] == "2"
 
 
 def test_write_map_settings_creates_file(tmp_path):
     config = DummyWorldConfig(
         world_name="Test",
-        map_settings={"difficulty_settings": {"recipe_difficulty": 2}},
+        map_settings={"difficulty_settings": {"technology_price_multiplier": 2}},
     )
     result = _write_map_settings(config, tmp_path)
 
     assert result is not None
     assert result.exists()
     data = json.loads(result.read_text(encoding="utf-8"))
-    assert data["difficulty_settings"]["recipe_difficulty"] == 2
+    assert data["difficulty_settings"]["technology_price_multiplier"] == 2
+    assert data["difficulty_settings"]["spoil_time_modifier"] == 1
+    assert data["pollution"]["enabled"] is True
+    assert data["enemy_evolution"]["enabled"] is True
+    assert data["max_failed_behavior_count"] == 3
 
 
-def test_write_map_settings_returns_none_when_empty(tmp_path):
+def test_write_map_settings_returns_defaults_when_empty(tmp_path):
     config = DummyWorldConfig(world_name="Test")
     result = _write_map_settings(config, tmp_path)
-    assert result is None
+
+    assert result is not None
+    assert result.exists()
+    data = json.loads(result.read_text(encoding="utf-8"))
+    assert data["difficulty_settings"]["technology_price_multiplier"] == 1
+    assert data["pollution"]["diffusion_ratio"] == 0.02
+    assert data["enemy_evolution"]["time_factor"] == 0.000004
+    assert data["enemy_expansion"]["max_expansion_distance"] == 7
+    assert data["unit_group"]["min_group_gathering_time"] == 3600
+    assert data["steering"]["default"]["radius"] == 1.2
+    assert data["path_finder"]["fwd2bwd_ratio"] == 5
+    assert data["asteroids"]["spawning_rate"] == 1
+    assert data["max_failed_behavior_count"] == 3
 
 
 def test_run_factorio_captures_execution_details(tmp_path):

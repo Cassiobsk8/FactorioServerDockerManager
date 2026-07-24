@@ -134,7 +134,7 @@ MAP_GEN_SETTINGS_SCHEMA = [
     _autoplace("crude-oil", "Crude Oil", "Frequency, size and richness of crude oil patches.", order_="a-e"),
     _field("autoplace_controls.water", "Water", "Frequency and size of water patches.", CATEGORY_WATER, "AutoplaceControl", default={"frequency": 1.0, "size": 1.0}, min_=0.0, max_=10.0, source_file="map-gen-settings.json", order_="c-a"),
     _autoplace("trees", "Trees", "Frequency and size of tree clusters.", order_="c-x", category=CATEGORY_TERRAIN),
-    _autoplace("enemy-base", "Enemy Bases", "Frequency and size of enemy bases.", order_="c-z", can_be_disabled=False, category=CATEGORY_ENEMIES),
+    _autoplace("enemy-base", "Enemy Bases", "Frequency and size of enemy bases.", order_="c-z", can_be_disabled=False, category=CATEGORY_ENEMIES, richness=False),
     _field("autoplace_controls.rocks", "Rocks", "Frequency and size of rock patches.", CATEGORY_TERRAIN, "AutoplaceControl", default={"frequency": 1.0, "size": 1.0}, min_=0.0, max_=10.0, source_file="map-gen-settings.json", order_="c-y"),
     _field("autoplace_controls.starting_area_moisture", "Starting Area Moisture", "Moisture setting for the starting area.", CATEGORY_TERRAIN, "AutoplaceControl", default={"frequency": 1.0, "size": 1.0}, min_=0.0, max_=10.0, source_file="map-gen-settings.json", order_="c-z"),
     _field("autoplace_controls.nauvis_cliff", "Nauvis Cliffs", "Frequency, size and richness of cliffs on Nauvis.", CATEGORY_TERRAIN, "AutoplaceControl", default={"frequency": 1.0, "size": 2.0, "richness": 0.0}, min_=0.0, max_=10.0, source_file="map-gen-settings.json", order_="c-z"),
