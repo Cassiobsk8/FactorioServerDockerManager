@@ -1073,6 +1073,102 @@ def test_write_map_settings_returns_defaults_when_empty(tmp_path):
     assert data["max_failed_behavior_count"] == 3
 
 
+def test_write_map_settings_uses_fallback_when_defaults_empty(tmp_path, monkeypatch):
+    monkeypatch.setattr(world_builder_service, "_MAP_SETTINGS_DEFAULTS", {})
+
+    config = DummyWorldConfig(world_name="Test")
+    result = _write_map_settings(config, tmp_path)
+
+    assert result is not None
+    assert result.exists()
+    data = json.loads(result.read_text(encoding="utf-8"))
+    assert data["difficulty_settings"]["technology_price_multiplier"] == 1
+    assert data["pollution"]["enabled"] is True
+    assert data["pollution"]["diffusion_ratio"] == 0.02
+    assert data["enemy_evolution"]["enabled"] is True
+    assert data["enemy_evolution"]["time_factor"] == 0.000004
+    assert data["enemy_expansion"]["max_expansion_distance"] == 7
+    assert data["unit_group"]["min_group_gathering_time"] == 3600
+    assert data["path_finder"]["fwd2bwd_ratio"] == 5
+    assert data["asteroids"]["spawning_rate"] == 1
+    assert data["max_failed_behavior_count"] == 3
+
+
+def test_write_map_settings_merges_user_settings_into_fallback(tmp_path, monkeypatch):
+    monkeypatch.setattr(world_builder_service, "_MAP_SETTINGS_DEFAULTS", {})
+
+    config = DummyWorldConfig(
+        world_name="Test",
+        map_settings={"difficulty_settings": {"technology_price_multiplier": 2}},
+    )
+    result = _write_map_settings(config, tmp_path)
+
+    assert result is not None
+    assert result.exists()
+    data = json.loads(result.read_text(encoding="utf-8"))
+    assert data["difficulty_settings"]["technology_price_multiplier"] == 2
+    assert data["difficulty_settings"]["spoil_time_modifier"] == 1
+    assert data["pollution"]["enabled"] is True
+    assert data["enemy_evolution"]["enabled"] is True
+    assert data["max_failed_behavior_count"] == 3
+
+
+def test_preview_and_create_use_same_map_settings(tmp_path, monkeypatch):
+    previews_dir = tmp_path / "previews"
+    previews_dir.mkdir(parents=True, exist_ok=True)
+    monkeypatch.setattr(world_builder_service, "PREVIEWS_DIR", previews_dir)
+    monkeypatch.setattr(world_builder_service, "SAVE_DIR", tmp_path / "saves")
+    monkeypatch.setattr(world_builder_service, "INSTALL_DIR", tmp_path / "factorio")
+
+    factorio_bin = tmp_path / "factorio" / "bin" / "x64" / "factorio"
+    factorio_bin.parent.mkdir(parents=True, exist_ok=True)
+    _write_fake_elf(factorio_bin)
+
+    fake_module_file = tmp_path / "backend" / "services" / "world_builder_service.py"
+    fake_module_file.parent.mkdir(parents=True, exist_ok=True)
+    fake_module_file.write_text("")
+    monkeypatch.setattr(world_builder_service, "__file__", str(fake_module_file))
+
+    captured_map_settings_contents = []
+
+    original_write_map_settings = world_builder_service._write_map_settings
+
+    def capturing_write_map_settings(config, directory):
+        path = original_write_map_settings(config, directory)
+        if path and path.exists():
+            captured_map_settings_contents.append(path.read_text(encoding="utf-8"))
+        return path
+
+    monkeypatch.setattr(
+        world_builder_service,
+        "_write_map_settings",
+        capturing_write_map_settings,
+    )
+
+    def mock_run(cmd, **kwargs):
+        for arg in cmd:
+            if arg.startswith("--create="):
+                target = Path(arg.split("=", 1)[1])
+                target.write_text("zip")
+                break
+        cwd = Path(kwargs.get("cwd", "."))
+        (cwd / "preview.png").write_text("png")
+        return None
+
+    monkeypatch.setattr(world_builder_service.subprocess, "run", mock_run)
+
+    config = DummyWorldConfig(world_name="SameSettings", planet="nauvis")
+    preview = generate_preview(config)
+    create_world(config, preview["preview_hash"])
+
+    assert len(captured_map_settings_contents) == 2
+    preview_settings = json.loads(captured_map_settings_contents[0])
+    create_settings = json.loads(captured_map_settings_contents[1])
+    assert preview_settings == create_settings
+    assert "pollution" in preview_settings
+    assert "pollution" in create_settings
+
+
 def test_run_factorio_captures_execution_details(tmp_path):
     factorio_bin = tmp_path / "factorio" / "bin" / "x64" / "factorio"
     factorio_bin.parent.mkdir(parents=True, exist_ok=True)
