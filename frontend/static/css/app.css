@@ -3259,6 +3259,11 @@ pre {
     accent-color: var(--accent);
 }
 
+.wb-bias-input {
+    width: 100%;
+    accent-color: var(--accent);
+}
+
 .wb-bias-value {
     font-size: var(--font-xs);
     color: var(--subtext);
