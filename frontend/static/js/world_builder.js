@@ -561,10 +561,10 @@
             </div>`;
         }
 
-        function createNumericSlider(name) {
+        function createNumericSlider(name, min, max, step) {
             return `<div class="wb-numeric-slider">
-                <input type="range" class="wb-numeric-slider-input" data-control="${name}" min="0" max="100" step="1" value="50" />
-                <input type="number" class="wb-numeric-slider-value" data-control="${name}" min="0" max="100" step="1" value="50" />
+                <input type="range" class="wb-numeric-slider-input" data-control="${name}" min="${min}" max="${max}" step="${step}" value="${min}" />
+                <input type="number" class="wb-numeric-slider-value" data-control="${name}" min="${min}" max="${max}" step="${step}" value="${min}" />
             </div>`;
         }
 
@@ -1052,23 +1052,23 @@
                         </div>
                         <div class="wb-enemy-slider-row">
                             <span class="wb-table-label">Max Expansion Distance</span>
-                            ${createNumericSlider('expansion_max_distance')}
+                            ${createNumericSlider('expansion_max_distance', 2, 20, 1)}
                         </div>
                         <div class="wb-enemy-slider-row">
                             <span class="wb-table-label">Minimum Group Size</span>
-                            ${createNumericSlider('expansion_min_group_size')}
+                            ${createNumericSlider('expansion_min_group_size', 1, 20, 1)}
                         </div>
                         <div class="wb-enemy-slider-row">
                             <span class="wb-table-label">Maximum Group Size</span>
-                            ${createNumericSlider('expansion_max_group_size')}
+                            ${createNumericSlider('expansion_max_group_size', 1, 50, 1)}
                         </div>
                         <div class="wb-enemy-slider-row">
                             <span class="wb-table-label">Minimum Expansion Cooldown</span>
-                            ${createNumericSlider('expansion_min_cooldown')}
+                            ${createNumericSlider('expansion_min_cooldown', 1, 60, 1)}
                         </div>
                         <div class="wb-enemy-slider-row">
                             <span class="wb-table-label">Maximum Expansion Cooldown</span>
-                            ${createNumericSlider('expansion_max_cooldown')}
+                            ${createNumericSlider('expansion_max_cooldown', 5, 180, 1)}
                         </div>
                     </div>
                     ${createTerrainDivider()}
@@ -1081,15 +1081,15 @@
                         </div>
                         <div class="wb-enemy-slider-row">
                             <span class="wb-table-label">Time Factor</span>
-                            ${createNumericSlider('evolution_time_factor')}
+                            ${createNumericSlider('evolution_time_factor', 0, 1000, 10)}
                         </div>
                         <div class="wb-enemy-slider-row">
                             <span class="wb-table-label">Destroy Factor</span>
-                            ${createNumericSlider('evolution_destroy_factor')}
+                            ${createNumericSlider('evolution_destroy_factor', 0, 1000, 10)}
                         </div>
                         <div class="wb-enemy-slider-row">
                             <span class="wb-table-label">Pollution Factor</span>
-                            ${createNumericSlider('evolution_pollution_factor')}
+                            ${createNumericSlider('evolution_pollution_factor', 0, 1000, 10)}
                         </div>
                     </div>
                 </div>`;
@@ -1138,22 +1138,78 @@
         function handleNumericSliderInput(e) {
             const input = e.target;
             const control = input.dataset.control;
-            const value = input.value;
+            const min = parseFloat(input.min);
+            const max = parseFloat(input.max);
+            const step = parseFloat(input.step);
+            let value = parseFloat(input.value);
+            if (isNaN(value)) value = min;
+            value = Math.round(value / step) * step;
+            value = Math.max(min, Math.min(max, value));
+            input.value = value;
             const numberInput = input.parentElement.querySelector(`.wb-numeric-slider-value[data-control="${control}"]`);
             if (numberInput) numberInput.value = value;
+            syncNumericSliderPair(control, value);
             markPreviewOutdated();
         }
 
         function handleNumericInputChange(e) {
             const input = e.target;
             const control = input.dataset.control;
+            const min = parseFloat(input.min);
+            const max = parseFloat(input.max);
+            const step = parseFloat(input.step);
             let value = parseInt(input.value, 10);
-            if (isNaN(value)) value = 50;
-            value = Math.max(0, Math.min(100, value));
+            if (isNaN(value)) value = min;
+            value = Math.max(min, Math.min(max, value));
             const slider = input.parentElement.querySelector(`.wb-numeric-slider-input[data-control="${control}"]`);
             if (slider) slider.value = value;
             input.value = value;
+            if (!['evolution_time_factor', 'evolution_destroy_factor', 'evolution_pollution_factor'].includes(control)) {
+                value = Math.round(value / step) * step;
+                if (slider) slider.value = value;
+                input.value = value;
+            }
+            syncNumericSliderPair(control, value);
             markPreviewOutdated();
+        }
+
+        function syncNumericSliderPair(control, value) {
+            const pairMap = {
+                'expansion_min_group_size': 'expansion_max_group_size',
+                'expansion_max_group_size': 'expansion_min_group_size',
+                'expansion_min_cooldown': 'expansion_max_cooldown',
+                'expansion_max_cooldown': 'expansion_min_cooldown'
+            };
+            const pairControl = pairMap[control];
+            if (!pairControl) return;
+
+            const pairInput = document.querySelector(`.wb-numeric-slider-input[data-control="${pairControl}"]`);
+            const pairNumberInput = document.querySelector(`.wb-numeric-slider-value[data-control="${pairControl}"]`);
+            if (!pairInput) return;
+
+            const pairValue = parseFloat(pairInput.value);
+            const pairMin = parseFloat(pairInput.min);
+            const pairMax = parseFloat(pairInput.max);
+            const pairStep = parseFloat(pairInput.step);
+
+            let newPairValue = pairValue;
+            if (control.includes('min')) {
+                if (value > pairValue) {
+                    newPairValue = Math.min(value, pairMax);
+                }
+            } else {
+                if (value < pairValue) {
+                    newPairValue = Math.max(value, pairMin);
+                }
+            }
+
+            newPairValue = Math.round(newPairValue / pairStep) * pairStep;
+            newPairValue = Math.max(pairMin, Math.min(pairMax, newPairValue));
+
+            if (newPairValue !== pairValue) {
+                pairInput.value = newPairValue;
+                if (pairNumberInput) pairNumberInput.value = newPairValue;
+            }
         }
 
         function initNumericSliders() {
@@ -1162,7 +1218,6 @@
                 input.addEventListener('change', handleNumericSliderInput);
             });
             document.querySelectorAll('.wb-numeric-slider-value').forEach(input => {
-                input.addEventListener('input', handleNumericInputChange);
                 input.addEventListener('change', handleNumericInputChange);
             });
         }

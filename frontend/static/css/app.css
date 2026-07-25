@@ -2957,6 +2957,13 @@ pre {
     font-variant-numeric: tabular-nums;
     text-align: center;
     flex-shrink: 0;
+    -moz-appearance: textfield;
+}
+
+.wb-numeric-slider-value::-webkit-inner-spin-button,
+.wb-numeric-slider-value::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 .wb-numeric-slider-value:focus {
