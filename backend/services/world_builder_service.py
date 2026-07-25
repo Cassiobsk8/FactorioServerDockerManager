@@ -382,6 +382,47 @@ def _cleanup_tempdir(tmpdir: Path) -> None:
         logger.warning("Failed to cleanup temp directory %s: %s", tmpdir, exc)
 
 
+def _read_input_files(tmpdir: Path, cmd: list[str]) -> str:
+    input_files = []
+
+    known_files = [
+        "map-gen-settings.json",
+        "map-settings.json",
+    ]
+
+    additional_files = set()
+    for arg in cmd:
+        if arg.startswith("--") and "=" in arg:
+            value = arg.split("=", 1)[1]
+            if not Path(value).is_absolute() and (tmpdir / value).exists():
+                additional_files.add(value)
+
+    all_files = sorted(set(known_files) | additional_files)
+
+    sections = []
+    for filename in all_files:
+        filepath = tmpdir / filename
+        if filepath.exists() and filepath.is_file():
+            sections.append(f"===== {filename} =====")
+            try:
+                sections.append(filepath.read_text(encoding="utf-8"))
+            except OSError:
+                sections.append(f"<falha ao ler {filename}>")
+        else:
+            sections.append(f"===== {filename} =====")
+            sections.append(f"<arquivo inexistente>")
+
+    if not sections:
+        return ""
+
+    separator = "=" * 50
+    return (
+        f"{separator}\nARQUIVOS UTILIZADOS NA GERAÇÃO\n{separator}\n\n"
+        + "\n\n".join(sections)
+        + f"\n{separator}\n"
+    )
+
+
 def clear_preview_cache() -> dict[str, Any]:
     if not PREVIEWS_DIR.exists():
         return {"status": "cleared", "previews_dir": str(PREVIEWS_DIR), "removed": 0}
@@ -484,7 +525,9 @@ def generate_preview(config: WorldConfig) -> dict[str, Any]:
                 + "\n".join(f"  {f}" for f in files)
             )
             logger.error("Factorio failed to generate preview. Details:\n%s", details)
-            raise RuntimeError("Factorio falhou ao gerar preview.\n" + details)
+            raise RuntimeError(
+                "Factorio falhou ao gerar preview.\n" + details + _read_input_files(tmpdir, exec_info["command"])
+            )
 
         if not generated.exists():
             files = _list_directory(tmpdir)
@@ -503,7 +546,9 @@ def generate_preview(config: WorldConfig) -> dict[str, Any]:
             )
             logger.error("Preview generation failed. Details:\n%s", details)
             raise RuntimeError(
-                "Factorio executou com sucesso mas não gerou preview.png.\n" + details
+                "Factorio executou com sucesso mas não gerou preview.png.\n"
+                + details
+                + _read_input_files(tmpdir, exec_info["command"])
             )
 
         _move_generated_file(generated, preview_path)
@@ -535,8 +580,9 @@ def generate_preview(config: WorldConfig) -> dict[str, Any]:
             f"return code: {exc.returncode}\n"
             f"arquivos no diretório temporário:\n"
             + "\n".join(f"  {f}" for f in files)
+            + _read_input_files(tmpdir, exc.cmd if exc.cmd else [])
         ) from exc
-    except subprocess.TimeoutExpired:
+    except subprocess.TimeoutExpired as exc:
         files = _list_directory(tmpdir)
         pngs = _png_files(tmpdir)
         logger.error(
@@ -549,6 +595,7 @@ def generate_preview(config: WorldConfig) -> dict[str, Any]:
             f"cwd: {tmpdir}\n"
             f"arquivos no diretório temporário:\n"
             + "\n".join(f"  {f}" for f in files)
+            + _read_input_files(tmpdir, exc.cmd if exc.cmd else [])
         )
     except Exception as exc:
         logger.error("Unexpected error during preview generation: %s", exc, exc_info=True)

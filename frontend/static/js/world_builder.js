@@ -84,6 +84,12 @@
             return controls.every(control => values && [0, 'none'].includes(values[control]));
         }
 
+const TERRAIN_CONTROL_IDS = new Set([
+    'water', 'trees', 'rocks', 'starting_area_moisture',
+    'vulcanus_volcanism', 'gleba_water', 'gleba_plants', 'fulgora_islands',
+    'nauvis_cliff', 'gleba_cliff', 'fulgora_cliff',
+]);
+
         let worldBuilderInitialized = false;
 
         function generateRandomSeed() {
@@ -430,10 +436,19 @@
             const sliders = row.querySelectorAll('.wb-table-discrete-input');
             const valueSpans = row.querySelectorAll('.wb-table-value');
             const controls = Array.from(sliders).map(slider => slider.dataset.control);
+            const isTerrain = TERRAIN_CONTROL_IDS.has(resourceId);
             const defaultValues = Object.fromEntries(controls.map(control => [control, 1]));
 
             if (enabled) {
-                const prev = wbState.resourcePreviousValues[resourceId] || defaultValues;
+                let prev = wbState.resourcePreviousValues[resourceId] || defaultValues;
+                if (isTerrain) {
+                    prev = Object.fromEntries(
+                        controls.map(control => [
+                            control,
+                            prev[control] != null && prev[control] !== 'none' ? prev[control] : defaultValues[control]
+                        ])
+                    );
+                }
                 wbState.worldConfig.settings.autoplace_controls[resourceId] = { ...prev };
 
                 sliders.forEach(slider => {
@@ -449,7 +464,7 @@
                 wbState.resourcePreviousValues[resourceId] = { ...current };
 
                 wbState.worldConfig.settings.autoplace_controls[resourceId] = Object.fromEntries(
-                    controls.map(control => [control, 'none'])
+                    controls.map(control => [control, isTerrain ? 0 : 'none'])
                 );
 
                 sliders.forEach(slider => {
