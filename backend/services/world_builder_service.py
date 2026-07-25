@@ -201,6 +201,64 @@ _MAP_SETTINGS_FALLBACK: dict[str, Any] = {
     "max_failed_behavior_count": 3,
 }
 
+PLANET_AUTOPLACE_CONTROLS: dict[str, list[str]] = {
+    "nauvis": [
+        "coal",
+        "stone",
+        "iron-ore",
+        "copper-ore",
+        "uranium-ore",
+        "crude-oil",
+        "water",
+        "trees",
+        "rocks",
+        "enemy-base",
+        "starting_area_moisture",
+        "nauvis_cliff",
+    ],
+    "vulcanus": [
+        "vulcanus_coal",
+        "calcite",
+        "sulfuric_acid_geyser",
+        "tungsten_ore",
+        "vulcanus_volcanism",
+    ],
+    "gleba": [
+        "gleba_water",
+        "gleba_plants",
+        "gleba_stone",
+        "gleba_enemy_base",
+        "gleba_cliff",
+    ],
+    "fulgora": [
+        "scrap",
+        "fulgora_islands",
+        "fulgora_cliff",
+    ],
+    "aquilo": [
+        "aquilo_crude_oil",
+    "fluorine_vent",
+    "lithium_brine",
+    ],
+}
+
+
+def _prepare_preview_config(config: WorldConfig) -> WorldConfig:
+    allowed_controls = set(PLANET_AUTOPLACE_CONTROLS.get(config.planet or "nauvis", []))
+    if not allowed_controls or not isinstance(config.settings, dict):
+        return config
+
+    filtered_settings = deepcopy(config.settings)
+    if isinstance(filtered_settings.get("autoplace_controls"), dict):
+        filtered_settings["autoplace_controls"] = {
+            key: value
+            for key, value in filtered_settings["autoplace_controls"].items()
+            if key in allowed_controls
+        }
+
+    from dataclasses import replace
+    return replace(config, settings=filtered_settings)
+
 
 def _get_factorio_bin() -> Optional[Path]:
     factorio_bin = INSTALL_DIR / "bin" / "x64" / "factorio"
@@ -479,7 +537,8 @@ def generate_preview(config: WorldConfig) -> dict[str, Any]:
         return sorted(p.name for p in path.glob("*.png")) if path.exists() else []
 
     try:
-        map_gen_settings_path = _write_map_gen_settings(config, tmpdir)
+        preview_config = _prepare_preview_config(config)
+        map_gen_settings_path = _write_map_gen_settings(preview_config, tmpdir)
         map_settings_path = _write_map_settings(config, tmpdir)
 
         cmd = [str(factorio_bin), "--generate-map-preview", "preview.png"]

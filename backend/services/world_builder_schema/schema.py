@@ -141,7 +141,7 @@ MAP_GEN_SETTINGS_SCHEMA = [
     _autoplace("vulcanus_coal", "Vulcanus Coal", "Frequency, size and richness of coal deposits on Vulcanus.", planet_exclusive=["vulcanus"], order_="b-a"),
     _autoplace("calcite", "Calcite", "Frequency, size and richness of calcite deposits.", planet_exclusive=["vulcanus"], order_="b-c"),
     _autoplace("sulfuric_acid_geyser", "Sulfuric Acid Geyser", "Frequency, size and richness of sulfuric acid geysers.", planet_exclusive=["vulcanus"], order_="b-c"),
-    _autoplace("tungsten-ore", "Tungsten Ore", "Frequency, size and richness of tungsten ore deposits.", planet_exclusive=["vulcanus"], order_="b-d"),
+    _autoplace("tungsten_ore", "Tungsten Ore", "Frequency, size and richness of tungsten ore deposits.", planet_exclusive=["vulcanus"], order_="b-d"),
     _autoplace("gleba_stone", "Gleba Stone", "Frequency, size and richness of stone deposits on Gleba.", planet_exclusive=["gleba"], order_="c-a"),
     _field("autoplace_controls.gleba_water", "Gleba Water", "Frequency, size and richness of water patches on Gleba.", CATEGORY_TERRAIN, "AutoplaceControl", default={"frequency": 1.0, "size": 1.0, "richness": 1.0}, min_=0.0, max_=10.0, source_file="map-gen-settings.json", planet_exclusive=["gleba"], order_="c-z-b", can_be_disabled=False),
     _field("autoplace_controls.gleba_plants", "Gleba Plants", "Frequency, size and richness of plant life on Gleba.", CATEGORY_TERRAIN, "AutoplaceControl", default={"frequency": 1.0, "size": 1.0, "richness": 1.0}, min_=0.0, max_=10.0, source_file="map-gen-settings.json", planet_exclusive=["gleba"], order_="c-z-c", can_be_disabled=False),
