@@ -373,5 +373,15 @@
   "world_builder.advanced.replay": "Replay",
   "world_builder.placeholder.frequency": "Frequência",
   "world_builder.placeholder.size": "Tamanho",
-  "world_builder.placeholder.richness": "Riqueza"
+  "world_builder.placeholder.richness": "Riqueza",
+  "world_builder.enemy.bases.gleba": "Bases Inimigas da Gleba",
+  "world_builder.enemy.no_enemies": "Sem Inimigos",
+  "world_builder.enemy.max_expansion_distance": "Distância Máxima de Expansão",
+  "world_builder.enemy.min_group_size": "Tamanho Mínimo do Grupo",
+  "world_builder.enemy.max_group_size": "Tamanho Máximo do Grupo",
+  "world_builder.enemy.min_cooldown": "Cooldown Mínimo de Expansão",
+  "world_builder.enemy.max_cooldown": "Cooldown Máximo de Expansão",
+  "world_builder.enemy.time_factor": "Fator de Tempo",
+  "world_builder.enemy.destroy_factor": "Fator de Destruição",
+  "world_builder.enemy.pollution_factor": "Fator de Poluição"
 }

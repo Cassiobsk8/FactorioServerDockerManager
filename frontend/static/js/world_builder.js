@@ -561,6 +561,13 @@
             </div>`;
         }
 
+        function createNumericSlider(name) {
+            return `<div class="wb-numeric-slider">
+                <input type="range" class="wb-numeric-slider-input" data-control="${name}" min="0" max="100" step="1" value="50" />
+                <input type="number" class="wb-numeric-slider-value" data-control="${name}" min="0" max="100" step="1" value="50" />
+            </div>`;
+        }
+
         async function loadResourceFields() {
             if (wbState.resourceFields.length > 0 && wbState.terrainFeatureFields.length > 0) return;
 
@@ -980,27 +987,110 @@
             if (enemyPanel) {
                 enemyPanel.innerHTML = `<div class="wb-enemy-table-wrapper">
                     <div class="wb-enemy-group">
-                        ${createEnemyRowWithCheckbox('Enemy Bases', 'Frequency', 'Size')}
+                        <div class="wb-enemy-row">
+                            <label class="wb-placeholder-checkbox">
+                                <input type="checkbox" class="wb-table-checkbox" data-control="enemy_bases_enabled" checked />
+                                <span>Enemy Bases</span>
+                            </label>
+                            <label class="wb-table-slider">
+                                ${createDiscreteSlider('enemy_bases_frequency', 5, false)}
+                            </label>
+                            <label class="wb-table-slider">
+                                ${createDiscreteSlider('enemy_bases_size', 5, false)}
+                            </label>
+                        </div>
                     </div>
                     ${createTerrainDivider()}
                     <div class="wb-enemy-group">
-                        ${createEnemyCheckboxRow('Peaceful Mode')}
+                        <div class="wb-enemy-row">
+                            <label class="wb-placeholder-checkbox">
+                                <input type="checkbox" class="wb-table-checkbox" data-control="gleba_enemy_bases_enabled" checked />
+                                <span>Gleba Enemy Bases</span>
+                            </label>
+                            <label class="wb-table-slider">
+                                ${createDiscreteSlider('gleba_enemy_bases_frequency', 5, false)}
+                            </label>
+                            <label class="wb-table-slider">
+                                ${createDiscreteSlider('gleba_enemy_bases_size', 5, false)}
+                            </label>
+                        </div>
                     </div>
                     ${createTerrainDivider()}
                     <div class="wb-enemy-group">
-                        ${createEnemySliderRow('Starting Area')}
+                        <div class="wb-enemy-row">
+                            <label class="wb-placeholder-checkbox">
+                                <input type="checkbox" class="wb-table-checkbox" data-control="no_enemies" />
+                                <span>No Enemies</span>
+                            </label>
+                        </div>
                     </div>
                     ${createTerrainDivider()}
                     <div class="wb-enemy-group">
-                        ${createEnemySliderRow('Maximum Expansion Distance')}
-                        ${createEnemySliderRow('Minimum Group Size')}
-                        ${createEnemySliderRow('Maximum Group Size')}
-                        ${createEnemySliderRow('Minimum Cooldown')}
-                        ${createEnemySliderRow('Maximum Cooldown')}
+                        <div class="wb-enemy-row">
+                            <label class="wb-placeholder-checkbox">
+                                <input type="checkbox" class="wb-table-checkbox" data-control="peaceful_mode" />
+                                <span>Peaceful Mode</span>
+                            </label>
+                        </div>
                     </div>
                     ${createTerrainDivider()}
                     <div class="wb-enemy-group">
-                        ${createEnemySlidersRow('Time', 'Destroy', 'Pollution')}
+                        <div class="wb-enemy-slider-row">
+                            <span class="wb-table-label">Starting Area</span>
+                            <label class="wb-table-slider">
+                                ${createDiscreteSlider('starting_area_size', 5, false)}
+                            </label>
+                        </div>
+                    </div>
+                    ${createTerrainDivider()}
+                    <div class="wb-enemy-group" data-group="expansion">
+                        <div class="wb-enemy-row">
+                            <label class="wb-placeholder-checkbox">
+                                <input type="checkbox" class="wb-table-checkbox" data-control="expansion_enabled" checked />
+                                <span>Enemy Expansion</span>
+                            </label>
+                        </div>
+                        <div class="wb-enemy-slider-row">
+                            <span class="wb-table-label">Max Expansion Distance</span>
+                            ${createNumericSlider('expansion_max_distance')}
+                        </div>
+                        <div class="wb-enemy-slider-row">
+                            <span class="wb-table-label">Minimum Group Size</span>
+                            ${createNumericSlider('expansion_min_group_size')}
+                        </div>
+                        <div class="wb-enemy-slider-row">
+                            <span class="wb-table-label">Maximum Group Size</span>
+                            ${createNumericSlider('expansion_max_group_size')}
+                        </div>
+                        <div class="wb-enemy-slider-row">
+                            <span class="wb-table-label">Minimum Expansion Cooldown</span>
+                            ${createNumericSlider('expansion_min_cooldown')}
+                        </div>
+                        <div class="wb-enemy-slider-row">
+                            <span class="wb-table-label">Maximum Expansion Cooldown</span>
+                            ${createNumericSlider('expansion_max_cooldown')}
+                        </div>
+                    </div>
+                    ${createTerrainDivider()}
+                    <div class="wb-enemy-group" data-group="evolution">
+                        <div class="wb-enemy-row">
+                            <label class="wb-placeholder-checkbox">
+                                <input type="checkbox" class="wb-table-checkbox" data-control="evolution_enabled" checked />
+                                <span>Evolution</span>
+                            </label>
+                        </div>
+                        <div class="wb-enemy-slider-row">
+                            <span class="wb-table-label">Time Factor</span>
+                            ${createNumericSlider('evolution_time_factor')}
+                        </div>
+                        <div class="wb-enemy-slider-row">
+                            <span class="wb-table-label">Destroy Factor</span>
+                            ${createNumericSlider('evolution_destroy_factor')}
+                        </div>
+                        <div class="wb-enemy-slider-row">
+                            <span class="wb-table-label">Pollution Factor</span>
+                            ${createNumericSlider('evolution_pollution_factor')}
+                        </div>
                     </div>
                 </div>`;
             }
@@ -1045,6 +1135,58 @@
             });
         }
 
+        function handleNumericSliderInput(e) {
+            const input = e.target;
+            const control = input.dataset.control;
+            const value = input.value;
+            const numberInput = input.parentElement.querySelector(`.wb-numeric-slider-value[data-control="${control}"]`);
+            if (numberInput) numberInput.value = value;
+            markPreviewOutdated();
+        }
+
+        function handleNumericInputChange(e) {
+            const input = e.target;
+            const control = input.dataset.control;
+            let value = parseInt(input.value, 10);
+            if (isNaN(value)) value = 50;
+            value = Math.max(0, Math.min(100, value));
+            const slider = input.parentElement.querySelector(`.wb-numeric-slider-input[data-control="${control}"]`);
+            if (slider) slider.value = value;
+            input.value = value;
+            markPreviewOutdated();
+        }
+
+        function initNumericSliders() {
+            document.querySelectorAll('.wb-numeric-slider-input').forEach(input => {
+                input.addEventListener('input', handleNumericSliderInput);
+                input.addEventListener('change', handleNumericSliderInput);
+            });
+            document.querySelectorAll('.wb-numeric-slider-value').forEach(input => {
+                input.addEventListener('input', handleNumericInputChange);
+                input.addEventListener('change', handleNumericInputChange);
+            });
+        }
+
+        function initEnemyTabToggles() {
+            const toggleMap = {
+                'expansion_enabled': 'expansion',
+                'evolution_enabled': 'evolution',
+            };
+            Object.entries(toggleMap).forEach(([checkboxControl, groupName]) => {
+                const checkbox = document.querySelector(`[data-control="${checkboxControl}"]`);
+                const group = document.querySelector(`[data-group="${groupName}"]`);
+                if (!checkbox || !group) return;
+                const toggle = () => {
+                    const inputs = group.querySelectorAll('input[type="range"], input[type="number"]');
+                    inputs.forEach(input => {
+                        input.disabled = !checkbox.checked;
+                    });
+                };
+                checkbox.addEventListener('change', toggle);
+                toggle();
+            });
+        }
+
         function initWorldBuilder() {
             if (worldBuilderInitialized) return;
             worldBuilderInitialized = true;
@@ -1053,6 +1195,8 @@
 
             populateTabs();
             initWbTabs();
+            initNumericSliders();
+            initEnemyTabToggles();
 
             const worldNameInput = document.getElementById('wb-world-name');
             const seedInput = document.getElementById('wb-seed');

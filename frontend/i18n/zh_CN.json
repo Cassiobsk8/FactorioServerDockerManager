@@ -373,5 +373,15 @@
   "world_builder.advanced.replay": "Replay",
   "world_builder.placeholder.frequency": "频率",
   "world_builder.placeholder.size": "规模",
-  "world_builder.placeholder.richness": "丰富度"
+  "world_builder.placeholder.richness": "丰富度",
+  "world_builder.enemy.bases.gleba": "Gleba 敌人基地",
+  "world_builder.enemy.no_enemies": "无敌人",
+  "world_builder.enemy.max_expansion_distance": "最大扩张距离",
+  "world_builder.enemy.min_group_size": "最小组大小",
+  "world_builder.enemy.max_group_size": "最大组大小",
+  "world_builder.enemy.min_cooldown": "最小扩张冷却",
+  "world_builder.enemy.max_cooldown": "最大扩张冷却",
+  "world_builder.enemy.time_factor": "时间因子",
+  "world_builder.enemy.destroy_factor": "毁灭因子",
+  "world_builder.enemy.pollution_factor": "污染因子"
 }
