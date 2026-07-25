@@ -583,11 +583,50 @@
             </div>`;
         }
 
-        function createNumericSlider(name, min, max, step, defaultValue) {
+        function createNumericSlider(name, min, max, step, defaultValue, suffix) {
             const value = defaultValue != null ? defaultValue : min;
+            const suffixHtml = suffix ? `<span class="wb-numeric-slider-suffix">${suffix}</span>` : '';
             return `<div class="wb-numeric-slider">
                 <input type="range" class="wb-numeric-slider-input" data-control="${name}" min="${min}" max="${max}" step="${step}" value="${value}" />
-                <input type="number" class="wb-numeric-slider-value" data-control="${name}" min="${min}" max="${max}" step="${step}" value="${value}" />
+                <div class="wb-numeric-slider-field">
+                    <input type="number" class="wb-numeric-slider-value" data-control="${name}" min="${min}" max="${max}" step="${step}" value="${value}" />
+                    ${suffixHtml}
+                </div>
+            </div>`;
+        }
+
+        function createAdvancedNumericRow(name, label, min, max, step, defaultValue, suffix) {
+            const value = defaultValue != null ? defaultValue : min;
+            const suffixHtml = suffix ? `<span class="wb-advanced-suffix">${suffix}</span>` : '';
+            return `<div class="wb-advanced-row">
+                <span class="wb-table-label">${label}</span>
+                <span class="wb-advanced-spacer"></span>
+                <div class="wb-advanced-field">
+                    <input type="number" class="wb-advanced-numeric-value" data-control="${name}" min="${min}" max="${max}" step="${step}" value="${value}" />
+                    ${suffixHtml}
+                </div>
+            </div>`;
+        }
+
+        function createAdvancedSliderRow(name, label, min, max, step, defaultValue, suffix) {
+            const value = defaultValue != null ? defaultValue : min;
+            const suffixHtml = suffix ? `<span class="wb-advanced-suffix">${suffix}</span>` : '';
+            return `<div class="wb-advanced-row">
+                <span class="wb-table-label">${label}</span>
+                <input type="range" class="wb-advanced-slider-input" data-control="${name}" min="${min}" max="${max}" step="${step}" value="${value}" />
+                <div class="wb-advanced-field">
+                    <input type="number" class="wb-advanced-numeric-value" data-control="${name}" min="${min}" max="${max}" step="${step}" value="${value}" />
+                    ${suffixHtml}
+                </div>
+            </div>`;
+        }
+
+        function createAdvancedCheckboxRow(name, label) {
+            return `<div class="wb-advanced-checkbox-row">
+                <label class="wb-placeholder-checkbox">
+                    <input type="checkbox" class="wb-table-checkbox" data-control="${name}" checked />
+                    <span>${label}</span>
+                </label>
             </div>`;
         }
 
@@ -1092,11 +1131,11 @@
                         </div>
                         <div class="wb-enemy-slider-row">
                             <span class="wb-table-label">Minimum Expansion Cooldown</span>
-                            ${createNumericSlider('expansion_min_cooldown', 1, 60, 1, 4)}
+                            ${createNumericSlider('expansion_min_cooldown', 1, 60, 1, 4, 'min')}
                         </div>
                         <div class="wb-enemy-slider-row">
                             <span class="wb-table-label">Maximum Expansion Cooldown</span>
-                            ${createNumericSlider('expansion_max_cooldown', 5, 180, 1, 60)}
+                            ${createNumericSlider('expansion_max_cooldown', 5, 180, 1, 60, 'min')}
                         </div>
                     </div>
                     ${createTerrainDivider()}
@@ -1124,29 +1163,38 @@
             }
 
             if (advancedPanel) {
+                const mapRows = [
+                    createAdvancedNumericRow('advanced_map_width', 'Width', 0, 1000000, 1, 0),
+                    createAdvancedNumericRow('advanced_map_height', 'Height', 0, 1000000, 1, 0)
+                ].join('');
+                const technologyRows = [
+                    createAdvancedNumericRow('advanced_technology_price_multiplier', 'Price Multiplier', 0, 100, 0.1, 1),
+                ].join('');
+                const pollutionRows = [
+                    createAdvancedCheckboxRow('advanced_pollution_enabled', 'Pollution'),
+                    createAdvancedSliderRow('advanced_pollution_absorption_modifier', 'Absorption Modifier', 10, 400, 10, 100, '%'),
+                    createAdvancedSliderRow('advanced_pollution_attack_cost_modifier', 'Attack Cost Modifier', 10, 400, 10, 100, '%'),
+                    createAdvancedSliderRow('advanced_pollution_min_damage_trees', 'Minimum Damage Trees', 0, 9999, 1, 60),
+                    createAdvancedSliderRow('advanced_pollution_absorbed_per_damaged_tree', 'Absorbed Per Damaged Tree', 0, 9999, 1, 10),
+                    createAdvancedSliderRow('advanced_pollution_diffusion_ratio', 'Diffusion Ratio', 0, 25, 1, 2, '%')
+                ].join('');
+                const asteroidsRows = [
+                    createAdvancedSliderRow('advanced_asteroids_spawning_rate', 'Generation Rate', 10, 400, 10, 100, '%'),
+                ].join('');
+                const decayRows = [
+                    createAdvancedSliderRow('advanced_decay_rate', 'Decay Rate', 10, 1000, 10, 100, '%')
+                ].join('');
+
                 advancedPanel.innerHTML = [
-                    createGroup('Replay', [
-                        createCheckboxPlaceholder('Enabled')
-                    ]),
-                    createGroup('Map', [
-                        createSliderPlaceholder('Width'),
-                        createSliderPlaceholder('Height')
-                    ]),
-                    createGroup('Recipes', [
-                        createSliderPlaceholder('Difficulty')
-                    ]),
-                    createGroup('Technology', [
-                        createSliderPlaceholder('Difficulty'),
-                        createSliderPlaceholder('Price Multiplier'),
-                        createSliderPlaceholder('Research Queue')
-                    ]),
-                    createGroup('Pollution', [
-                        createSliderPlaceholder('Absorption Modifier'),
-                        createSliderPlaceholder('Attack Cost Modifier'),
-                        createSliderPlaceholder('Minimum Damage Trees'),
-                        createSliderPlaceholder('Absorbed Per Damaged Tree'),
-                        createSliderPlaceholder('Diffusion Ratio')
-                    ]),
+                    createSection('Map', mapRows),
+                    createTerrainDivider(),
+                    createSection('Technology', technologyRows),
+                    createTerrainDivider(),
+                    createSection('Pollution', pollutionRows),
+                    createTerrainDivider(),
+                    createSection('Asteroids', asteroidsRows),
+                    createTerrainDivider(),
+                    createSection('Deterioration', decayRows)
                 ].join('');
             }
         }
@@ -1497,6 +1545,81 @@
             });
         }
 
+        function initAdvancedTabControls() {
+            const pollutionCheckbox = document.querySelector('[data-control="advanced_pollution_enabled"]');
+            if (pollutionCheckbox) {
+                pollutionCheckbox.checked = true;
+                pollutionCheckbox.addEventListener('change', (e) => {
+                    updateMapSetting('pollution.enabled', e.target.checked);
+                });
+            }
+
+            document.querySelectorAll('.wb-advanced-slider-input').forEach(input => {
+                input.addEventListener('input', handleAdvancedSliderInput);
+                input.addEventListener('change', handleAdvancedSliderInput);
+            });
+            document.querySelectorAll('.wb-advanced-numeric-value').forEach(input => {
+                input.addEventListener('change', handleAdvancedNumericInputChange);
+            });
+        }
+
+        const ADVANCED_CONTROL_MAP = {
+            'advanced_map_width': { path: 'width', target: 'map_gen', convert: (v) => v },
+            'advanced_map_height': { path: 'height', target: 'map_gen', convert: (v) => v },
+            'advanced_technology_price_multiplier': { path: 'difficulty_settings.technology_price_multiplier', target: 'map_settings', convert: (v) => v },
+            'advanced_pollution_absorption_modifier': { path: 'pollution.ageing', target: 'map_settings', convert: (v) => v / 100 },
+            'advanced_pollution_attack_cost_modifier': { path: 'pollution.enemy_attack_pollution_consumption_modifier', target: 'map_settings', convert: (v) => v / 100 },
+            'advanced_pollution_min_damage_trees': { path: 'pollution.min_pollution_to_damage_trees', target: 'map_settings', convert: (v) => v },
+            'advanced_pollution_absorbed_per_damaged_tree': { path: 'pollution.pollution_restored_per_tree_damage', target: 'map_settings', convert: (v) => v },
+            'advanced_pollution_diffusion_ratio': { path: 'pollution.diffusion_ratio', target: 'map_settings', convert: (v) => v / 100 },
+            'advanced_asteroids_spawning_rate': { path: 'asteroids.spawning_rate', target: 'map_settings', convert: (v) => v / 100 },
+            'advanced_decay_rate': { path: 'difficulty_settings.spoil_time_modifier', target: 'map_settings', convert: (v) => v / 100 },
+        };
+
+        function saveAdvancedControlValue(control, value) {
+            const mapping = ADVANCED_CONTROL_MAP[control];
+            if (!mapping) return;
+            const converted = mapping.convert(value);
+            if (mapping.target === 'map_gen') {
+                updateMapGenSetting(mapping.path, converted);
+            } else {
+                updateMapSetting(mapping.path, converted);
+            }
+        }
+
+        function handleAdvancedSliderInput(e) {
+            const input = e.target;
+            const control = input.dataset.control;
+            const min = parseFloat(input.min);
+            const max = parseFloat(input.max);
+            const step = parseFloat(input.step);
+            let value = parseFloat(input.value);
+            if (isNaN(value)) value = min;
+            value = Math.round(value / step) * step;
+            value = Math.max(min, Math.min(max, value));
+            input.value = value;
+            const numberInput = document.querySelector(`.wb-advanced-numeric-value[data-control="${control}"]`);
+            if (numberInput) numberInput.value = value;
+            saveAdvancedControlValue(control, value);
+            markPreviewOutdated();
+        }
+
+        function handleAdvancedNumericInputChange(e) {
+            const input = e.target;
+            const control = input.dataset.control;
+            const min = parseFloat(input.min);
+            const max = parseFloat(input.max);
+            const step = parseFloat(input.step);
+            let value = parseInt(input.value, 10);
+            if (isNaN(value)) value = min;
+            value = Math.max(min, Math.min(max, value));
+            const slider = document.querySelector(`.wb-advanced-slider-input[data-control="${control}"]`);
+            if (slider) slider.value = value;
+            input.value = value;
+            saveAdvancedControlValue(control, value);
+            markPreviewOutdated();
+        }
+
         function initWorldBuilder() {
             if (worldBuilderInitialized) return;
             worldBuilderInitialized = true;
@@ -1508,6 +1631,7 @@
             initNumericSliders();
             initEnemyTabToggles();
             initEnemyTabControls();
+            initAdvancedTabControls();
 
             const worldNameInput = document.getElementById('wb-world-name');
             const seedInput = document.getElementById('wb-seed');
