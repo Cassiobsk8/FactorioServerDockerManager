@@ -316,7 +316,6 @@
   "world_builder.error.preview_failed": "Falha ao gerar preview",
   "world_builder.error.create_failed": "Falha ao criar mundo",
   "world_builder.error.create_exception": "Erro ao criar mundo",
-  "world_builder.error.outdated_preview": "Atualize o preview antes de criar o mundo.",
   "world_builder.status.unavailable": "World Builder Preview indisponível.",
   "world_builder.status.unavailable_detail": "Instalação do Factorio não concluída.",
   "world_builder.status.not_installed_detail": "Instalação do Factorio não está completa.",

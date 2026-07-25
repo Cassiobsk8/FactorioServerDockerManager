@@ -316,7 +316,6 @@
   "world_builder.error.preview_failed": "Failed to generate preview",
   "world_builder.error.create_failed": "Failed to create world",
   "world_builder.error.create_exception": "Error creating world",
-  "world_builder.error.outdated_preview": "Update the preview before creating the world.",
   "world_builder.status.unavailable": "World Builder Preview unavailable.",
   "world_builder.status.unavailable_detail": "Factorio installation is incomplete.",
   "world_builder.status.not_installed_detail": "Factorio installation is not complete.",

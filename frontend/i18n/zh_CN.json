@@ -316,7 +316,6 @@
   "world_builder.error.preview_failed": "生成预览失败",
   "world_builder.error.create_failed": "创建世界失败",
   "world_builder.error.create_exception": "创建世界时出错",
-  "world_builder.error.outdated_preview": "创建世界前请先更新预览。",
   "world_builder.status.unavailable": "World Builder 预览不可用。",
   "world_builder.status.unavailable_detail": "Factorio 安装未完成。",
   "world_builder.status.not_installed_detail": "Factorio 安装未完成。",

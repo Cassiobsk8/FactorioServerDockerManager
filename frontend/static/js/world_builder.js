@@ -235,7 +235,6 @@
             const container = document.getElementById('wb-preview-container');
             const image = document.getElementById('wb-preview-image');
             const placeholder = container ? container.querySelector('.preview-placeholder') : null;
-            const hint = document.getElementById('wb-create-hint');
 
             if (!badge || !container) return;
 
@@ -246,31 +245,26 @@
                 badge.setAttribute('data-i18n', 'world_builder.preview.status.updated');
                 badge.textContent = t('world_builder.preview.status.updated');
                 container.classList.remove('outdated');
-                if (hint) hint.style.display = 'none';
             } else if (status === 'outdated') {
                 badge.classList.add('badge-inactive');
                 badge.setAttribute('data-i18n', 'world_builder.preview.status.outdated');
                 badge.textContent = t('world_builder.preview.status.outdated');
                 container.classList.add('outdated');
-                if (hint) hint.style.display = 'block';
             } else if (status === 'generating') {
                 badge.classList.add('badge-active');
                 badge.setAttribute('data-i18n', 'world_builder.preview.status.generating');
                 badge.textContent = t('world_builder.preview.status.generating');
                 container.classList.remove('outdated');
-                if (hint) hint.style.display = 'none';
             } else if (status === 'error') {
                 badge.classList.add('badge-inactive');
                 badge.setAttribute('data-i18n', 'world_builder.preview.status.error');
                 badge.textContent = t('world_builder.preview.status.error');
                 container.classList.add('outdated');
-                if (hint) hint.style.display = 'none';
             } else {
                 badge.classList.add('badge-inactive');
                 badge.setAttribute('data-i18n', 'world_builder.preview.status.outdated');
                 badge.textContent = t('world_builder.preview.status.outdated');
                 container.classList.add('outdated');
-                if (hint) hint.style.display = 'block';
             }
         }
 
