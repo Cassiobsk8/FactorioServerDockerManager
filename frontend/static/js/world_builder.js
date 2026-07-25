@@ -486,9 +486,9 @@
             markPreviewOutdated();
         }
 
-        function createSection(title, content) {
+        function createSection(titleI18n, content) {
             return `<div class="wb-section">
-                <h3 class="wb-section-title">${title}</h3>
+                <h3 class="wb-section-title" data-i18n="${titleI18n}">${titleI18n}</h3>
                 <div class="wb-section-body">${content}</div>
             </div>`;
         }
@@ -511,11 +511,11 @@
 
         function createMapTypeSelect() {
             return `<div class="wb-map-type-row">
-                <span class="wb-map-type-label">Tipo de Mapa</span>
+                <span class="wb-map-type-label" data-i18n="world_builder.terrain.map_type_label">Tipo de Mapa</span>
                 <select class="wb-map-type-select">
-                    <option value="default" selected>Elevação Nauvis (Padrão)</option>
-                    <option value="lake">Elevação de Lagos</option>
-                    <option value="island">Elevação da Ilha</option>
+                    <option value="default" selected data-i18n="world_builder.terrain.map_type.default">Elevação Nauvis (Padrão)</option>
+                    <option value="lake" data-i18n="world_builder.terrain.map_type.lake">Elevação de Lagos</option>
+                    <option value="island" data-i18n="world_builder.terrain.map_type.island">Elevação da Ilha</option>
                 </select>
             </div>`;
         }
@@ -529,11 +529,11 @@
             </div>`;
         }
 
-        function createTerrainGroupRow(name, planetHtml, slider1, slider2, dataField) {
+        function createTerrainGroupRow(nameI18n, planetHtml, slider1, slider2, dataField) {
             const rowAttrs = dataField ? ` data-field="${dataField}"` : '';
             return `<div class="wb-table-row"${rowAttrs}>
                 <div class="wb-terrain-name">
-                    <span class="wb-table-label">${name}</span>
+                    <span class="wb-table-label" data-i18n="world_builder.terrain.${nameI18n}">${nameI18n}</span>
                 </div>
                 <span class="wb-table-planet" title="${planetHtml.name}">${planetHtml.icon}</span>
                 <label class="wb-table-slider">${slider1}</label>
@@ -595,11 +595,11 @@
             </div>`;
         }
 
-        function createAdvancedNumericRow(name, label, min, max, step, defaultValue, suffix) {
+        function createAdvancedNumericRow(name, labelI18n, min, max, step, defaultValue, suffix) {
             const value = defaultValue != null ? defaultValue : min;
             const suffixHtml = suffix ? `<span class="wb-advanced-suffix">${suffix}</span>` : '';
             return `<div class="wb-advanced-row">
-                <span class="wb-table-label">${label}</span>
+                <span class="wb-table-label" data-i18n="${labelI18n}">${labelI18n}</span>
                 <span class="wb-advanced-spacer"></span>
                 <div class="wb-advanced-field">
                     <input type="number" class="wb-advanced-numeric-value" data-control="${name}" min="${min}" max="${max}" step="${step}" value="${value}" />
@@ -608,11 +608,11 @@
             </div>`;
         }
 
-        function createAdvancedSliderRow(name, label, min, max, step, defaultValue, suffix) {
+        function createAdvancedSliderRow(name, labelI18n, min, max, step, defaultValue, suffix) {
             const value = defaultValue != null ? defaultValue : min;
             const suffixHtml = suffix ? `<span class="wb-advanced-suffix">${suffix}</span>` : '';
             return `<div class="wb-advanced-row">
-                <span class="wb-table-label">${label}</span>
+                <span class="wb-table-label" data-i18n="${labelI18n}">${labelI18n}</span>
                 <input type="range" class="wb-advanced-slider-input" data-control="${name}" min="${min}" max="${max}" step="${step}" value="${value}" />
                 <div class="wb-advanced-field">
                     <input type="number" class="wb-advanced-numeric-value" data-control="${name}" min="${min}" max="${max}" step="${step}" value="${value}" />
@@ -621,11 +621,11 @@
             </div>`;
         }
 
-        function createAdvancedCheckboxRow(name, label) {
+        function createAdvancedCheckboxRow(name, labelI18n) {
             return `<div class="wb-advanced-checkbox-row">
                 <label class="wb-placeholder-checkbox">
                     <input type="checkbox" class="wb-table-checkbox" data-control="${name}" checked />
-                    <span>${label}</span>
+                    <span data-i18n="${labelI18n}">${labelI18n}</span>
                 </label>
             </div>`;
         }
@@ -636,7 +636,7 @@
             try {
                 const res = await fetch('/api/world-builder/config-engine?source_file=map-gen-settings.json');
                 if (!res.ok) {
-                    renderResourcesError('Failed to load resource configuration');
+                    renderResourcesError(t('world_builder.error.resource_load_failed'));
                     return;
                 }
                 const data = await res.json();
@@ -695,7 +695,7 @@
                 });
 
                 if (!fields.length) {
-                    renderResourcesError('No resource controls found in schema');
+                    renderResourcesError(t('world_builder.error.resource_not_found'));
                     console.warn('[WorldBuilder] Resource fields not found in config-engine payload', data);
                     return;
                 }
@@ -716,7 +716,7 @@
                 renderCliffs(cliffFields);
                 renderMoistureTerrain();
             } catch (err) {
-                renderResourcesError('Failed to load resources');
+                renderResourcesError(t('world_builder.error.resources_loading_failed'));
                 console.warn('[WorldBuilder] Error loading resource fields:', err);
             }
         }
@@ -815,7 +815,7 @@
                 return `<div class="wb-table-row" data-resource="${resourceId}">
                     <label class="wb-terrain-name">
                         ${canBeDisabled ? `<input type="checkbox" class="wb-table-checkbox" data-control="enabled" ${isDisabled ? '' : 'checked'} />` : ''}
-                        <span class="wb-table-label">${field.label || resourceId}</span>
+                        <span class="wb-table-label" data-i18n="world_builder.terrain.${resourceId}">${t('world_builder.terrain.' + resourceId)}</span>
                     </label>
                     <span class="wb-table-planet" title="${planetDisplay.name}">${planetDisplay.icon}</span>
                     <label class="wb-table-slider">
@@ -863,7 +863,7 @@
                 return `<div class="wb-table-row" data-resource="${resourceId}">
                     <label class="wb-terrain-name">
                         ${canBeDisabled ? `<input type="checkbox" class="wb-table-checkbox" data-control="enabled" ${isDisabled ? '' : 'checked'} />` : ''}
-                        <span class="wb-table-label">${field.label || resourceId}</span>
+                        <span class="wb-table-label" data-i18n="world_builder.terrain.${resourceId}">${t('world_builder.terrain.' + resourceId)}</span>
                     </label>
                     <span class="wb-table-planet" title="${planetDisplay.name}">${planetDisplay.icon}</span>
                     <label class="wb-table-slider">
@@ -1040,8 +1040,8 @@
                     ${createTerrainGroup(
                         '<span></span><span></span><span data-i18n="world_builder.terrain.header.scale">Escala</span><span data-i18n="world_builder.terrain.header.bias">Viés</span>',
                         [
-                            createTerrainGroupRow('Moisture', nauvis, createTerrainSlider('frequency'), createBiasSlider('bias'), 'moisture'),
-                            createTerrainGroupRow('Terrain', nauvis, createTerrainSlider('frequency'), createBiasSlider('bias'), 'terrain')
+                            createTerrainGroupRow('moisture', nauvis, createTerrainSlider('frequency'), createBiasSlider('bias'), 'moisture'),
+                            createTerrainGroupRow('terrain', nauvis, createTerrainSlider('frequency'), createBiasSlider('bias'), 'terrain')
                         ].join('')
                     )}`;
             }
@@ -1057,7 +1057,7 @@
                         <div class="wb-enemy-row">
                             <label class="wb-placeholder-checkbox">
                                 <input type="checkbox" class="wb-table-checkbox" data-control="enemy_bases_enabled" checked />
-                                <span>Enemy Bases</span>
+                                <span data-i18n="world_builder.enemy.bases">Enemy Bases</span>
                             </label>
                             <label class="wb-table-slider">
                                 ${createDiscreteSlider('enemy_bases_frequency', 5, false)}
@@ -1072,7 +1072,7 @@
                         <div class="wb-enemy-row">
                             <label class="wb-placeholder-checkbox">
                                 <input type="checkbox" class="wb-table-checkbox" data-control="gleba_enemy_bases_enabled" checked />
-                                <span>Gleba Enemy Bases</span>
+                                <span data-i18n="world_builder.enemy.bases.gleba">Gleba Enemy Bases</span>
                             </label>
                             <label class="wb-table-slider">
                                 ${createDiscreteSlider('gleba_enemy_bases_frequency', 5, false)}
@@ -1087,7 +1087,7 @@
                         <div class="wb-enemy-row">
                             <label class="wb-placeholder-checkbox">
                                 <input type="checkbox" class="wb-table-checkbox" data-control="no_enemies" />
-                                <span>No Enemies</span>
+                                <span data-i18n="world_builder.enemy.no_enemies">No Enemies</span>
                             </label>
                         </div>
                     </div>
@@ -1096,14 +1096,14 @@
                         <div class="wb-enemy-row">
                             <label class="wb-placeholder-checkbox">
                                 <input type="checkbox" class="wb-table-checkbox" data-control="peaceful_mode" />
-                                <span>Peaceful Mode</span>
+                                <span data-i18n="world_builder.enemy.peaceful">Peaceful Mode</span>
                             </label>
                         </div>
                     </div>
                     ${createTerrainDivider()}
                     <div class="wb-enemy-group">
                         <div class="wb-enemy-slider-row">
-                            <span class="wb-table-label">Starting Area</span>
+                            <span class="wb-table-label" data-i18n="world_builder.enemy.starting_area">Starting Area</span>
                             <label class="wb-table-slider">
                                 ${createDiscreteSlider('starting_area_size', 5, false)}
                             </label>
@@ -1114,27 +1114,27 @@
                         <div class="wb-enemy-row">
                             <label class="wb-placeholder-checkbox">
                                 <input type="checkbox" class="wb-table-checkbox" data-control="expansion_enabled" checked />
-                                <span>Enemy Expansion</span>
+                                <span data-i18n="world_builder.enemy.expansion">Enemy Expansion</span>
                             </label>
                         </div>
                         <div class="wb-enemy-slider-row">
-                            <span class="wb-table-label">Max Expansion Distance</span>
+                            <span class="wb-table-label" data-i18n="world_builder.enemy.max_expansion_distance">Max Expansion Distance</span>
                             ${createNumericSlider('expansion_max_distance', 2, 20, 1, 7)}
                         </div>
                         <div class="wb-enemy-slider-row">
-                            <span class="wb-table-label">Minimum Group Size</span>
+                            <span class="wb-table-label" data-i18n="world_builder.enemy.min_group_size">Minimum Group Size</span>
                             ${createNumericSlider('expansion_min_group_size', 1, 20, 1, 5)}
                         </div>
                         <div class="wb-enemy-slider-row">
-                            <span class="wb-table-label">Maximum Group Size</span>
+                            <span class="wb-table-label" data-i18n="world_builder.enemy.max_group_size">Maximum Group Size</span>
                             ${createNumericSlider('expansion_max_group_size', 1, 50, 1, 20)}
                         </div>
                         <div class="wb-enemy-slider-row">
-                            <span class="wb-table-label">Minimum Expansion Cooldown</span>
+                            <span class="wb-table-label" data-i18n="world_builder.enemy.min_cooldown">Minimum Expansion Cooldown</span>
                             ${createNumericSlider('expansion_min_cooldown', 1, 60, 1, 4, 'min')}
                         </div>
                         <div class="wb-enemy-slider-row">
-                            <span class="wb-table-label">Maximum Expansion Cooldown</span>
+                            <span class="wb-table-label" data-i18n="world_builder.enemy.max_cooldown">Maximum Expansion Cooldown</span>
                             ${createNumericSlider('expansion_max_cooldown', 5, 180, 1, 60, 'min')}
                         </div>
                     </div>
@@ -1143,19 +1143,19 @@
                         <div class="wb-enemy-row">
                             <label class="wb-placeholder-checkbox">
                                 <input type="checkbox" class="wb-table-checkbox" data-control="evolution_enabled" checked />
-                                <span>Evolution</span>
+                                <span data-i18n="world_builder.enemy.evolution">Evolution</span>
                             </label>
                         </div>
                         <div class="wb-enemy-slider-row">
-                            <span class="wb-table-label">Time Factor</span>
+                            <span class="wb-table-label" data-i18n="world_builder.enemy.time_factor">Time Factor</span>
                             ${createNumericSlider('evolution_time_factor', 0, 1000, 10, 40)}
                         </div>
                         <div class="wb-enemy-slider-row">
-                            <span class="wb-table-label">Destroy Factor</span>
+                            <span class="wb-table-label" data-i18n="world_builder.enemy.destroy_factor">Destroy Factor</span>
                             ${createNumericSlider('evolution_destroy_factor', 0, 1000, 10, 200)}
                         </div>
                         <div class="wb-enemy-slider-row">
-                            <span class="wb-table-label">Pollution Factor</span>
+                            <span class="wb-table-label" data-i18n="world_builder.enemy.pollution_factor">Pollution Factor</span>
                             ${createNumericSlider('evolution_pollution_factor', 0, 1000, 10, 9)}
                         </div>
                     </div>
@@ -1164,37 +1164,37 @@
 
             if (advancedPanel) {
                 const mapRows = [
-                    createAdvancedNumericRow('advanced_map_width', 'Width', 0, 1000000, 1, 0),
-                    createAdvancedNumericRow('advanced_map_height', 'Height', 0, 1000000, 1, 0)
+                    createAdvancedNumericRow('advanced_map_width', 'world_builder.advanced.map.width', 0, 1000000, 1, 0),
+                    createAdvancedNumericRow('advanced_map_height', 'world_builder.advanced.map.height', 0, 1000000, 1, 0)
                 ].join('');
                 const technologyRows = [
-                    createAdvancedNumericRow('advanced_technology_price_multiplier', 'Price Multiplier', 0, 100, 0.1, 1),
+                    createAdvancedNumericRow('advanced_technology_price_multiplier', 'world_builder.advanced.technology.price_multiplier', 0, 100, 0.1, 1),
                 ].join('');
                 const pollutionRows = [
-                    createAdvancedCheckboxRow('advanced_pollution_enabled', 'Pollution'),
-                    createAdvancedSliderRow('advanced_pollution_absorption_modifier', 'Absorption Modifier', 10, 400, 10, 100, '%'),
-                    createAdvancedSliderRow('advanced_pollution_attack_cost_modifier', 'Attack Cost Modifier', 10, 400, 10, 100, '%'),
-                    createAdvancedSliderRow('advanced_pollution_min_damage_trees', 'Minimum Damage Trees', 0, 9999, 1, 60),
-                    createAdvancedSliderRow('advanced_pollution_absorbed_per_damaged_tree', 'Absorbed Per Damaged Tree', 0, 9999, 1, 10),
-                    createAdvancedSliderRow('advanced_pollution_diffusion_ratio', 'Diffusion Ratio', 0, 25, 1, 2, '%')
+                    createAdvancedCheckboxRow('advanced_pollution_enabled', 'world_builder.advanced.pollution'),
+                    createAdvancedSliderRow('advanced_pollution_absorption_modifier', 'world_builder.advanced.pollution.absorption_modifier', 10, 400, 10, 100, '%'),
+                    createAdvancedSliderRow('advanced_pollution_attack_cost_modifier', 'world_builder.advanced.pollution.attack_cost_modifier', 10, 400, 10, 100, '%'),
+                    createAdvancedSliderRow('advanced_pollution_min_damage_trees', 'world_builder.advanced.pollution.minimum_damage_trees', 0, 9999, 1, 60),
+                    createAdvancedSliderRow('advanced_pollution_absorbed_per_damaged_tree', 'world_builder.advanced.pollution.absorbed_per_damaged_tree', 0, 9999, 1, 10),
+                    createAdvancedSliderRow('advanced_pollution_diffusion_ratio', 'world_builder.advanced.pollution.diffusion_ratio', 0, 25, 1, 2, '%')
                 ].join('');
                 const asteroidsRows = [
-                    createAdvancedSliderRow('advanced_asteroids_spawning_rate', 'Generation Rate', 10, 400, 10, 100, '%'),
+                    createAdvancedSliderRow('advanced_asteroids_spawning_rate', 'world_builder.advanced.asteroids.generation_rate', 10, 400, 10, 100, '%'),
                 ].join('');
                 const decayRows = [
-                    createAdvancedSliderRow('advanced_decay_rate', 'Decay Rate', 10, 1000, 10, 100, '%')
+                    createAdvancedSliderRow('advanced_decay_rate', 'world_builder.advanced.decay.rate', 10, 1000, 10, 100, '%')
                 ].join('');
 
                 advancedPanel.innerHTML = [
-                    createSection('Map', mapRows),
+                    createSection('world_builder.advanced.map', mapRows),
                     createTerrainDivider(),
-                    createSection('Technology', technologyRows),
+                    createSection('world_builder.advanced.technology', technologyRows),
                     createTerrainDivider(),
-                    createSection('Pollution', pollutionRows),
+                    createSection('world_builder.advanced.pollution', pollutionRows),
                     createTerrainDivider(),
-                    createSection('Asteroids', asteroidsRows),
+                    createSection('world_builder.advanced.asteroids', asteroidsRows),
                     createTerrainDivider(),
-                    createSection('Deterioration', decayRows)
+                    createSection('world_builder.advanced.decay', decayRows)
                 ].join('');
             }
         }
