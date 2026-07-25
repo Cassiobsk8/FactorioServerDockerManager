@@ -348,6 +348,8 @@
   "world_builder.resource.header.frequency": "Frecuencia",
   "world_builder.resource.header.size": "Tamaño",
   "world_builder.resource.header.richness": "Riqueza",
+  "world_builder.enemy.header.frequency": "Frecuencia",
+  "world_builder.enemy.header.size": "Tamaño",
   "world_builder.terrain.map_type": "Tipo de mapa",
   "world_builder.terrain.water": "Agua",
   "world_builder.terrain.trees": "Árboles",

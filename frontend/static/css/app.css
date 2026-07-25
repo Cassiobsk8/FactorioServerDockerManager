@@ -2901,33 +2901,30 @@ pre {
     gap: var(--spacing-md);
     align-items: center;
     padding: var(--spacing-sm) 0;
-    border-bottom: 1px solid rgba(148, 163, 184, 0.08);
 }
 
-.wb-enemy-row:last-child {
-    border-bottom: none;
+.wb-enemy-group:first-child .wb-table-header {
+    grid-template-columns: 1.5fr 1fr 1fr;
+}
+
+.wb-enemy-group:first-child .wb-table-header span:not(.wb-table-checkbox-header) {
+    text-align: center;
 }
 
 .wb-enemy-slider-row {
-    display: flex;
-    align-items: center;
+    display: grid;
+    grid-template-columns: minmax(180px, 220px) 1fr;
     gap: var(--spacing-md);
+    align-items: center;
     padding: var(--spacing-xs) 0;
-    border-bottom: 1px solid rgba(148, 163, 184, 0.08);
-}
-
-.wb-enemy-slider-row:last-child {
-    border-bottom: none;
 }
 
 .wb-enemy-slider-row .wb-table-label {
-    min-width: 180px;
-    max-width: 220px;
-    flex-shrink: 0;
+    min-width: 0;
 }
 
+.wb-enemy-slider-row .wb-table-slider,
 .wb-enemy-slider-row .wb-numeric-slider {
-    flex: 1;
     min-width: 0;
 }
 
@@ -2947,8 +2944,8 @@ pre {
 }
 
 .wb-numeric-slider-value {
-    width: 72px;
-    padding: var(--font-sm) var(--spacing-md);
+    width: 56px;
+    padding: 0.4rem var(--spacing-md);
     border-radius: var(--radius-md);
     border: 1px solid rgba(148, 163, 184, 0.18);
     background: rgba(255, 255, 255, 0.04);

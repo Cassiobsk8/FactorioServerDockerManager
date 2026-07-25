@@ -15,6 +15,8 @@
             resourceFields: [],
             terrainFeatureFields: [],
             resourcePreviousValues: {},
+            enemyBasesPreviousValues: {},
+            glebaEnemyBasesPreviousValues: {},
             ui: {
                 factorioValid: true,
             },
@@ -561,10 +563,11 @@
             </div>`;
         }
 
-        function createNumericSlider(name, min, max, step) {
+        function createNumericSlider(name, min, max, step, defaultValue) {
+            const value = defaultValue != null ? defaultValue : min;
             return `<div class="wb-numeric-slider">
-                <input type="range" class="wb-numeric-slider-input" data-control="${name}" min="${min}" max="${max}" step="${step}" value="${min}" />
-                <input type="number" class="wb-numeric-slider-value" data-control="${name}" min="${min}" max="${max}" step="${step}" value="${min}" />
+                <input type="range" class="wb-numeric-slider-input" data-control="${name}" min="${min}" max="${max}" step="${step}" value="${value}" />
+                <input type="number" class="wb-numeric-slider-value" data-control="${name}" min="${min}" max="${max}" step="${step}" value="${value}" />
             </div>`;
         }
 
@@ -987,6 +990,11 @@
             if (enemyPanel) {
                 enemyPanel.innerHTML = `<div class="wb-enemy-table-wrapper">
                     <div class="wb-enemy-group">
+                        <div class="wb-table-header">
+                            <span class="wb-table-checkbox-header"></span>
+                            <span data-i18n="world_builder.enemy.header.frequency">Frequency</span>
+                            <span data-i18n="world_builder.enemy.header.size">Size</span>
+                        </div>
                         <div class="wb-enemy-row">
                             <label class="wb-placeholder-checkbox">
                                 <input type="checkbox" class="wb-table-checkbox" data-control="enemy_bases_enabled" checked />
@@ -1052,23 +1060,23 @@
                         </div>
                         <div class="wb-enemy-slider-row">
                             <span class="wb-table-label">Max Expansion Distance</span>
-                            ${createNumericSlider('expansion_max_distance', 2, 20, 1)}
+                            ${createNumericSlider('expansion_max_distance', 2, 20, 1, 7)}
                         </div>
                         <div class="wb-enemy-slider-row">
                             <span class="wb-table-label">Minimum Group Size</span>
-                            ${createNumericSlider('expansion_min_group_size', 1, 20, 1)}
+                            ${createNumericSlider('expansion_min_group_size', 1, 20, 1, 5)}
                         </div>
                         <div class="wb-enemy-slider-row">
                             <span class="wb-table-label">Maximum Group Size</span>
-                            ${createNumericSlider('expansion_max_group_size', 1, 50, 1)}
+                            ${createNumericSlider('expansion_max_group_size', 1, 50, 1, 20)}
                         </div>
                         <div class="wb-enemy-slider-row">
                             <span class="wb-table-label">Minimum Expansion Cooldown</span>
-                            ${createNumericSlider('expansion_min_cooldown', 1, 60, 1)}
+                            ${createNumericSlider('expansion_min_cooldown', 1, 60, 1, 4)}
                         </div>
                         <div class="wb-enemy-slider-row">
                             <span class="wb-table-label">Maximum Expansion Cooldown</span>
-                            ${createNumericSlider('expansion_max_cooldown', 5, 180, 1)}
+                            ${createNumericSlider('expansion_max_cooldown', 5, 180, 1, 60)}
                         </div>
                     </div>
                     ${createTerrainDivider()}
@@ -1081,15 +1089,15 @@
                         </div>
                         <div class="wb-enemy-slider-row">
                             <span class="wb-table-label">Time Factor</span>
-                            ${createNumericSlider('evolution_time_factor', 0, 1000, 10)}
+                            ${createNumericSlider('evolution_time_factor', 0, 1000, 10, 40)}
                         </div>
                         <div class="wb-enemy-slider-row">
                             <span class="wb-table-label">Destroy Factor</span>
-                            ${createNumericSlider('evolution_destroy_factor', 0, 1000, 10)}
+                            ${createNumericSlider('evolution_destroy_factor', 0, 1000, 10, 200)}
                         </div>
                         <div class="wb-enemy-slider-row">
                             <span class="wb-table-label">Pollution Factor</span>
-                            ${createNumericSlider('evolution_pollution_factor', 0, 1000, 10)}
+                            ${createNumericSlider('evolution_pollution_factor', 0, 1000, 10, 9)}
                         </div>
                     </div>
                 </div>`;
@@ -1149,6 +1157,7 @@
             const numberInput = input.parentElement.querySelector(`.wb-numeric-slider-value[data-control="${control}"]`);
             if (numberInput) numberInput.value = value;
             syncNumericSliderPair(control, value);
+            updateEnemyNumericModel(control, value);
             markPreviewOutdated();
         }
 
@@ -1170,6 +1179,7 @@
                 input.value = value;
             }
             syncNumericSliderPair(control, value);
+            updateEnemyNumericModel(control, value);
             markPreviewOutdated();
         }
 
@@ -1210,6 +1220,231 @@
                 pairInput.value = newPairValue;
                 if (pairNumberInput) pairNumberInput.value = newPairValue;
             }
+            if (newPairValue !== pairValue) {
+                pairInput.value = newPairValue;
+                if (pairNumberInput) pairNumberInput.value = newPairValue;
+            }
+        }
+
+        function updateMapGenSetting(key, value) {
+            if (!wbState.worldConfig.settings) {
+                wbState.worldConfig.settings = {};
+            }
+            wbState.worldConfig.settings[key] = value;
+            markPreviewOutdated();
+        }
+
+        function updateMapSetting(path, value) {
+            if (!wbState.worldConfig.map_settings) {
+                wbState.worldConfig.map_settings = {};
+            }
+            const parts = path.split('.');
+            let obj = wbState.worldConfig.map_settings;
+            for (let i = 0; i < parts.length - 1; i++) {
+                if (!obj[parts[i]]) {
+                    obj[parts[i]] = {};
+                }
+                obj = obj[parts[i]];
+            }
+            obj[parts[parts.length - 1]] = value;
+            markPreviewOutdated();
+        }
+
+        function ensureAutoplaceControl(controlId) {
+            if (!wbState.worldConfig.settings) {
+                wbState.worldConfig.settings = {};
+            }
+            if (!wbState.worldConfig.settings.autoplace_controls) {
+                wbState.worldConfig.settings.autoplace_controls = {};
+            }
+            if (!wbState.worldConfig.settings.autoplace_controls[controlId]) {
+                wbState.worldConfig.settings.autoplace_controls[controlId] = { frequency: 1, size: 1, richness: 1 };
+            }
+            return wbState.worldConfig.settings.autoplace_controls[controlId];
+        }
+
+        function updateEnemyNumericModel(control, value) {
+            const expansionMap = {
+                'expansion_max_distance': 'enemy_expansion.max_expansion_distance',
+                'expansion_min_group_size': 'enemy_expansion.settler_group_min_size',
+                'expansion_max_group_size': 'enemy_expansion.settler_group_max_size',
+                'expansion_min_cooldown': 'enemy_expansion.min_expansion_cooldown',
+                'expansion_max_cooldown': 'enemy_expansion.max_expansion_cooldown'
+            };
+            const evolutionMap = {
+                'evolution_time_factor': 'enemy_evolution.time_factor',
+                'evolution_destroy_factor': 'enemy_evolution.destroy_factor',
+                'evolution_pollution_factor': 'enemy_evolution.pollution_factor'
+            };
+            const path = expansionMap[control] || evolutionMap[control];
+            if (!path) return;
+            updateMapSetting(path, value);
+        }
+
+        function initEnemyTabControls() {
+            const enemyBasesCheckbox = document.querySelector('[data-control="enemy_bases_enabled"]');
+            if (enemyBasesCheckbox) {
+                enemyBasesCheckbox.addEventListener('change', handleEnemyBasesToggle);
+                handleEnemyBasesToggle();
+            }
+
+            const enemyBasesFrequency = document.querySelector('.wb-table-discrete-input[data-control="enemy_bases_frequency"]');
+            const enemyBasesSize = document.querySelector('.wb-table-discrete-input[data-control="enemy_bases_size"]');
+            if (enemyBasesFrequency) {
+                enemyBasesFrequency.addEventListener('input', handleEnemyBaseSliderChange);
+                enemyBasesFrequency.addEventListener('change', handleEnemyBaseSliderChange);
+            }
+            if (enemyBasesSize) {
+                enemyBasesSize.addEventListener('input', handleEnemyBaseSliderChange);
+                enemyBasesSize.addEventListener('change', handleEnemyBaseSliderChange);
+            }
+
+            const glebaEnemyBasesCheckbox = document.querySelector('[data-control="gleba_enemy_bases_enabled"]');
+            if (glebaEnemyBasesCheckbox) {
+                glebaEnemyBasesCheckbox.addEventListener('change', handleGlebaEnemyBasesToggle);
+                handleGlebaEnemyBasesToggle();
+            }
+
+            const glebaFrequency = document.querySelector('.wb-table-discrete-input[data-control="gleba_enemy_bases_frequency"]');
+            const glebaSize = document.querySelector('.wb-table-discrete-input[data-control="gleba_enemy_bases_size"]');
+            if (glebaFrequency) {
+                glebaFrequency.addEventListener('input', handleGlebaEnemyBaseSliderChange);
+                glebaFrequency.addEventListener('change', handleGlebaEnemyBaseSliderChange);
+            }
+            if (glebaSize) {
+                glebaSize.addEventListener('input', handleGlebaEnemyBaseSliderChange);
+                glebaSize.addEventListener('change', handleGlebaEnemyBaseSliderChange);
+            }
+
+            const noEnemies = document.querySelector('[data-control="no_enemies"]');
+            if (noEnemies) {
+                noEnemies.addEventListener('change', (e) => {
+                    updateMapGenSetting('no_enemies_mode', e.target.checked);
+                });
+            }
+
+            const peacefulMode = document.querySelector('[data-control="peaceful_mode"]');
+            if (peacefulMode) {
+                peacefulMode.addEventListener('change', (e) => {
+                    updateMapGenSetting('peaceful_mode', e.target.checked);
+                });
+            }
+
+            const expansionEnabled = document.querySelector('[data-control="expansion_enabled"]');
+            if (expansionEnabled) {
+                expansionEnabled.addEventListener('change', (e) => {
+                    updateMapSetting('enemy_expansion.enabled', e.target.checked);
+                });
+            }
+
+            const evolutionEnabled = document.querySelector('[data-control="evolution_enabled"]');
+            if (evolutionEnabled) {
+                evolutionEnabled.addEventListener('change', (e) => {
+                    updateMapSetting('enemy_evolution.enabled', e.target.checked);
+                });
+            }
+
+            const startingArea = document.querySelector('.wb-table-discrete-input[data-control="starting_area_size"]');
+            if (startingArea) {
+                startingArea.addEventListener('input', handleStartingAreaChange);
+                startingArea.addEventListener('change', handleStartingAreaChange);
+            }
+        }
+
+        function handleEnemyBasesToggle() {
+            const checkbox = document.querySelector('[data-control="enemy_bases_enabled"]');
+            if (!checkbox) return;
+            const enabled = checkbox.checked;
+            const control = ensureAutoplaceControl('enemy-base');
+
+            if (enabled) {
+                const prev = wbState.enemyBasesPreviousValues || { frequency: 1, size: 1, richness: 1 };
+                control.frequency = prev.frequency != null ? prev.frequency : 1;
+                control.size = prev.size != null ? prev.size : 1;
+                control.richness = prev.richness != null ? prev.richness : 1;
+            } else {
+                wbState.enemyBasesPreviousValues = { ...control };
+                control.size = 0;
+            }
+
+            document.querySelectorAll('.wb-table-discrete-input[data-control^="enemy_bases_"]').forEach(slider => {
+                slider.disabled = !enabled;
+                const ctrl = slider.dataset.control;
+                const field = ctrl.replace('enemy_bases_', '');
+                const val = control[field] != null ? control[field] : 1;
+                slider.value = factorioValueToIndex(val);
+                const span = slider.parentElement.querySelector(`.wb-table-value[data-control="${ctrl}"]`);
+                if (span) span.textContent = factorioIndexToLabel(factorioValueToIndex(val));
+            });
+        }
+
+        function handleGlebaEnemyBasesToggle() {
+            const checkbox = document.querySelector('[data-control="gleba_enemy_bases_enabled"]');
+            if (!checkbox) return;
+            const enabled = checkbox.checked;
+            const control = ensureAutoplaceControl('gleba_enemy_base');
+
+            if (enabled) {
+                const prev = wbState.glebaEnemyBasesPreviousValues || { frequency: 1, size: 1, richness: 1 };
+                control.frequency = prev.frequency != null ? prev.frequency : 1;
+                control.size = prev.size != null ? prev.size : 1;
+                control.richness = prev.richness != null ? prev.richness : 1;
+            } else {
+                wbState.glebaEnemyBasesPreviousValues = { ...control };
+                control.size = 0;
+            }
+
+            document.querySelectorAll('.wb-table-discrete-input[data-control^="gleba_enemy_bases_"]').forEach(slider => {
+                slider.disabled = !enabled;
+                const ctrl = slider.dataset.control;
+                const field = ctrl.replace('gleba_enemy_bases_', '');
+                const val = control[field] != null ? control[field] : 1;
+                slider.value = factorioValueToIndex(val);
+                const span = slider.parentElement.querySelector(`.wb-table-value[data-control="${ctrl}"]`);
+                if (span) span.textContent = factorioIndexToLabel(factorioValueToIndex(val));
+            });
+        }
+
+        function handleEnemyBaseSliderChange(e) {
+            const input = e.target;
+            const control = input.dataset.control;
+            const field = control.replace('enemy_bases_', '');
+            const index = parseInt(input.value, 10);
+            const value = factorioIndexToValue(index);
+
+            const span = input.parentElement.querySelector(`.wb-table-value[data-control="${control}"]`);
+            if (span) span.textContent = factorioIndexToLabel(index);
+
+            const autoplace = ensureAutoplaceControl('enemy-base');
+            autoplace[field] = value;
+            markPreviewOutdated();
+        }
+
+        function handleGlebaEnemyBaseSliderChange(e) {
+            const input = e.target;
+            const control = input.dataset.control;
+            const field = control.replace('gleba_enemy_bases_', '');
+            const index = parseInt(input.value, 10);
+            const value = factorioIndexToValue(index);
+
+            const span = input.parentElement.querySelector(`.wb-table-value[data-control="${control}"]`);
+            if (span) span.textContent = factorioIndexToLabel(index);
+
+            const autoplace = ensureAutoplaceControl('gleba_enemy_base');
+            autoplace[field] = value;
+            markPreviewOutdated();
+        }
+
+        function handleStartingAreaChange(e) {
+            const input = e.target;
+            const control = input.dataset.control;
+            const index = parseInt(input.value, 10);
+            const value = factorioIndexToValue(index);
+
+            const span = input.parentElement.querySelector(`.wb-table-value[data-control="${control}"]`);
+            if (span) span.textContent = factorioIndexToLabel(index);
+
+            updateMapGenSetting('starting_area', value);
         }
 
         function initNumericSliders() {
@@ -1252,6 +1487,7 @@
             initWbTabs();
             initNumericSliders();
             initEnemyTabToggles();
+            initEnemyTabControls();
 
             const worldNameInput = document.getElementById('wb-world-name');
             const seedInput = document.getElementById('wb-seed');

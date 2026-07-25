@@ -348,6 +348,8 @@
   "world_builder.resource.header.frequency": "频率",
   "world_builder.resource.header.size": "规模",
   "world_builder.resource.header.richness": "丰富度",
+  "world_builder.enemy.header.frequency": "频率",
+  "world_builder.enemy.header.size": "规模",
   "world_builder.terrain.map_type": "地图类型",
   "world_builder.terrain.water": "水",
   "world_builder.terrain.trees": "树木",
