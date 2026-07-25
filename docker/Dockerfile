@@ -12,7 +12,7 @@ COPY backend ./backend
 COPY frontend ./frontend
 COPY README.md ./README.md
 
-RUN mkdir -p /app/data /app/logs
+RUN mkdir -p /app/data /app/logs /app/factorio
 
 EXPOSE 5000
 EXPOSE 34197/udp

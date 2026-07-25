@@ -12,6 +12,7 @@ services:
     volumes:
       - factorio_data:/app/data
       - factorio_logs:/app/logs
+      - factorio_install:/app/factorio
     environment:
       - PYTHONUNBUFFERED=1
     restart: unless-stopped
@@ -19,3 +20,4 @@ services:
 volumes:
   factorio_data:
   factorio_logs:
+  factorio_install:

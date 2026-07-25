@@ -297,19 +297,16 @@ def _write_map_gen_settings(config: WorldConfig, directory: Path) -> Optional[Pa
             if isinstance(defaults, dict):
                 merged_values = {**defaults, **{k: v for k, v in values.items() if v is not None}}
                 autoplace_controls[control_id] = merged_values
-
-    if isinstance(merged.get("autoplace_controls"), dict):
-        for control_id, values in merged["autoplace_controls"].items():
-            if isinstance(values, dict) and control_id.endswith("_cliff") and "richness" in values:
-                cliff_settings = merged.setdefault("cliff_settings", {})
-                cliff_settings["richness"] = values["richness"]
-
-    if isinstance(merged.get("autoplace_controls"), dict):
-        merged["autoplace_controls"] = {
-            control_id: values
-            for control_id, values in merged["autoplace_controls"].items()
-            if not (isinstance(values, dict) and control_id.endswith("_cliff"))
-        }
+            else:
+                merged_values = {**values}
+                autoplace_controls[control_id] = merged_values
+        for control_id, values in autoplace_controls.items():
+            if not isinstance(values, dict):
+                autoplace_controls[control_id] = {"frequency": 1, "size": 1, "richness": 1}
+                continue
+            for key in ("frequency", "size", "richness"):
+                if key not in values:
+                    values[key] = 1
 
     if config.seed and not config.random_seed:
         merged["seed"] = int(config.seed)

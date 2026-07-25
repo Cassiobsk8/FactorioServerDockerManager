@@ -84,14 +84,7 @@
             return controls.every(control => values && [0, 'none'].includes(values[control]));
         }
 
-const TERRAIN_CONTROL_IDS = new Set([
-    'water', 'trees', 'rocks', 'starting_area_moisture',
-    'vulcanus_volcanism', 'gleba_water', 'gleba_plants', 'fulgora_islands',
-    'nauvis_cliff', 'gleba_cliff', 'fulgora_cliff',
-]);
-
         let worldBuilderInitialized = false;
-
         function generateRandomSeed() {
             return Math.floor(Math.random() * 1000000000);
         }
@@ -435,43 +428,36 @@ const TERRAIN_CONTROL_IDS = new Set([
             const enabled = input.checked;
             const sliders = row.querySelectorAll('.wb-table-discrete-input');
             const valueSpans = row.querySelectorAll('.wb-table-value');
-            const controls = Array.from(sliders).map(slider => slider.dataset.control);
-            const isTerrain = TERRAIN_CONTROL_IDS.has(resourceId);
-            const defaultValues = Object.fromEntries(controls.map(control => [control, 1]));
+            const defaultValues = {frequency: 1, size: 1, richness: 1};
 
             if (enabled) {
-                let prev = wbState.resourcePreviousValues[resourceId] || defaultValues;
-                if (isTerrain) {
-                    prev = Object.fromEntries(
-                        controls.map(control => [
-                            control,
-                            prev[control] != null && prev[control] !== 'none' ? prev[control] : defaultValues[control]
-                        ])
-                    );
-                }
+                const prev = wbState.resourcePreviousValues[resourceId] || defaultValues;
                 wbState.worldConfig.settings.autoplace_controls[resourceId] = { ...prev };
 
                 sliders.forEach(slider => {
                     slider.disabled = false;
                     const control = slider.dataset.control;
-                    const val = prev[control] != null ? prev[control] : 1;
+                    const val = prev[control] != null ? prev[control] : defaultValues[control];
                     slider.value = factorioValueToIndex(val);
                     const span = slider.parentElement.querySelector(`.wb-table-value[data-control="${control}"]`);
                     if (span) span.textContent = factorioIndexToLabel(factorioValueToIndex(val));
                 });
             } else {
                 const current = wbState.worldConfig.settings.autoplace_controls[resourceId] || defaultValues;
-                wbState.resourcePreviousValues[resourceId] = { ...current };
-
-                wbState.worldConfig.settings.autoplace_controls[resourceId] = Object.fromEntries(
-                    controls.map(control => [control, isTerrain ? 0 : 'none'])
-                );
+                wbState.resourcePreviousValues[resourceId] = JSON.parse(JSON.stringify({ ...current }));
+                wbState.worldConfig.settings.autoplace_controls[resourceId] = {
+                    frequency: current.frequency != null ? current.frequency : 1,
+                    size: 0,
+                    richness: current.richness != null ? current.richness : 1,
+                };
 
                 sliders.forEach(slider => {
                     slider.disabled = true;
-                });
-                valueSpans.forEach(span => {
-                    span.textContent = factorioIndexToLabel(factorioValueToIndex(0));
+                    const control = slider.dataset.control;
+                    const val = current[control] != null ? current[control] : defaultValues[control];
+                    slider.value = factorioValueToIndex(val);
+                    const span = slider.parentElement.querySelector(`.wb-table-value[data-control="${control}"]`);
+                    if (span) span.textContent = factorioIndexToLabel(factorioValueToIndex(val));
                 });
             }
 
@@ -797,25 +783,25 @@ const TERRAIN_CONTROL_IDS = new Set([
                     : {frequency: 1, size: 2, richness: 0};
                 const current = (wbState.worldConfig.settings && wbState.worldConfig.settings.autoplace_controls && wbState.worldConfig.settings.autoplace_controls[resourceId]) || controlDefaults;
                 const canBeDisabled = field.can_be_disabled !== false;
-                const isDisabled = canBeDisabled && isAutoplaceControlDisabled(current, ['frequency', 'richness']);
+                const isDisabled = canBeDisabled && isAutoplaceControlDisabled(current, ['frequency', 'size']);
                 const displayValues = (isDisabled && wbState.resourcePreviousValues[resourceId])
                     ? wbState.resourcePreviousValues[resourceId]
                     : current;
                 const effective = displayValues || controlDefaults;
                 const frequency = effective.frequency != null ? effective.frequency : controlDefaults.frequency;
-                const continuity = effective.richness != null ? effective.richness : controlDefaults.richness;
+                const continuity = ['nauvis_cliff', 'gleba_cliff', 'fulgora_cliff'].includes(resourceId) ? 1.0 : (effective.size != null ? effective.size : controlDefaults.size);
 
                 return `<div class="wb-table-row" data-resource="${resourceId}">
                     <label class="wb-terrain-name">
                         ${canBeDisabled ? `<input type="checkbox" class="wb-table-checkbox" data-control="enabled" ${isDisabled ? '' : 'checked'} />` : ''}
                         <span class="wb-table-label">${field.label || resourceId}</span>
                     </label>
-                    <span class="wb-terrain-planet" title="${planetDisplay.name}">${planetDisplay.icon}</span>
+                    <span class="wb-table-planet" title="${planetDisplay.name}">${planetDisplay.icon}</span>
                     <label class="wb-table-slider">
                         ${createDiscreteSlider('frequency', factorioValueToIndex(frequency), isDisabled)}
                     </label>
                     <label class="wb-table-slider">
-                        ${createDiscreteSlider('richness', factorioValueToIndex(continuity), isDisabled)}
+                        ${createDiscreteSlider('size', factorioValueToIndex(continuity), isDisabled)}
                     </label>
                 </div>`;
             }).join('');

@@ -915,8 +915,8 @@ def test_write_map_gen_settings_returns_defaults_when_empty(tmp_path):
     assert data["starting_area"] == 1
     assert data["peaceful_mode"] is False
     assert data["autoplace_controls"]["coal"] == {"frequency": 1, "size": 1, "richness": 1}
-    assert data["autoplace_controls"]["water"] == {"frequency": 1, "size": 1}
-    assert data["autoplace_controls"]["enemy-base"] == {"frequency": 1, "size": 1}
+    assert data["autoplace_controls"]["water"] == {"frequency": 1, "size": 1, "richness": 1}
+    assert data["autoplace_controls"]["enemy-base"] == {"frequency": 1, "size": 1, "richness": 1}
     assert data["cliff_settings"]["name"] == "cliff"
     assert data["property_expression_names"]["control:moisture:frequency"] == "1"
     assert data["starting_points"] == [{"x": 0, "y": 0}]
@@ -950,7 +950,7 @@ def test_write_map_gen_settings_with_autoplace_controls(tmp_path):
     assert data["autoplace_controls"]["coal"]["frequency"] == 2
     assert data["autoplace_controls"]["coal"]["size"] == 3
     assert data["autoplace_controls"]["coal"]["richness"] == 4
-    assert data["autoplace_controls"]["enemy-base"] == {"frequency": 1, "size": 1}
+    assert data["autoplace_controls"]["enemy-base"] == {"frequency": 1, "size": 1, "richness": 1}
     assert data["seed"] == 123
     assert "planet" not in data
 
@@ -974,29 +974,25 @@ def test_write_map_gen_settings_completes_partial_autoplace_controls(tmp_path):
 def test_write_map_gen_settings_keeps_water_inside_autoplace_controls(tmp_path):
     config = DummyWorldConfig(
         world_name="Test",
-        settings={"autoplace_controls": {"water": {"frequency": "none", "size": "none"}}},
+        settings={"autoplace_controls": {"water": {"frequency": 1, "size": 0, "richness": 1}}},
     )
 
     result = _write_map_gen_settings(config, tmp_path)
 
     data = json.loads(result.read_text(encoding="utf-8"))
-    assert data["autoplace_controls"]["water"] == {"frequency": "none", "size": "none"}
-    assert "water" not in data
-    assert "terrain_segmentation" not in data
+    assert data["autoplace_controls"]["water"] == {"frequency": 1, "size": 0, "richness": 1}
 
 
 def test_write_map_gen_settings_does_not_convert_water_sliders(tmp_path):
     config = DummyWorldConfig(
         world_name="Test",
-        settings={"autoplace_controls": {"water": {"frequency": 2, "size": 3}}},
+        settings={"autoplace_controls": {"water": {"frequency": 2, "size": 3, "richness": 4}}},
     )
 
     result = _write_map_gen_settings(config, tmp_path)
 
     data = json.loads(result.read_text(encoding="utf-8"))
-    assert data["autoplace_controls"]["water"] == {"frequency": 2, "size": 3}
-    assert "water" not in data
-    assert "terrain_segmentation" not in data
+    assert data["autoplace_controls"]["water"] == {"frequency": 2, "size": 3, "richness": 4}
 
 
 def test_write_map_gen_settings_supports_extra_official_fields(tmp_path):
@@ -1042,38 +1038,6 @@ def test_write_map_gen_settings_deep_merges_nested_objects(tmp_path):
     assert data["property_expression_names"]["control:moisture:frequency"] == "2"
 
 
-def test_write_map_gen_settings_maps_cliff_continuity_to_cliff_settings(tmp_path):
-    config = DummyWorldConfig(
-        world_name="Test",
-        settings={"autoplace_controls": {"nauvis_cliff": {"frequency": 1, "size": 2, "richness": 3}}},
-    )
-    result = _write_map_gen_settings(config, tmp_path)
-
-    data = json.loads(result.read_text(encoding="utf-8"))
-    assert "nauvis_cliff" not in data["autoplace_controls"]
-    assert data["cliff_settings"]["richness"] == 3
-
-
-def test_write_map_gen_settings_maps_all_cliff_types_continuity(tmp_path):
-    config = DummyWorldConfig(
-        world_name="Test",
-        settings={
-            "autoplace_controls": {
-                "nauvis_cliff": {"richness": 2},
-                "gleba_cliff": {"richness": 4},
-                "fulgora_cliff": {"richness": 6},
-            }
-        },
-    )
-    result = _write_map_gen_settings(config, tmp_path)
-
-    data = json.loads(result.read_text(encoding="utf-8"))
-    assert "nauvis_cliff" not in data["autoplace_controls"]
-    assert "gleba_cliff" not in data["autoplace_controls"]
-    assert "fulgora_cliff" not in data["autoplace_controls"]
-    assert data["cliff_settings"]["richness"] == 6
-
-
 def test_write_map_gen_settings_does_not_affect_non_cliff_controls(tmp_path):
     config = DummyWorldConfig(
         world_name="Test",
@@ -1084,21 +1048,31 @@ def test_write_map_gen_settings_does_not_affect_non_cliff_controls(tmp_path):
     data = json.loads(result.read_text(encoding="utf-8"))
     assert data["autoplace_controls"]["coal"]["richness"] == 5
     assert data["autoplace_controls"]["iron-ore"]["frequency"] == 2
-    assert data["cliff_settings"]["richness"] == 1
 
 
-def test_write_map_gen_settings_removes_cliff_controls_from_autoplace(tmp_path):
+def test_write_map_gen_settings_keeps_cliff_controls_in_autoplace(tmp_path):
     config = DummyWorldConfig(
         world_name="Test",
-        settings={"autoplace_controls": {"nauvis_cliff": {"frequency": 1, "size": 2, "richness": 3}}},
+        settings={"autoplace_controls": {"nauvis_cliff": {"frequency": 1, "size": 0, "richness": 3}}},
     )
     result = _write_map_gen_settings(config, tmp_path)
 
     data = json.loads(result.read_text(encoding="utf-8"))
-    assert "nauvis_cliff" not in data.get("autoplace_controls", {})
-    assert "gleba_cliff" not in data.get("autoplace_controls", {})
-    assert "fulgora_cliff" not in data.get("autoplace_controls", {})
-    assert data["cliff_settings"]["richness"] == 3
+    assert data["autoplace_controls"]["nauvis_cliff"] == {"frequency": 1, "size": 0, "richness": 3}
+    assert data["cliff_settings"]["richness"] == 1
+
+
+def test_write_map_gen_settings_cliff_size_zero_disables_cliffs(tmp_path):
+    config = DummyWorldConfig(
+        world_name="Test",
+        settings={"autoplace_controls": {"nauvis_cliff": {"frequency": 2, "size": 0, "richness": 3}}},
+    )
+    result = _write_map_gen_settings(config, tmp_path)
+
+    data = json.loads(result.read_text(encoding="utf-8"))
+    assert data["autoplace_controls"]["nauvis_cliff"]["size"] == 0
+    assert data["autoplace_controls"]["nauvis_cliff"]["frequency"] == 2
+    assert data["autoplace_controls"]["nauvis_cliff"]["richness"] == 3
 
 
 def test_write_map_settings_creates_file(tmp_path):
@@ -1248,31 +1222,7 @@ def test_run_factorio_captures_execution_details(tmp_path):
     assert len(exec_info["command"]) == 1
 
 
-def test_run_factorio_logs_cliff_continuity(tmp_path, capsys):
-    factorio_bin = tmp_path / "factorio" / "bin" / "x64" / "factorio"
-    factorio_bin.parent.mkdir(parents=True, exist_ok=True)
-    factorio_bin.write_text("#!/bin/sh\necho ok\n", encoding="utf-8")
-    factorio_bin.chmod(0o755)
 
-    map_settings = tmp_path / "map-settings.json"
-    map_settings.write_text(json.dumps({"cliff_settings": {"richness": 7}}, indent=2), encoding="utf-8")
-
-    _run_factorio([str(factorio_bin)], tmp_path)
-
-    captured = capsys.readouterr()
-    assert "CLIFF_CONTINUITY=7" in captured.out
-
-
-def test_run_factorio_skips_cliff_log_when_missing(tmp_path, capsys):
-    factorio_bin = tmp_path / "factorio" / "bin" / "x64" / "factorio"
-    factorio_bin.parent.mkdir(parents=True, exist_ok=True)
-    factorio_bin.write_text("#!/bin/sh\necho ok\n", encoding="utf-8")
-    factorio_bin.chmod(0o755)
-
-    _run_factorio([str(factorio_bin)], tmp_path)
-
-    captured = capsys.readouterr()
-    assert "CLIFF_CONTINUITY" not in captured.out
 
 
 def test_clear_preview_cache_removes_files(tmp_path, monkeypatch):
@@ -1443,3 +1393,238 @@ def test_move_generated_file_failure_during_move(tmp_path, monkeypatch):
 
     with pytest.raises(PermissionError, match="Permission denied"):
         _move_generated_file(src, dst)
+
+
+def test_write_map_gen_settings_water_always_has_richness(tmp_path):
+    config = DummyWorldConfig(
+        world_name="Test",
+        settings={"autoplace_controls": {"water": {"frequency": 2, "size": 3}}},
+    )
+    result = _write_map_gen_settings(config, tmp_path)
+    data = json.loads(result.read_text(encoding="utf-8"))
+    assert data["autoplace_controls"]["water"] == {"frequency": 2, "size": 3, "richness": 1}
+
+
+def test_write_map_gen_settings_trees_always_has_richness(tmp_path):
+    config = DummyWorldConfig(
+        world_name="Test",
+        settings={"autoplace_controls": {"trees": {"frequency": 2, "size": 3}}},
+    )
+    result = _write_map_gen_settings(config, tmp_path)
+    data = json.loads(result.read_text(encoding="utf-8"))
+    assert data["autoplace_controls"]["trees"] == {"frequency": 2, "size": 3, "richness": 1}
+
+
+def test_write_map_gen_settings_rocks_always_has_richness(tmp_path):
+    config = DummyWorldConfig(
+        world_name="Test",
+        settings={"autoplace_controls": {"rocks": {"frequency": 2, "size": 3}}},
+    )
+    result = _write_map_gen_settings(config, tmp_path)
+    data = json.loads(result.read_text(encoding="utf-8"))
+    assert data["autoplace_controls"]["rocks"] == {"frequency": 2, "size": 3, "richness": 1}
+
+
+def test_write_map_gen_settings_starting_area_moisture_always_has_richness(tmp_path):
+    config = DummyWorldConfig(
+        world_name="Test",
+        settings={"autoplace_controls": {"starting_area_moisture": {"frequency": 2, "size": 3}}},
+    )
+    result = _write_map_gen_settings(config, tmp_path)
+    data = json.loads(result.read_text(encoding="utf-8"))
+    assert data["autoplace_controls"]["starting_area_moisture"] == {"frequency": 2, "size": 3, "richness": 1}
+
+
+def test_write_map_gen_settings_disabling_preserves_frequency_and_richness(tmp_path):
+    config = DummyWorldConfig(
+        world_name="Test",
+        settings={"autoplace_controls": {"coal": {"frequency": 3, "size": 2, "richness": 4}}},
+    )
+
+    config.settings["autoplace_controls"]["coal"]["size"] = 0
+    result = _write_map_gen_settings(config, tmp_path)
+    data = json.loads(result.read_text(encoding="utf-8"))
+    assert data["autoplace_controls"]["coal"]["size"] == 0
+    assert data["autoplace_controls"]["coal"]["frequency"] == 3
+    assert data["autoplace_controls"]["coal"]["richness"] == 4
+
+
+def test_write_map_gen_settings_cliff_size_zero_disables_cliffs(tmp_path):
+    config = DummyWorldConfig(
+        world_name="Test",
+        settings={"autoplace_controls": {"nauvis_cliff": {"frequency": 2, "size": 0, "richness": 3}}},
+    )
+    result = _write_map_gen_settings(config, tmp_path)
+    data = json.loads(result.read_text(encoding="utf-8"))
+    assert data["autoplace_controls"]["nauvis_cliff"]["size"] == 0
+    assert data["autoplace_controls"]["nauvis_cliff"]["frequency"] == 2
+    assert data["autoplace_controls"]["nauvis_cliff"]["richness"] == 3
+
+
+def test_write_map_gen_settings_cliff_settings_not_modified_by_cliff_controls(tmp_path):
+    config = DummyWorldConfig(
+        world_name="Test",
+        settings={
+            "autoplace_controls": {"nauvis_cliff": {"frequency": 1, "size": 0, "richness": 3}},
+            "cliff_settings": {"richness": 5},
+        },
+    )
+    result = _write_map_gen_settings(config, tmp_path)
+    data = json.loads(result.read_text(encoding="utf-8"))
+    assert data["autoplace_controls"]["nauvis_cliff"]["frequency"] == 1
+    assert data["autoplace_controls"]["nauvis_cliff"]["size"] == 0
+    assert data["autoplace_controls"]["nauvis_cliff"]["richness"] == 3
+    assert data["cliff_settings"]["richness"] == 5
+
+
+def test_write_map_gen_settings_all_resources_have_all_three_keys(tmp_path):
+    config = DummyWorldConfig(
+        world_name="Test",
+        settings={
+            "autoplace_controls": {
+                "coal": {"frequency": 1, "size": 1, "richness": 1},
+                "iron-ore": {"frequency": 1, "size": 1, "richness": 1},
+                "copper-ore": {"frequency": 1, "size": 1, "richness": 1},
+                "stone": {"frequency": 1, "size": 1, "richness": 1},
+                "uranium-ore": {"frequency": 1, "size": 1, "richness": 1},
+                "crude-oil": {"frequency": 1, "size": 1, "richness": 1},
+            }
+        },
+    )
+    result = _write_map_gen_settings(config, tmp_path)
+    data = json.loads(result.read_text(encoding="utf-8"))
+    for resource in ["coal", "iron-ore", "copper-ore", "stone", "uranium-ore", "crude-oil"]:
+        assert set(data["autoplace_controls"][resource].keys()) == {"frequency", "size", "richness"}
+
+
+def test_write_map_gen_settings_water_has_all_three_keys(tmp_path):
+    config = DummyWorldConfig(
+        world_name="Test",
+        settings={"autoplace_controls": {"water": {"frequency": 1, "size": 1, "richness": 1}}},
+    )
+    result = _write_map_gen_settings(config, tmp_path)
+    data = json.loads(result.read_text(encoding="utf-8"))
+    assert set(data["autoplace_controls"]["water"].keys()) == {"frequency", "size", "richness"}
+
+
+def test_write_map_gen_settings_trees_has_all_three_keys(tmp_path):
+    config = DummyWorldConfig(
+        world_name="Test",
+        settings={"autoplace_controls": {"trees": {"frequency": 1, "size": 1, "richness": 1}}},
+    )
+    result = _write_map_gen_settings(config, tmp_path)
+    data = json.loads(result.read_text(encoding="utf-8"))
+    assert set(data["autoplace_controls"]["trees"].keys()) == {"frequency", "size", "richness"}
+
+
+def test_write_map_gen_settings_rocks_has_all_three_keys(tmp_path):
+    config = DummyWorldConfig(
+        world_name="Test",
+        settings={"autoplace_controls": {"rocks": {"frequency": 1, "size": 1, "richness": 1}}},
+    )
+    result = _write_map_gen_settings(config, tmp_path)
+    data = json.loads(result.read_text(encoding="utf-8"))
+    assert set(data["autoplace_controls"]["rocks"].keys()) == {"frequency", "size", "richness"}
+
+
+def test_write_map_gen_settings_starting_area_moisture_has_all_three_keys(tmp_path):
+    config = DummyWorldConfig(
+        world_name="Test",
+        settings={"autoplace_controls": {"starting_area_moisture": {"frequency": 1, "size": 1, "richness": 1}}},
+    )
+    result = _write_map_gen_settings(config, tmp_path)
+    data = json.loads(result.read_text(encoding="utf-8"))
+    assert set(data["autoplace_controls"]["starting_area_moisture"].keys()) == {"frequency", "size", "richness"}
+
+
+def test_write_map_gen_settings_all_controls_have_all_three_keys(tmp_path):
+    config = DummyWorldConfig(
+        world_name="Test",
+        settings={
+            "autoplace_controls": {
+                "water": {"frequency": 1, "size": 1, "richness": 1},
+                "trees": {"frequency": 1, "size": 1, "richness": 1},
+                "rocks": {"frequency": 1, "size": 1, "richness": 1},
+                "starting_area_moisture": {"frequency": 1, "size": 1, "richness": 1},
+                "nauvis_cliff": {"frequency": 1, "size": 2, "richness": 1},
+                "gleba_cliff": {"frequency": 1, "size": 2, "richness": 1},
+                "fulgora_cliff": {"frequency": 1, "size": 2, "richness": 1},
+            }
+        },
+    )
+    result = _write_map_gen_settings(config, tmp_path)
+    data = json.loads(result.read_text(encoding="utf-8"))
+    for control_id, expected in config.settings["autoplace_controls"].items():
+        assert data["autoplace_controls"][control_id] == expected
+
+
+def test_write_map_gen_settings_independence_between_controls(tmp_path):
+    config = DummyWorldConfig(
+        world_name="Test",
+        settings={
+            "autoplace_controls": {
+                "coal": {"frequency": 2, "size": 3, "richness": 4},
+                "iron-ore": {"frequency": 5, "size": 6, "richness": 7},
+                "water": {"frequency": 8, "size": 0, "richness": 9},
+            }
+        },
+    )
+    result = _write_map_gen_settings(config, tmp_path)
+    data = json.loads(result.read_text(encoding="utf-8"))
+    assert data["autoplace_controls"]["coal"] == {"frequency": 2, "size": 3, "richness": 4}
+    assert data["autoplace_controls"]["iron-ore"] == {"frequency": 5, "size": 6, "richness": 7}
+    assert data["autoplace_controls"]["water"] == {"frequency": 8, "size": 0, "richness": 9}
+
+
+def test_write_map_gen_settings_preserves_user_values_when_disabling(tmp_path):
+    config = DummyWorldConfig(
+        world_name="Test",
+        settings={
+            "autoplace_controls": {
+                "coal": {"frequency": 3, "size": 2, "richness": 5},
+            }
+        },
+    )
+    config.settings["autoplace_controls"]["coal"]["size"] = 0
+    result = _write_map_gen_settings(config, tmp_path)
+    data = json.loads(result.read_text(encoding="utf-8"))
+    assert data["autoplace_controls"]["coal"] == {"frequency": 3, "size": 0, "richness": 5}
+
+
+def test_write_map_gen_settings_preserves_user_values_when_reenabling(tmp_path):
+    config = DummyWorldConfig(
+        world_name="Test",
+        settings={
+            "autoplace_controls": {
+                "coal": {"frequency": 4, "size": 0, "richness": 6},
+            }
+        },
+    )
+    config.settings["autoplace_controls"]["coal"]["size"] = 2
+    result = _write_map_gen_settings(config, tmp_path)
+    data = json.loads(result.read_text(encoding="utf-8"))
+    assert data["autoplace_controls"]["coal"] == {"frequency": 4, "size": 2, "richness": 6}
+
+
+def test_write_map_gen_settings_all_resources_disabled(tmp_path):
+    config = DummyWorldConfig(
+        world_name="Test",
+        settings={
+            "autoplace_controls": {
+                "coal": {"frequency": 2, "size": 0, "richness": 3},
+                "iron-ore": {"frequency": 4, "size": 0, "richness": 5},
+                "copper-ore": {"frequency": 6, "size": 0, "richness": 7},
+                "stone": {"frequency": 8, "size": 0, "richness": 9},
+                "uranium-ore": {"frequency": 10, "size": 0, "richness": 11},
+                "crude-oil": {"frequency": 12, "size": 0, "richness": 13},
+            }
+        },
+    )
+    result = _write_map_gen_settings(config, tmp_path)
+    data = json.loads(result.read_text(encoding="utf-8"))
+    assert data["autoplace_controls"]["coal"]["size"] == 0
+    assert data["autoplace_controls"]["iron-ore"]["size"] == 0
+    assert data["autoplace_controls"]["copper-ore"]["size"] == 0
+    assert data["autoplace_controls"]["stone"]["size"] == 0
+    assert data["autoplace_controls"]["uranium-ore"]["size"] == 0
+    assert data["autoplace_controls"]["crude-oil"]["size"] == 0
