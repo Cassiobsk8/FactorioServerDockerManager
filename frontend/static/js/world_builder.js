@@ -11,6 +11,9 @@
                 hash: null,
                 config: null,
                 isLoading: false,
+                autoUpdate: false,
+                autoUpdateTimer: null,
+                pendingAutoUpdate: false,
             },
             resourceFields: [],
             terrainFeatureFields: [],
@@ -280,10 +283,29 @@
             if (createButton) {
                 createButton.disabled = true;
             }
+
+            if (wbState.preview.autoUpdate) {
+                wbState.preview.pendingAutoUpdate = true;
+                if (wbState.preview.autoUpdateTimer) {
+                    clearTimeout(wbState.preview.autoUpdateTimer);
+                }
+                wbState.preview.autoUpdateTimer = setTimeout(() => {
+                    wbState.preview.autoUpdateTimer = null;
+                    if (wbState.preview.pendingAutoUpdate) {
+                        wbState.preview.pendingAutoUpdate = false;
+                        updatePreview();
+                    }
+                }, 500);
+            }
         }
 
         async function updatePreview() {
-            if (wbState.preview.isLoading) return;
+            if (wbState.preview.isLoading) {
+                if (wbState.preview.autoUpdate) {
+                    wbState.preview.pendingAutoUpdate = true;
+                }
+                return;
+            }
 
             if (!wbState.worldConfig.world_name) {
                 alert(t('error.create_world_failed'));
@@ -344,6 +366,10 @@
                 wbState.preview.isLoading = false;
                 if (updateButton) updateButton.disabled = false;
                 if (createButton) createButton.disabled = false;
+                if (wbState.preview.pendingAutoUpdate) {
+                    wbState.preview.pendingAutoUpdate = false;
+                    updatePreview();
+                }
             }
         }
 
@@ -1542,6 +1568,21 @@
             }
             if (createButton) {
                 createButton.addEventListener('click', createWorld);
+            }
+
+            const autoUpdateCheckbox = document.getElementById('wb-auto-update');
+            if (autoUpdateCheckbox) {
+                autoUpdateCheckbox.checked = wbState.preview.autoUpdate;
+                autoUpdateCheckbox.addEventListener('change', (e) => {
+                    wbState.preview.autoUpdate = e.target.checked;
+                    if (!wbState.preview.autoUpdate) {
+                        if (wbState.preview.autoUpdateTimer) {
+                            clearTimeout(wbState.preview.autoUpdateTimer);
+                            wbState.preview.autoUpdateTimer = null;
+                        }
+                        wbState.preview.pendingAutoUpdate = false;
+                    }
+                });
             }
 
             markPreviewOutdated();

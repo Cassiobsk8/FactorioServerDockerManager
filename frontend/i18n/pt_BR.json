@@ -311,6 +311,7 @@
   "world_builder.preview.status.outdated": "Preview desatualizado",
   "world_builder.preview.status.generating": "Gerando preview...",
   "world_builder.preview.status.error": "Erro no preview",
+  "world_builder.preview.auto_update": "Auto-atualização",
   "world_builder.preview.placeholder": "Nenhum preview gerado ainda",
   "world_builder.error.preview_failed": "Falha ao gerar preview",
   "world_builder.error.create_failed": "Falha ao criar mundo",

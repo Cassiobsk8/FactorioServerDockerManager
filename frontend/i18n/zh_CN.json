@@ -311,6 +311,7 @@
   "world_builder.preview.status.outdated": "预览已过期",
   "world_builder.preview.status.generating": "正在生成预览...",
   "world_builder.preview.status.error": "预览错误",
+  "world_builder.preview.auto_update": "自动更新",
   "world_builder.preview.placeholder": "尚未生成预览",
   "world_builder.error.preview_failed": "生成预览失败",
   "world_builder.error.create_failed": "创建世界失败",

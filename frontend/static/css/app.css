@@ -2648,6 +2648,25 @@ pre {
     letter-spacing: 0.04em;
 }
 
+.wb-auto-update-label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: 0.8rem;
+    color: var(--subtext);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.wb-auto-update-label input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+    accent-color: var(--accent);
+}
+
 .wb-description {
     padding: 0.35rem var(--spacing-sm);
     border-radius: var(--radius-md);
