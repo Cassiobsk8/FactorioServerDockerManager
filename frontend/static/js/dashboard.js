@@ -165,6 +165,19 @@
                     const status = data.status || '';
                     if (status !== 'running') {
                         playersEl.textContent = '—';
+                    } else {
+                        try {
+                            const playersRes = await fetch('/api/rcon/players');
+                            if (playersRes.ok) {
+                                const playersData = await playersRes.json();
+                                const playerCount = playersData.player_count ?? 0;
+                                playersEl.textContent = String(playerCount);
+                            } else {
+                                playersEl.textContent = '—';
+                            }
+                        } catch (err) {
+                            playersEl.textContent = '—';
+                        }
                     }
                 }
 
@@ -272,6 +285,36 @@
 
         fetchMetrics();
         setInterval(fetchMetrics, 2000);
+
+        async function fetchRconStatus() {
+            const badge = document.getElementById('rcon-status-badge');
+            if (!badge) return;
+
+            try {
+                const res = await fetch('/api/rcon/status');
+                if (!res.ok) return;
+                const data = await res.json();
+
+                const configured = data.configured !== false;
+                const connected = data.connected === true;
+
+                if (!configured) {
+                    badge.textContent = `⚪ ${t('rcon.not_configured')}`;
+                    badge.className = 'badge badge-offline';
+                } else if (connected) {
+                    badge.textContent = `🟢 ${t('rcon.connected')}`;
+                    badge.className = 'badge badge-online';
+                } else {
+                    badge.textContent = `🔴 ${t('rcon.disconnected')}`;
+                    badge.className = 'badge badge-offline';
+                }
+            } catch (err) {
+                // ignore errors during polling
+            }
+        }
+
+        fetchRconStatus();
+        setInterval(fetchRconStatus, 2000);
 
         if (logsAutoScrollBtn && logViewer) {
             logsAutoScrollBtn.addEventListener('click', () => {
@@ -481,6 +524,11 @@
                 if (factorioStatusBadge) {
                     factorioStatusBadge.textContent = t(`factorio_account.status.${data.status}`);
                     factorioStatusBadge.className = `badge badge-factorio ${data.status}`;
+                }
+                const tokenConfigured = document.getElementById('factorio-token-configured');
+                if (tokenConfigured) {
+                    tokenConfigured.textContent = data.token_masked ? t('factorio_account.status.authenticated') : '';
+                    tokenConfigured.style.display = data.token_masked ? '' : 'none';
                 }
             } catch (err) {
                 // ignore

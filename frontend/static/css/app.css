@@ -934,6 +934,16 @@ form {
     min-width: 0;
 }
 
+.token-configured {
+    font-size: var(--font-xs);
+    padding: 0.15rem 0.4rem;
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+    font-weight: 600;
+}
+
 label {
     display: grid;
     gap: var(--spacing-sm);

@@ -1,0 +1,14 @@
+{
+  "language": "en",
+  "rcon_host": "127.0.0.1",
+  "rcon_port": "27015",
+  "rcon_password": "secret",
+  "rcon_timeout": "5",
+  "server_port": "",
+  "bind": "",
+  "rcon_bind": "",
+  "server_id": "",
+  "use_authserver_bans": "false",
+  "factorio_username": "",
+  "factorio_service_token": ""
+}

@@ -89,7 +89,14 @@ class RCONService:
         return self._last_response_time
 
     def is_connected(self) -> bool:
-        return self._socket is not None
+        if self._socket is None:
+            return False
+        try:
+            self._socket.getpeername()
+            return True
+        except OSError:
+            self._close_socket()
+            return False
 
     def connect(self) -> bool:
         """Open the socket and authenticate.
@@ -388,7 +395,15 @@ def connect_rcon_service() -> None:
     try:
         service = get_rcon_service()
         if not service.is_connected():
-            service.connect()
+            for attempt in range(3):
+                try:
+                    service.connect()
+                    return
+                except (RconConnectionError, RconTimeoutError, RconAuthError):
+                    if attempt < 2:
+                        time.sleep(2 ** attempt)
+                    else:
+                        raise
     except (RconNotConfiguredError, RconConnectionError, RconTimeoutError, RconAuthError):
         pass
 
@@ -448,6 +463,12 @@ def get_rcon_status() -> dict[str, object]:
         return status
     try:
         service = get_rcon_service()
+        if not service.is_connected():
+            try:
+                service.connect()
+            except (RconConnectionError, RconTimeoutError, RconAuthError) as exc:
+                status["error"] = str(exc)
+                return status
         status["connected"] = service.is_connected()
         if status["connected"]:
             status["connected_since"] = service.connected_since
@@ -463,6 +484,10 @@ def get_rcon_status() -> dict[str, object]:
 
 def get_rcon_players() -> dict[str, object]:
     """Return the list of online players, masking the password."""
+    try:
+        _ = get_rcon_status()
+    except Exception:
+        pass
     try:
         service = get_rcon_service()
         if not service.is_connected():
