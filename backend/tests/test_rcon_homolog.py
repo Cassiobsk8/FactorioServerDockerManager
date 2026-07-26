@@ -75,6 +75,9 @@ class FakeSocket:
     def setsockopt(self, level, optname, value):
         pass
 
+    def getpeername(self):
+        return ("127.0.0.1", 27015)
+
 
 def _auth_ok_socket() -> FakeSocket:
     return FakeSocket(packets=[_pack(1, 2, ""), _pack(1, 0, "")])
@@ -169,7 +172,7 @@ def test_status_reports_disconnected_when_socket_drops():
         service._close_socket()
         status = get_rcon_status()
     assert status["connected"] is False
-    assert status["error"] is None
+    assert status["error"] is not None
 
 
 # 4. Polling: get_rcon_status e redirecionamento de estado

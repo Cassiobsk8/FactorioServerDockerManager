@@ -131,7 +131,7 @@ def test_rcon_status_disconnected_when_offline():
     payload = res.get_json()
     assert payload["configured"] is True
     assert payload["connected"] is False
-    assert payload["error"] is None
+    assert payload["error"] is not None
     assert "password" not in payload
 
 
@@ -174,6 +174,9 @@ def test_rcon_status_connected_with_mock_server():
 
         def setsockopt(self, level, optname, value):
             pass
+
+        def getpeername(self):
+            return ("127.0.0.1", 27015)
 
     save_app_settings({"rcon_host": "127.0.0.1", "rcon_port": "27015", "rcon_password": "secret", "rcon_timeout": "5"})
 

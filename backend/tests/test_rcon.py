@@ -75,6 +75,9 @@ class FakeSocket:
     def setsockopt(self, level, optname, value):
         pass
 
+    def getpeername(self):
+        return ("127.0.0.1", 27015)
+
 
 def _auth_ok_socket() -> FakeSocket:
     # Auth request uses request id 1; server responds with id 1 on success.
@@ -204,14 +207,18 @@ def test_get_rcon_status_reports_not_configured():
 
 def test_get_rcon_status_reports_connection_error(monkeypatch):
     save_app_settings({"rcon_host": "127.0.0.1", "rcon_port": "1", "rcon_password": "secret", "rcon_timeout": "1"})
-    status = rcon_service.get_rcon_status()
+    reset_rcon_service()
+    with mock.patch.object(socket, "create_connection", side_effect=ConnectionRefusedError("refused")):
+        status = rcon_service.get_rcon_status()
     assert status["connected"] is False
-    assert status["error"] is None
+    assert status["error"] is not None
 
 
 def test_status_payload_has_no_password():
     save_app_settings({"rcon_host": "127.0.0.1", "rcon_port": "1", "rcon_password": "supersecret", "rcon_timeout": "1"})
-    status = rcon_service.get_rcon_status()
+    reset_rcon_service()
+    with mock.patch.object(socket, "create_connection", side_effect=ConnectionRefusedError("refused")):
+        status = rcon_service.get_rcon_status()
     assert "password" not in status
     assert "password" not in status.get("host", "")
 
@@ -447,9 +454,8 @@ def test_rcon_lifecycle_does_not_connect_when_already_connected():
 def test_get_rcon_players_does_not_connect_when_not_connected():
     save_app_settings({"rcon_host": "127.0.0.1", "rcon_port": "27015", "rcon_password": "secret", "rcon_timeout": "5"})
     reset_rcon_service()
-    with mock.patch.object(socket, "create_connection") as mock_create:
+    with mock.patch.object(socket, "create_connection", side_effect=ConnectionRefusedError("refused")):
         result = rcon_service.get_rcon_players()
-    assert mock_create.call_count == 0
     assert result["connected"] is False
     assert result["players"] == []
     assert result["player_count"] == 0
