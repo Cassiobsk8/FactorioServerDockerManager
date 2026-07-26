@@ -2,7 +2,7 @@ from pathlib import Path
 import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-CONFIG_PATH = BASE_DIR / "backend" / "server_config.json"
+CONFIG_PATH = BASE_DIR / "data" / "server_config.json"
 INSTALL_DIR = BASE_DIR / "factorio"
 SERVER_SETTINGS_DIR = BASE_DIR / "factorio" / "config"
 SERVER_SETTINGS_PATH = SERVER_SETTINGS_DIR / "server-settings.json"

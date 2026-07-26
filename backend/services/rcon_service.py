@@ -220,7 +220,7 @@ class RCONService:
         return self.execute_command("/save")
 
     def broadcast_message(self, message: str) -> str:
-        return self.execute_command(f"/broadcast {message}")
+        return self.execute_command(f"/shout {message}")
 
     # --- low level protocol helpers ---
 

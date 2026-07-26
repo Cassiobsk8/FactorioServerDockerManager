@@ -42,9 +42,14 @@ def test_fresh_install_with_official_example_present(tmp_path, monkeypatch):
 
     # Fresh install: example is copied into server-settings.json and returned.
     result = load_server_settings()
-    assert result == {"name": "Example", "max_players": 0}
+    assert result.get("name") == "Example"
+    assert result.get("max_players") == 0
+    assert result.get("autosave_enabled") is True
     assert settings.exists()
-    assert json.loads(settings.read_text(encoding="utf-8")) == result
+    saved = json.loads(settings.read_text(encoding="utf-8"))
+    assert saved.get("name") == "Example"
+    assert saved.get("max_players") == 0
+    assert result.get("autosave_enabled") is True
 
 
 def test_committed_official_example_is_valid_json():
@@ -71,7 +76,9 @@ def test_load_server_settings_never_returns_empty_object(tmp_path, monkeypatch):
 
     result = load_server_settings()
     assert result != {}
-    assert result == {"name": "Example", "max_players": 0}
+    assert result.get("name") == "Example"
+    assert result.get("max_players") == 0
+    assert result.get("autosave_enabled") is True
 
 
 def test_example_never_silently_empty_when_missing(tmp_path, monkeypatch):

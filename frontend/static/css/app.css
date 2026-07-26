@@ -318,6 +318,15 @@ select {
     font-weight: 600;
 }
 
+.hero-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: var(--spacing-lg);
+    flex-wrap: nowrap;
+}
+
 .server-name {
     font-size: var(--font-xl);
     font-weight: 800;
@@ -430,6 +439,76 @@ select {
         opacity: 1;
         transform: scale(1.1);
     }
+}
+
+.server-autosave-section {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-md);
+    flex-shrink: 0;
+}
+
+.server-autosave-checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-weight: 600;
+    cursor: pointer;
+    font-size: var(--font-sm);
+    line-height: 1;
+}
+
+.server-autosave-checkbox input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+    accent-color: var(--accent);
+}
+
+.server-autosave-fields {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.server-autosave-field {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: var(--font-sm);
+    line-height: 1;
+}
+
+.server-autosave-field span:first-child {
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.server-autosave-field input[type="number"] {
+    width: 64px;
+    min-width: 64px;
+    max-width: 64px;
+    padding: 0.2rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text);
+    font-size: var(--font-sm);
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+    line-height: 1;
+}
+
+.server-autosave-field input[type="number"]:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.server-autosave-field span:last-child {
+    color: var(--subtext);
+    font-size: var(--font-sm);
+    white-space: nowrap;
 }
 
 .modal-subtitle {

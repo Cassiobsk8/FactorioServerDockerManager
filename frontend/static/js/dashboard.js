@@ -233,6 +233,33 @@
             if (startForm) startForm.classList.toggle('visible', status === 'stopped');
             if (restartForm) restartForm.classList.toggle('visible', status === 'running');
             if (stopForm) stopForm.classList.toggle('visible', status === 'running');
+
+            updateCommandButton(status === 'stopped' || status === 'not_installed');
+        }
+
+        function updateCommandButton(visible) {
+            const actionGroup = document.querySelector('.server-hero .action-group');
+            if (!actionGroup) return;
+            const existing = document.getElementById('startup-preview-show');
+            if (visible) {
+                if (!existing) {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'secondary-button startup-preview-show';
+                    btn.id = 'startup-preview-show';
+                    btn.dataset.i18n = 'startup_preview.show';
+                    btn.textContent = t('startup_preview.show');
+                    const loading = document.getElementById('hero-loading');
+                    if (loading) {
+                        actionGroup.insertBefore(btn, loading);
+                    } else {
+                        actionGroup.appendChild(btn);
+                    }
+                    btn.addEventListener('click', showStartupPreview);
+                }
+            } else if (existing) {
+                existing.remove();
+            }
         }
 
         if (logViewer) {
@@ -574,3 +601,75 @@
                 pendingChangesPopover.style.display = 'none';
             }
         });
+
+        async function initAutosave() {
+            const checkbox = document.getElementById('server-autosave-enabled');
+            const intervalInput = document.getElementById('server-autosave-interval');
+            const slotsInput = document.getElementById('server-autosave-slots');
+
+            if (!checkbox || !intervalInput || !slotsInput) return;
+
+            try {
+                const response = await fetch('/api/server-settings');
+                if (!response.ok) return;
+                const data = await response.json();
+                const settings = data.settings || {};
+
+                const enabled = settings.autosave_enabled !== false;
+                const interval = settings.autosave_interval || 10;
+                const slots = settings.autosave_slots || 5;
+
+                checkbox.checked = enabled;
+                intervalInput.value = Math.max(1, Math.min(1440, interval));
+                slotsInput.value = Math.max(1, Math.min(100, slots));
+
+                updateAutosaveFieldsState();
+            } catch (err) {
+                // ignore errors during init
+            }
+
+            function updateAutosaveFieldsState() {
+                const enabled = checkbox.checked;
+                intervalInput.disabled = !enabled;
+                slotsInput.disabled = !enabled;
+            }
+
+            checkbox.addEventListener('change', async () => {
+                updateAutosaveFieldsState();
+                await saveAutosaveSettings();
+            });
+
+            intervalInput.addEventListener('change', async () => {
+                let value = parseInt(intervalInput.value, 10);
+                if (isNaN(value) || value < 1) value = 1;
+                if (value > 1440) value = 1440;
+                intervalInput.value = value;
+                await saveAutosaveSettings();
+            });
+
+            slotsInput.addEventListener('change', async () => {
+                let value = parseInt(slotsInput.value, 10);
+                if (isNaN(value) || value < 1) value = 1;
+                if (value > 100) value = 100;
+                slotsInput.value = value;
+                await saveAutosaveSettings();
+            });
+
+            async function saveAutosaveSettings() {
+                const formData = new FormData();
+                formData.append('settings.autosave_enabled', checkbox.checked ? 'true' : 'false');
+                formData.append('settings.autosave_interval', intervalInput.value);
+                formData.append('settings.autosave_slots', slotsInput.value);
+
+                try {
+                    await fetch('/config', {
+                        method: 'POST',
+                        body: formData,
+                    });
+                } catch (err) {
+                    // ignore save errors
+                }
+            }
+        }
+
+        initAutosave();

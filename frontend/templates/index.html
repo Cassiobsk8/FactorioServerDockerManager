@@ -84,7 +84,26 @@
                                 <div class="server-hero-title">
                                     <span class="status-dot {% if status and (status == 'running' or status == 'online') %}status-dot-online{% else %}status-dot-offline{% endif %}" id="server-status-dot"></span>
                                     <div class="server-hero-title-text">
-                                        <span class="hero-subtitle" data-i18n="branding.hero_subtitle">Factorio Server</span>
+                                        <div class="hero-header-row">
+                                            <span class="hero-subtitle" data-i18n="branding.hero_subtitle">Factorio Server</span>
+                                            <div class="server-autosave-section">
+                                                <label class="server-autosave-checkbox">
+                                                    <input type="checkbox" id="server-autosave-enabled" checked />
+                                                    <span data-i18n="settings.autosave_enabled">Auto-save</span>
+                                                </label>
+                                                <div class="server-autosave-fields">
+                                                    <label class="server-autosave-field">
+                                                        <span data-i18n="settings.autosave_interval_short">Intervalo</span>
+                                                        <input type="number" id="server-autosave-interval" min="1" max="1440" step="1" value="10" />
+                                                        <span>min</span>
+                                                    </label>
+                                                    <label class="server-autosave-field">
+                                                        <span data-i18n="settings.autosave_slots_short">Slots</span>
+                                                        <input type="number" id="server-autosave-slots" min="1" max="100" step="1" value="5" />
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="server-name-row">
                                             <h2 class="server-name" id="server-name">{{ config.server_name or 'Factorio Server' }}</h2>
                                             <button type="button" class="server-name-edit" id="server-name-edit" aria-label="Edit server name">✎</button>
@@ -158,27 +177,27 @@
                                 <span class="badge badge-factorio" id="factorio-account-badge" data-i18n="factorio_account.status.not_configured">Authentication Required</span>
                             </div>
                             </div>
-                            <div class="action-group">
-                                <form action="/install" method="post" id="action-install" class="hero-action-form">
-                                    <button type="submit" data-i18n="action.install">Install server</button>
-                                </form>
-                                <form action="/control/start" method="post" id="action-start" class="hero-action-form">
-                                    <button type="submit" data-i18n="action.start">Start</button>
-                                </form>
-                                <button type="button" class="secondary-button startup-preview-show" id="startup-preview-show" data-i18n="startup_preview.show">Command</button>
-                                <form action="/control/restart" method="post" id="action-restart" class="hero-action-form">
-                                    <button type="submit" data-i18n="action.restart">Restart</button>
-                                </form>
-                                <form action="/control/stop" method="post" id="action-stop" class="hero-action-form">
-                                    <button type="submit" class="danger-button" data-i18n="action.stop">Stop</button>
-                                </form>
-                                <div class="hero-loading" id="hero-loading" aria-hidden="true">
-                                    <span class="hero-loading-dot"></span>
-                                    <span class="hero-loading-dot"></span>
-                                    <span class="hero-loading-dot"></span>
-                                </div>
-                            </div>
-                            <div class="startup-warning" id="startup-warning" style="display:none;" role="alert"></div>
+                             <div class="action-group">
+                                 <form action="/install" method="post" id="action-install" class="hero-action-form">
+                                     <button type="submit" data-i18n="action.install">Install server</button>
+                                 </form>
+                                 <form action="/control/start" method="post" id="action-start" class="hero-action-form">
+                                     <button type="submit" data-i18n="action.start">Start</button>
+                                 </form>
+                                 <button type="button" class="secondary-button startup-preview-show" id="startup-preview-show" data-i18n="startup_preview.show">Command</button>
+                                 <form action="/control/restart" method="post" id="action-restart" class="hero-action-form">
+                                     <button type="submit" data-i18n="action.restart">Restart</button>
+                                 </form>
+                                 <form action="/control/stop" method="post" id="action-stop" class="hero-action-form">
+                                     <button type="submit" class="danger-button" data-i18n="action.stop">Stop</button>
+                                 </form>
+                                  <div class="hero-loading" id="hero-loading" aria-hidden="true">
+                                      <span class="hero-loading-dot"></span>
+                                      <span class="hero-loading-dot"></span>
+                                      <span class="hero-loading-dot"></span>
+                                  </div>
+                               </div>
+                               <div class="startup-warning" id="startup-warning" style="display:none;" role="alert"></div>
                         </div>
                     </aside>
 

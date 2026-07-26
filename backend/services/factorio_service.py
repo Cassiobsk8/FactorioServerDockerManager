@@ -538,6 +538,12 @@ def load_server_config(config_path: Optional[Union[str, Path]] = None) -> Dict[s
     from backend.config import DEFAULT_CONFIG
 
     path = Path(config_path or CONFIG_PATH)
+    old_path = BASE_DIR / "backend" / "server_config.json"
+
+    if old_path.exists() and not path.exists():
+        path.parent.mkdir(parents=True, exist_ok=True)
+        shutil.move(str(old_path), str(path))
+
     if not path.exists():
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(DEFAULT_CONFIG, indent=2), encoding="utf-8")
@@ -585,6 +591,12 @@ def _ensure_example_available() -> Path:
     return SERVER_SETTINGS_EXAMPLE_PATH
 
 
+def _ensure_autosave_enabled(settings: Dict[str, Any]) -> Dict[str, Any]:
+    if "autosave_enabled" not in settings:
+        settings["autosave_enabled"] = True
+    return settings
+
+
 def load_server_settings(config_path: Optional[Union[str, Path]] = None) -> Dict[str, Any]:
     path = Path(config_path or SERVER_SETTINGS_PATH)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -599,45 +611,45 @@ def load_server_settings(config_path: Optional[Union[str, Path]] = None) -> Dict
     except OSError:
         raw = ""
 
+    example = _ensure_example_available()
+    resolved = example
+
     if not raw or raw.strip() == "":
-        example = _ensure_example_available()
         shutil.copy(example, path)
         logger.info("Replaced empty server-settings with example at %s", path)
         try:
-            return json.loads(path.read_text(encoding="utf-8"))
+            parsed = json.loads(path.read_text(encoding="utf-8"))
         except json.JSONDecodeError:
             raise ServerSettingsExampleMissingError(
                 f"Example server-settings at {example} is not valid JSON."
             )
-
-    try:
-        parsed = json.loads(raw)
-    except json.JSONDecodeError:
-        example = _ensure_example_available()
-        shutil.copy(example, path)
-        logger.warning("Invalid server-settings JSON; replaced with example at %s", path)
+    else:
         try:
-            return json.loads(path.read_text(encoding="utf-8"))
+            parsed = json.loads(raw)
         except json.JSONDecodeError:
-            raise ServerSettingsExampleMissingError(
-                f"Example server-settings at {example} is not valid JSON."
-            )
-
-    if isinstance(parsed, dict):
-        keys = list(parsed.keys())
-        only_comments = bool(keys) and all(isinstance(k, str) and k.startswith("_comment_") for k in keys)
-        if not keys or only_comments:
-            example = _ensure_example_available()
             shutil.copy(example, path)
-            logger.info("Server-settings was empty or comments-only; replaced with example at %s", path)
+            logger.warning("Invalid server-settings JSON; replaced with example at %s", path)
             try:
-                return json.loads(path.read_text(encoding="utf-8"))
+                parsed = json.loads(path.read_text(encoding="utf-8"))
             except json.JSONDecodeError:
                 raise ServerSettingsExampleMissingError(
                     f"Example server-settings at {example} is not valid JSON."
                 )
 
-    return parsed
+    if isinstance(parsed, dict):
+        keys = list(parsed.keys())
+        only_comments = bool(keys) and all(isinstance(k, str) and k.startswith("_comment_") for k in keys)
+        if not keys or only_comments:
+            shutil.copy(example, path)
+            logger.info("Server-settings was empty or comments-only; replaced with example at %s", path)
+            try:
+                parsed = json.loads(path.read_text(encoding="utf-8"))
+            except json.JSONDecodeError:
+                raise ServerSettingsExampleMissingError(
+                    f"Example server-settings at {example} is not valid JSON."
+                )
+
+    return _ensure_autosave_enabled(parsed)
 
 
 def save_server_settings(settings: Dict[str, Any], config_path: Optional[Union[str, Path]] = None) -> Dict[str, Any]:
